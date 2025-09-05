@@ -12,17 +12,16 @@
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
-      background-color: #1e1b4b;
-      color: #FFD700;
+      background-color: #FFD700;
+      color: #FFFFFF;
     }
 
     header {
-      background: linear-gradient(135deg, #2c2a4d, #3b2f1f);
+      background-color: #b8860b;
       padding: 20px 40px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 2px solid #B8860B;
       box-shadow: 0 2px 5px rgba(0,0,0,0.3);
     }
 
@@ -47,25 +46,24 @@
     }
 
     .card {
-      background: linear-gradient(135deg, #2c2a4d, #3b2f1f);
+      background-color: #b8860b;
       padding: 20px;
       border-radius: 12px;
-      border: 1px solid #B8860B;
-      box-shadow: 0 0 10px rgba(255,215,0,0.1);
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
       margin-bottom: 20px;
     }
 
     .card h2 {
       margin-top: 0;
       font-size: 1.4em;
-      color: #FFD700;
+      color: #FFFFFF;
     }
 
     .saldo-value {
       font-size: 1.6em;
       font-weight: bold;
       margin-top: 10px;
-      color: #FFD700;
+      color: #FFFFFF;
     }
 
     .btn-container {
@@ -77,8 +75,8 @@
     .btn {
       padding: 10px 20px;
       font-size: 1em;
-      background-color: #B8860B;
-      color: white;
+      background-color: #ffffff;
+      color: #b8860b;
       border: none;
       border-radius: 8px;
       cursor: pointer;
@@ -86,14 +84,14 @@
     }
 
     .btn:hover {
-      background-color: #DAA520;
-      box-shadow: 0 0 10px #FFD700;
+      background-color: #f0f0f0;
+      box-shadow: 0 0 10px #ffffff;
     }
 
     .timer {
       font-size: 1em;
       margin-top: 10px;
-      color: #FFD700;
+      color: #FFFFFF;
     }
 
     table {
@@ -103,19 +101,19 @@
     }
 
     th, td {
-      border: 1px solid #B8860B;
+      border: 1px solid #ffffff;
       padding: 10px;
       text-align: center;
     }
 
     th {
-      background-color: #B8860B;
-      color: white;
+      background-color: #ffffff;
+      color: #b8860b;
     }
 
     td {
-      background-color: #2c2a4d;
-      color: #FFD700;
+      background-color: #f5deb3;
+      color: #b8860b;
       font-size: 0.95em;
     }
 
@@ -123,7 +121,7 @@
       text-align: center;
       padding: 20px;
       font-size: 0.9em;
-      color: #FFD700;
+      color: #FFFFFF;
     }
   </style>
 </head>
@@ -172,11 +170,11 @@
     </div>
   </main>
 
-  <div class="footer">©2025 Dashboard BossX • Tampilan emas elegan 💎</div>
+  <div class="footer">©2025 Dashboard BossX • Tampilan emas mewah & teks putih 💎</div>
 
   <script>
-    let mining = 0;
-    let balance = 0;
+    let mining = parseFloat(localStorage.getItem("mining")) || 0;
+    let balance = parseFloat(localStorage.getItem("balance")) || 0;
     const ratePerDetik = 0.000000001;
     let intervalMining;
     let intervalClaim;
@@ -184,9 +182,13 @@
     let countdown = 60;
     let isMiningActive = false;
 
+    document.getElementById("mining").textContent = mining.toFixed(9) + " BossX";
+    document.getElementById("balance").textContent = balance.toFixed(9) + " BossX";
+
     function updateMining() {
       mining += ratePerDetik;
       document.getElementById("mining").textContent = mining.toFixed(9) + " BossX";
+      localStorage.setItem("mining", mining);
     }
 
     function updateCountdown() {
@@ -213,7 +215,7 @@
         <td>${waktu.tanggal}</td>
         <td>${waktu.jam}</td>
         <td>+${amount.toFixed(9)} BossX</td>
-        <td style="color: #22c55e;">✅</td>
+        <td>✅</td>
       `;
       document.getElementById("history").prepend(row);
     }
@@ -224,6 +226,8 @@
       mining = 0;
       document.getElementById("mining").textContent = "0.000000000 BossX";
       document.getElementById("balance").textContent = balance.toFixed(9) + " BossX";
+      localStorage.setItem("balance", balance);
+      localStorage.setItem("mining", mining);
     }
 
     document.getElementById("onBtn").addEventListener("click", function () {
