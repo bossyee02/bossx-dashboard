@@ -15,7 +15,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      height: 100vh;
+      min-height: 100vh;
     }
 
     h1 {
@@ -29,7 +29,7 @@
       border-radius: 12px;
       box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
       margin-bottom: 20px;
-      width: 300px;
+      width: 320px;
       text-align: left;
     }
 
@@ -45,7 +45,7 @@
     .btn-container {
       display: flex;
       flex-wrap: wrap;
-      gap: 20px;
+      gap: 15px;
       margin-bottom: 20px;
       justify-content: center;
     }
@@ -65,9 +65,14 @@
       background-color: #4338ca;
     }
 
+    .timer {
+      font-size: 1em;
+      margin-bottom: 10px;
+      color: #a5b4fc;
+    }
+
     .footer {
-      position: absolute;
-      bottom: 20px;
+      margin-top: 30px;
       font-size: 0.9em;
       color: #a5b4fc;
     }
@@ -91,14 +96,18 @@
     <div class="saldo-value" id="usdt">0.00 USDT</div>
   </div>
 
+  <div class="timer" id="countdown">Auto-claim dalam: 60 detik</div>
+
   <div class="btn-container">
     <button class="btn" id="onBtn">ON</button>
     <button class="btn" id="offBtn">OFF</button>
     <button class="btn" id="depositBtn">DEPOSIT USDT</button>
     <button class="btn" id="withdrawBtn">WITHDRAWAL USDT</button>
+    <button class="btn" id="depositBossxBtn">DEPOSIT BossX</button>
+    <button class="btn" id="withdrawBossxBtn">WITHDRAWAL BossX</button>
   </div>
 
-  <div class="footer">Rate: 0.000000001 BossX/detik • Auto-claim tiap 1 menit</div>
+  <div class="footer">©2025 Dashboard BossX • Rate: 0.000000001 BossX/detik • Auto-claim tiap 1 menit</div>
 
   <script>
     let mining = 0;
@@ -117,6 +126,7 @@
 
     function updateCountdown() {
       countdown--;
+      document.getElementById("countdown").textContent = "Auto-claim dalam: " + countdown + " detik";
       if (countdown <= 0) {
         autoClaim();
         countdown = 60;
@@ -146,19 +156,34 @@
       intervalClaim = null;
       intervalTimer = null;
       countdown = 60;
+      document.getElementById("countdown").textContent = "Auto-claim dalam: 60 detik";
     });
 
     document.getElementById("depositBtn").addEventListener("click", function () {
-      usdt += 10; // simulasi deposit 10 USDT
+      usdt += 10;
       document.getElementById("usdt").textContent = usdt.toFixed(2) + " USDT";
     });
 
     document.getElementById("withdrawBtn").addEventListener("click", function () {
       if (usdt >= 5) {
-        usdt -= 5; // simulasi withdrawal 5 USDT
+        usdt -= 5;
         document.getElementById("usdt").textContent = usdt.toFixed(2) + " USDT";
       } else {
         alert("Saldo USDT tidak cukup untuk withdrawal.");
+      }
+    });
+
+    document.getElementById("depositBossxBtn").addEventListener("click", function () {
+      balance += 100;
+      document.getElementById("balance").textContent = balance.toFixed(9) + " BossX";
+    });
+
+    document.getElementById("withdrawBossxBtn").addEventListener("click", function () {
+      if (balance >= 50) {
+        balance -= 50;
+        document.getElementById("balance").textContent = balance.toFixed(9) + " BossX";
+      } else {
+        alert("Saldo BossX tidak cukup untuk withdrawal.");
       }
     });
   </script>
