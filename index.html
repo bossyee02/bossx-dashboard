@@ -44,8 +44,10 @@
 
     .btn-container {
       display: flex;
+      flex-wrap: wrap;
       gap: 20px;
       margin-bottom: 20px;
+      justify-content: center;
     }
 
     .btn {
@@ -61,12 +63,6 @@
 
     .btn:hover {
       background-color: #4338ca;
-    }
-
-    .timer {
-      font-size: 1em;
-      margin-bottom: 10px;
-      color: #a5b4fc;
     }
 
     .footer {
@@ -90,11 +86,16 @@
     <div class="saldo-value" id="balance">0.000000000 BossX</div>
   </div>
 
-  <div class="timer" id="countdown">Auto-claim dalam: 60 detik</div>
+  <div class="saldo-box">
+    <div class="saldo-label">Saldo USDT:</div>
+    <div class="saldo-value" id="usdt">0.00 USDT</div>
+  </div>
 
   <div class="btn-container">
     <button class="btn" id="onBtn">ON</button>
     <button class="btn" id="offBtn">OFF</button>
+    <button class="btn" id="depositBtn">DEPOSIT USDT</button>
+    <button class="btn" id="withdrawBtn">WITHDRAWAL USDT</button>
   </div>
 
   <div class="footer">Rate: 0.000000001 BossX/detik • Auto-claim tiap 1 menit</div>
@@ -102,6 +103,7 @@
   <script>
     let mining = 0;
     let balance = 0;
+    let usdt = 0;
     const ratePerDetik = 0.000000001;
     let intervalMining;
     let intervalClaim;
@@ -115,7 +117,6 @@
 
     function updateCountdown() {
       countdown--;
-      document.getElementById("countdown").textContent = "Auto-claim dalam: " + countdown + " detik";
       if (countdown <= 0) {
         autoClaim();
         countdown = 60;
@@ -145,7 +146,20 @@
       intervalClaim = null;
       intervalTimer = null;
       countdown = 60;
-      document.getElementById("countdown").textContent = "Auto-claim dalam: 60 detik";
+    });
+
+    document.getElementById("depositBtn").addEventListener("click", function () {
+      usdt += 10; // simulasi deposit 10 USDT
+      document.getElementById("usdt").textContent = usdt.toFixed(2) + " USDT";
+    });
+
+    document.getElementById("withdrawBtn").addEventListener("click", function () {
+      if (usdt >= 5) {
+        usdt -= 5; // simulasi withdrawal 5 USDT
+        document.getElementById("usdt").textContent = usdt.toFixed(2) + " USDT";
+      } else {
+        alert("Saldo USDT tidak cukup untuk withdrawal.");
+      }
     });
   </script>
 </body>
