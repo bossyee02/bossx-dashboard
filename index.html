@@ -25,7 +25,19 @@
       box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     }
 
-    header h1 {
+    .logo-title {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .logo-title img {
+      width: 50px;
+      height: 50px;
+      border-radius: 8px;
+    }
+
+    .logo-title h1 {
       font-size: 1.8em;
       margin: 0;
     }
@@ -58,6 +70,14 @@
       font-size: 1.4em;
     }
 
+    .card ul {
+      padding-left: 20px;
+    }
+
+    .card ul li {
+      margin-bottom: 8px;
+    }
+
     .footer {
       text-align: center;
       padding: 20px;
@@ -69,7 +89,10 @@
 <body>
 
   <header>
-    <h1>Dashboard BossX</h1>
+    <div class="logo-title">
+      <img src="assets/logo.png" alt="Logo BossX" />
+      <h1>Dashboard BossX</h1>
+    </div>
     <div class="user-info">
       <div>👤 Username: <strong>boss</strong></div>
       <div>🪪 Profil ID: <strong>805</strong></div>
@@ -83,11 +106,13 @@
     </div>
 
     <div class="card">
-      <h2>Langkah Selanjutnya</h2>
+      <h2>Rencana Pengembangan</h2>
       <ul>
         <li>✅ Tambahkan saldo mining & balance</li>
         <li>✅ Buat tombol ON/OFF untuk kontrol mining</li>
         <li>✅ Tambahkan riwayat auto-claim</li>
+        <li>✅ Simulasi deposit & withdrawal BossX dan USDT</li>
+        <li>✅ Tabel transaksi dengan waktu lengkap</li>
       </ul>
     </div>
   </main>
