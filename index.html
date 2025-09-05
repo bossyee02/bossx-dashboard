@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Dashboard BossX</title>
   <style>
     * { box-sizing: border-box; }
@@ -30,7 +30,7 @@
       margin: auto;
     }
     .card {
-      background-color: rgba(0, 0, 0, 0.3);
+      background-color: rgba(0,0,0,0.3);
       padding: 20px;
       border-radius: 12px;
       border: 1px solid #FFD700;
@@ -95,7 +95,7 @@
       color: #6a0dad;
     }
     td {
-      background-color: rgba(255, 255, 255, 0.1);
+      background-color: rgba(255,255,255,0.1);
       color: #FFD700;
       font-size: 0.95em;
     }
@@ -108,7 +108,6 @@
   </style>
 </head>
 <body>
-
   <header>
     <div class="logo-title">
       <h1>Dashboard BossX</h1>
@@ -120,6 +119,7 @@
   </header>
 
   <main>
+    <!-- Masternode Control -->
     <div class="card">
       <h2>Masternodes Running</h2>
       <div class="saldo-value" id="mining">0.000000000 BossX</div>
@@ -129,23 +129,34 @@
       </div>
     </div>
 
+    <!-- Balance & Countdown -->
     <div class="card">
       <h2>Saldo Balance (utama)</h2>
       <div class="saldo-value" id="balance">0.000000000 BossX</div>
       <div class="timer" id="countdown">Auto-claim dalam: 60 detik</div>
     </div>
 
+    <!-- Simulasi Wallet -->
     <div class="card">
       <h2>Simulasi Wallet</h2>
       <div class="saldo-value">BossX: <span id="walletBossX">0.000000000</span></div>
       <div class="saldo-value">USDT: <span id="walletUSDT">0.00</span></div>
-      <input type="number" id="amountInput" placeholder="Masukkan jumlah" />
+
+      <!-- BossX Deposit/Withdraw -->
+      <input type="number" id="amountInput" placeholder="Masukkan jumlah BossX" />
       <div class="btn-container">
         <button class="btn" onclick="deposit()">Deposit BossX</button>
         <button class="btn" onclick="withdraw()">Withdraw BossX</button>
       </div>
+
+      <!-- USDT Deposit untuk investasi -->
+      <input type="number" id="usdtInput" placeholder="Masukkan jumlah USDT" />
+      <div class="btn-container">
+        <button class="btn" onclick="depositUSDT()">Deposit USDT</button>
+      </div>
     </div>
 
+    <!-- Riwayat Auto-Claim -->
     <div class="card">
       <h2>Riwayat Auto-Claim</h2>
       <table>
@@ -162,6 +173,7 @@
       </table>
     </div>
 
+    <!-- Riwayat Transaksi Wallet -->
     <div class="card">
       <h2>Riwayat Transaksi Wallet</h2>
       <table>
@@ -178,7 +190,7 @@
     </div>
   </main>
 
-  <div class="footer">©2025 Dashboard BossX • Simulasi wallet aktif 💼💖</div>
+  <div class="footer">©2025 Dashboard BossX • Simulasi wallet & investasi USDT aktif 💼💖</div>
 
   <script>
     let mining = 0;
@@ -186,56 +198,59 @@
     let walletBossX = 0;
     let walletUSDT = 0;
     const ratePerDetik = 0.000000001;
-    let intervalMining;
-    let intervalClaim;
-    let intervalTimer;
+    let intervalMining, intervalClaim, intervalTimer;
     let countdown = 60;
     let isMiningActive = false;
 
+    // Update tampilan mining
     function updateMining() {
       mining += ratePerDetik;
       document.getElementById("mining").textContent = mining.toFixed(9) + " BossX";
     }
-
+    // Update countdown
     function updateCountdown() {
       countdown--;
       document.getElementById("countdown").textContent = "Auto-claim dalam: " + countdown + " detik";
-      if (countdown <= 0) {
-        countdown = 60;
-      }
+      if (countdown <= 0) countdown = 60;
     }
-
+    // Waktu sekarang
     function formatWaktuSekarang() {
       const now = new Date();
-      const hari = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"][now.getDay()];
-      const tanggal = now.toLocaleDateString("id-ID");
-      const jam = now.toLocaleTimeString("id-ID");
-      return { hari, tanggal, jam };
+      const hari = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"][now.getDay()];
+      return {
+        hari,
+        tanggal: now.toLocaleDateString("id-ID"),
+        jam: now.toLocaleTimeString("id-ID")
+      };
     }
-
+    // Riwayat auto-claim
     function tambahHistoryAutoClaim(amount) {
-      const waktu = formatWaktuSekarang();
+      const w = formatWaktuSekarang();
       const row = document.createElement("tr");
       row.innerHTML = `
-        <td>${waktu.hari}</td>
-        <td>${waktu.tanggal}</td>
-        <td>${waktu.jam}</td>
+        <td>${w.hari}</td>
+        <td>${w.tanggal}</td>
+        <td>${w.jam}</td>
         <td>+${amount.toFixed(9)} BossX</td>
         <td>✅</td>
       `;
       document.getElementById("history").prepend(row);
     }
-
+    // Auto-claim
     function autoClaim() {
       balance += mining;
       tambahHistoryAutoClaim(mining);
       mining = 0;
       document.getElementById("mining").textContent = "0.000000000 BossX";
       document.getElementById("balance").textContent = balance.toFixed(9) + " BossX";
-      document.getElementById("balance").textContent = balance.toFixed(9) + " BossX";
     }
 
-    document.getElementById("onBtn").addEventListener("click", function () {
+    // Kontrol ON/OFF masternode
+    document.getElementById("onBtn").addEventListener("click", function() {
+      if (walletUSDT < 100) {
+        alert("Masukkan minimal 100 USDT untuk menjalankan masternode.");
+        return;
+      }
       if (!isMiningActive) {
         intervalMining = setInterval(updateMining, 1000);
         intervalClaim = setInterval(autoClaim, 60000);
@@ -243,63 +258,52 @@
         isMiningActive = true;
       }
     });
-
-    document.getElementById("offBtn").addEventListener("click", function () {
-      clearInterval(intervalMining);
-      clearInterval(intervalClaim);
-      clearInterval(intervalTimer);
-      intervalMining = null;
-      intervalClaim = null;
-      intervalTimer = null;
-      countdown = 60;
-      isMiningActive = false;
+    document.getElementById("offBtn").addEventListener("click", function() {
+      clearInterval(intervalMining); clearInterval(intervalClaim); clearInterval(intervalTimer);
+      countdown = 60; isMiningActive = false;
       document.getElementById("countdown").textContent = "Auto-claim dalam: 60 detik";
     });
 
+    // Simulasi wallet
     function updateWalletDisplay() {
       document.getElementById("walletBossX").textContent = walletBossX.toFixed(9);
       document.getElementById("walletUSDT").textContent = walletUSDT.toFixed(2);
     }
-
     function logWalletTransaction(jenis, jumlah, status) {
       const waktu = new Date().toLocaleString("id-ID");
       const row = document.createElement("tr");
-      row.innerHTML = `
-        <td>${waktu}</td>
-        <td>${jenis}</td>
-        <td>${jumlah}</td>
-        <td>${status}</td>
-      `;
+      row.innerHTML = `<td>${waktu}</td><td>${jenis}</td><td>${jumlah}</td><td>${status}</td>`;
       document.getElementById("walletHistory").prepend(row);
     }
-
     function deposit() {
       const amount = parseFloat(document.getElementById("amountInput").value);
-      if (isNaN(amount) || amount <= 0) {
-        alert("Masukkan jumlah yang valid");
-        return;
-      }
+      if (isNaN(amount) || amount <= 0) { alert("Masukkan jumlah yang valid"); return; }
       walletBossX += amount;
       updateWalletDisplay();
-      logWalletTransaction("Deposit", "+" + amount.toFixed(9) + " BossX", "✅");
+      logWalletTransaction("Deposit BossX", "+"+amount.toFixed(9)+" BossX", "✅");
     }
-
     function withdraw() {
       const amount = parseFloat(document.getElementById("amountInput").value);
-      if (isNaN(amount) || amount <= 0) {
-        alert("Masukkan jumlah yang valid");
-        return;
-      }
-      if (amount > walletBossX) {
+      if (isNaN(amount)||amount<=0) { alert("Masukkan jumlah yang valid"); return; }
+      if (amount>walletBossX) {
         alert("Saldo tidak cukup");
-        logWalletTransaction("Withdraw", "-" + amount.toFixed(9) + " BossX", "❌ Gagal");
+        logWalletTransaction("Withdraw BossX", "-"+amount.toFixed(9)+" BossX", "❌ Gagal");
         return;
       }
       walletBossX -= amount;
       updateWalletDisplay();
-      logWalletTransaction("Withdraw", "-" + amount.toFixed(9) + " BossX", "✅");
+      logWalletTransaction("Withdraw BossX", "-"+amount.toFixed(9)+" BossX", "✅");
+    }
+    function depositUSDT() {
+      const amount = parseFloat(document.getElementById("usdtInput").value);
+      if (isNaN(amount)||amount<=0) { alert("Masukkan jumlah USDT yang valid"); return; }
+      walletUSDT += amount;
+      updateWalletDisplay();
+      logWalletTransaction("Deposit USDT", "+"+amount.toFixed(2)+" USDT", "✅");
     }
 
-    // Inisialisasi tampilan awal wallet
+    // Inisialisasi tampilan awal
     updateWalletDisplay();
   </script>
+</body>
+</html>
