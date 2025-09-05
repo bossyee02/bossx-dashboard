@@ -5,20 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dashboard BossX</title>
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
       background-color: #1e1b4b;
       color: #ffffff;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding-top: 30px;
     }
 
     header {
       background-color: #312e81;
-      width: 100%;
       padding: 20px 40px;
       display: flex;
       justify-content: space-between;
@@ -42,8 +41,8 @@
 
     main {
       padding: 30px 20px;
-      max-width: 800px;
-      width: 100%;
+      max-width: 900px;
+      margin: auto;
     }
 
     .card {
@@ -92,6 +91,29 @@
       color: #a5b4fc;
     }
 
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    th, td {
+      border: 1px solid #4f46e5;
+      padding: 10px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #4338ca;
+      color: white;
+    }
+
+    td {
+      background-color: #312e81;
+      color: #d1d5ff;
+      font-size: 0.95em;
+    }
+
     .footer {
       text-align: center;
       padding: 20px;
@@ -107,7 +129,7 @@
       <h1>Dashboard BossX</h1>
     </div>
     <div class="user-info">
-      <div>👤 Username: <strong>Fery Muliawan</strong></div>
+      <div>👤 Username: <strong>boss</strong></div>
       <div>🪪 Profil ID: <strong>805</strong></div>
     </div>
   </header>
@@ -127,9 +149,25 @@
         <button class="btn" id="offBtn">OFF</button>
       </div>
     </div>
+
+    <div class="card">
+      <h2>Riwayat Auto-Claim</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Hari</th>
+            <th>Tanggal</th>
+            <th>Jam</th>
+            <th>Jumlah BossX</th>
+            <th>Auto-Claim</th>
+          </tr>
+        </thead>
+        <tbody id="history"></tbody>
+      </table>
+    </div>
   </main>
 
-  <div class="footer">©2025 Dashboard BossX • Rate: 0.000000001 BossX/detik • Auto-claim tiap 1 menit</div>
+  <div class="footer">©2025 Dashboard BossX • Dibuat dengan semangat 💪</div>
 
   <script>
     let mining = 0;
@@ -150,13 +188,34 @@
       countdown--;
       document.getElementById("countdown").textContent = "Auto-claim dalam: " + countdown + " detik";
       if (countdown <= 0) {
-        autoClaim();
         countdown = 60;
       }
     }
 
+    function formatWaktuSekarang() {
+      const now = new Date();
+      const hari = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"][now.getDay()];
+      const tanggal = now.toLocaleDateString("id-ID");
+      const jam = now.toLocaleTimeString("id-ID");
+      return { hari, tanggal, jam };
+    }
+
+    function tambahHistoryAutoClaim(amount) {
+      const waktu = formatWaktuSekarang();
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${waktu.hari}</td>
+        <td>${waktu.tanggal}</td>
+        <td>${waktu.jam}</td>
+        <td>+${amount.toFixed(9)} BossX</td>
+        <td style="color: #22c55e;">✅</td>
+      `;
+      document.getElementById("history").prepend(row);
+    }
+
     function autoClaim() {
       balance += mining;
+      tambahHistoryAutoClaim(mining);
       mining = 0;
       document.getElementById("mining").textContent = "0.000000000 BossX";
       document.getElementById("balance").textContent = balance.toFixed(9) + " BossX";
