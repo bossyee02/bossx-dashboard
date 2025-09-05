@@ -23,13 +23,23 @@
       margin-bottom: 20px;
     }
 
-    .saldo {
-      font-size: 1.8em;
+    .saldo-box {
       background-color: #312e81;
       padding: 20px 40px;
       border-radius: 12px;
       box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
-      margin-bottom: 30px;
+      margin-bottom: 20px;
+      width: 300px;
+      text-align: left;
+    }
+
+    .saldo-label {
+      font-size: 1.2em;
+      margin-bottom: 10px;
+    }
+
+    .saldo-value {
+      font-size: 1.6em;
     }
 
     .btn-container {
@@ -63,34 +73,55 @@
 </head>
 <body>
   <h1>Dashboard BossX</h1>
-  <div class="saldo" id="saldo">Saldo: 0 BossX</div>
+
+  <div class="saldo-box">
+    <div class="saldo-label">Saldo Mining (sementara):</div>
+    <div class="saldo-value" id="mining">0.000000000 BossX</div>
+  </div>
+
+  <div class="saldo-box">
+    <div class="saldo-label">Saldo Balance (utama):</div>
+    <div class="saldo-value" id="balance">0.000000000 BossX</div>
+  </div>
 
   <div class="btn-container">
     <button class="btn" id="onBtn">ON</button>
     <button class="btn" id="offBtn">OFF</button>
   </div>
 
-  <div class="footer">Rate: 0.000000001 BossX/detik • Klik ON untuk mulai</div>
+  <div class="footer">Auto-claim setiap 1 menit • Rate: 0.000000001 BossX/detik</div>
 
   <script>
-    let saldo = 0;
+    let mining = 0;
+    let balance = 0;
     const ratePerDetik = 0.000000001;
-    let interval;
+    let intervalMining;
+    let intervalClaim;
 
-    function updateSaldo() {
-      saldo += ratePerDetik;
-      document.getElementById("saldo").textContent = "Saldo: " + saldo.toFixed(9) + " BX";
+    function updateMining() {
+      mining += ratePerDetik;
+      document.getElementById("mining").textContent = mining.toFixed(9) + " BossX";
+    }
+
+    function autoClaim() {
+      balance += mining;
+      mining = 0;
+      document.getElementById("mining").textContent = "0.000000000 BossX";
+      document.getElementById("balance").textContent = balance.toFixed(9) + " BossX";
     }
 
     document.getElementById("onBtn").addEventListener("click", function () {
-      if (!interval) {
-        interval = setInterval(updateSaldo, 1000);
+      if (!intervalMining) {
+        intervalMining = setInterval(updateMining, 1000); // mining tiap detik
+        intervalClaim = setInterval(autoClaim, 60000);    // auto-claim tiap 1 menit
       }
     });
 
     document.getElementById("offBtn").addEventListener("click", function () {
-      clearInterval(interval);
-      interval = null;
+      clearInterval(intervalMining);
+      clearInterval(intervalClaim);
+      intervalMining = null;
+      intervalClaim = null;
     });
   </script>
 </body>
