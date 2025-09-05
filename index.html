@@ -3,18 +3,39 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BossX Dashboard</title>
+  <title>Dashboard BossX</title>
   <style>
     body {
+      margin: 0;
+      padding: 0;
       background-color: #1e1b4b;
-      color: white;
-      font-family: sans-serif;
-      text-align: center;
-      padding-top: 50px;
+      color: #ffffff;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
     }
+
+    h1 {
+      font-size: 2.5em;
+      margin-bottom: 20px;
+    }
+
     .saldo {
       font-size: 2em;
-      margin-top: 20px;
+      background-color: #312e81;
+      padding: 20px 40px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+    }
+
+    .footer {
+      position: absolute;
+      bottom: 20px;
+      font-size: 0.9em;
+      color: #a5b4fc;
     }
   </style>
 </head>
@@ -22,15 +43,16 @@
   <h1>Dashboard BossX</h1>
   <div class="saldo" id="saldo">Saldo: 0 BX</div>
 
+  <div class="footer">Update otomatis setiap detik • Versi ringan</div>
+
   <script>
     let saldo = 0;
-    const ratePerDetik = 0.000044; // contoh rate
+    const ratePerDetik = 1; // 1 BX per detik
 
     setInterval(() => {
       saldo += ratePerDetik;
-      document.getElementById("saldo").textContent = "Saldo: " + saldo.toFixed(6) + " BX";
+      document.getElementById("saldo").textContent = "Saldo: " + saldo.toFixed(0) + " BX";
     }, 1000);
   </script>
 </body>
 </html>
-
