@@ -5,36 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dashboard BossX</title>
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
       background-color: #1e1b4b;
       color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 30px;
     }
 
     header {
       background-color: #312e81;
+      width: 100%;
       padding: 20px 40px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    }
-
-    .logo-title {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-    }
-
-    .logo-title img {
-      width: 50px;
-      height: 50px;
-      border-radius: 8px;
     }
 
     .logo-title h1 {
@@ -54,7 +43,7 @@
     main {
       padding: 30px 20px;
       max-width: 800px;
-      margin: auto;
+      width: 100%;
     }
 
     .card {
@@ -70,12 +59,37 @@
       font-size: 1.4em;
     }
 
-    .card ul {
-      padding-left: 20px;
+    .saldo-value {
+      font-size: 1.6em;
+      font-weight: bold;
+      margin-top: 10px;
     }
 
-    .card ul li {
-      margin-bottom: 8px;
+    .btn-container {
+      display: flex;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      font-size: 1em;
+      background-color: #4f46e5;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .btn:hover {
+      background-color: #4338ca;
+    }
+
+    .timer {
+      font-size: 1em;
+      margin-top: 10px;
+      color: #a5b4fc;
     }
 
     .footer {
@@ -90,34 +104,85 @@
 
   <header>
     <div class="logo-title">
-      <img src="assets/logo.png" alt="Logo BossX" />
       <h1>Dashboard BossX</h1>
     </div>
     <div class="user-info">
-      <div>👤 Username: <strong>Fery Muliawan</strong></div>
+      <div>👤 Username: <strong>boss</strong></div>
       <div>🪪 Profil ID: <strong>805</strong></div>
     </div>
   </header>
 
   <main>
     <div class="card">
-      <h2>Selamat datang di dashboard Anda</h2>
-      <p>Di sini Anda bisa melihat saldo, riwayat transaksi, dan mengelola aset BossX Anda.</p>
+      <h2>Saldo Mining (sementara)</h2>
+      <div class="saldo-value" id="mining">0.000000000 BossX</div>
     </div>
 
     <div class="card">
-      <h2>Rencana Pengembangan</h2>
-      <ul>
-        <li>✅ Tambahkan saldo mining & balance</li>
-        <li>✅ Buat tombol ON/OFF untuk kontrol mining</li>
-        <li>✅ Tambahkan riwayat auto-claim</li>
-        <li>✅ Simulasi deposit & withdrawal BossX dan USDT</li>
-        <li>✅ Tabel transaksi dengan waktu lengkap</li>
-      </ul>
+      <h2>Saldo Balance (utama)</h2>
+      <div class="saldo-value" id="balance">0.000000000 BossX</div>
+      <div class="timer" id="countdown">Auto-claim dalam: 60 detik</div>
+      <div class="btn-container">
+        <button class="btn" id="onBtn">ON</button>
+        <button class="btn" id="offBtn">OFF</button>
+      </div>
     </div>
   </main>
 
-  <div class="footer">©2025 Dashboard BossX • Dibuat dengan semangat 💪</div>
+  <div class="footer">©2025 Dashboard BossX • Rate: 0.000000001 BossX/detik • Auto-claim tiap 1 menit</div>
+
+  <script>
+    let mining = 0;
+    let balance = 0;
+    const ratePerDetik = 0.000000001;
+    let intervalMining;
+    let intervalClaim;
+    let intervalTimer;
+    let countdown = 60;
+    let isMiningActive = false;
+
+    function updateMining() {
+      mining += ratePerDetik;
+      document.getElementById("mining").textContent = mining.toFixed(9) + " BossX";
+    }
+
+    function updateCountdown() {
+      countdown--;
+      document.getElementById("countdown").textContent = "Auto-claim dalam: " + countdown + " detik";
+      if (countdown <= 0) {
+        autoClaim();
+        countdown = 60;
+      }
+    }
+
+    function autoClaim() {
+      balance += mining;
+      mining = 0;
+      document.getElementById("mining").textContent = "0.000000000 BossX";
+      document.getElementById("balance").textContent = balance.toFixed(9) + " BossX";
+    }
+
+    document.getElementById("onBtn").addEventListener("click", function () {
+      if (!isMiningActive) {
+        intervalMining = setInterval(updateMining, 1000);
+        intervalClaim = setInterval(autoClaim, 60000);
+        intervalTimer = setInterval(updateCountdown, 1000);
+        isMiningActive = true;
+      }
+    });
+
+    document.getElementById("offBtn").addEventListener("click", function () {
+      clearInterval(intervalMining);
+      clearInterval(intervalClaim);
+      clearInterval(intervalTimer);
+      intervalMining = null;
+      intervalClaim = null;
+      intervalTimer = null;
+      countdown = 60;
+      isMiningActive = false;
+      document.getElementById("countdown").textContent = "Auto-claim dalam: 60 detik";
+    });
+  </script>
 
 </body>
 </html>
