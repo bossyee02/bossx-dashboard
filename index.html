@@ -29,6 +29,22 @@
       padding: 20px 40px;
       border-radius: 12px;
       box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+      margin-bottom: 30px;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      font-size: 1em;
+      background-color: #4f46e5;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .btn:hover {
+      background-color: #4338ca;
     }
 
     .footer {
@@ -42,17 +58,41 @@
 <body>
   <h1>Dashboard BossX</h1>
   <div class="saldo" id="saldo">Saldo: 0 BX</div>
+  <button class="btn" id="toggleBtn">ON</button>
 
-  <div class="footer">Update otomatis setiap detik • Versi ringan</div>
+  <div class="footer">Klik tombol untuk mulai atau berhenti • Versi ringan</div>
 
   <script>
     let saldo = 0;
-    const ratePerDetik = 1; // 1 BX per detik
+    const ratePerDetik = 1;
+    let aktif = true;
+    let interval;
 
-    setInterval(() => {
+    function updateSaldo() {
       saldo += ratePerDetik;
       document.getElementById("saldo").textContent = "Saldo: " + saldo.toFixed(0) + " BX";
-    }, 1000);
+    }
+
+    function mulai() {
+      interval = setInterval(updateSaldo, 1000);
+    }
+
+    function berhenti() {
+      clearInterval(interval);
+    }
+
+    document.getElementById("toggleBtn").addEventListener("click", function () {
+      aktif = !aktif;
+      if (aktif) {
+        mulai();
+        this.textContent = "OFF";
+      } else {
+        berhenti();
+        this.textContent = "ON";
+      }
+    });
+
+    mulai(); // mulai otomatis saat halaman dibuka
   </script>
 </body>
 </html>
