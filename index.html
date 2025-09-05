@@ -14,8 +14,6 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
-      min-height: 100vh;
       padding-top: 30px;
     }
 
@@ -26,12 +24,12 @@
 
     .saldo-box {
       background-color: #312e81;
-      padding: 20px 40px;
+      padding: 20px;
       border-radius: 12px;
       box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
       margin-bottom: 20px;
-      width: 320px;
-      text-align: left;
+      width: 90%;
+      max-width: 600px;
     }
 
     .saldo-label {
@@ -72,32 +70,32 @@
       color: #a5b4fc;
     }
 
-    .history-box {
-      background-color: #1e1b4b;
-      border: 1px solid #4f46e5;
-      border-radius: 8px;
-      padding: 15px;
-      width: 320px;
-      max-height: 200px;
-      overflow-y: auto;
+    table {
+      width: 90%;
+      max-width: 600px;
+      border-collapse: collapse;
       margin-bottom: 30px;
     }
 
-    .history-box ul {
-      padding-left: 20px;
-      font-size: 0.9em;
-      list-style: none;
+    th, td {
+      border: 1px solid #4f46e5;
+      padding: 10px;
+      text-align: left;
     }
 
-    .history-box li {
-      margin-bottom: 6px;
+    th {
+      background-color: #4338ca;
+    }
+
+    td {
+      background-color: #312e81;
       color: #d1d5ff;
     }
 
     .footer {
       font-size: 0.9em;
       color: #a5b4fc;
-      margin-bottom: 20px;
+      margin-bottom: 30px;
     }
   </style>
 </head>
@@ -130,10 +128,17 @@
     <button class="btn" id="withdrawBossxBtn">WITHDRAWAL BossX</button>
   </div>
 
-  <div class="history-box">
-    <div class="saldo-label">Riwayat Auto-Claim:</div>
-    <ul id="history"></ul>
-  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>Hari</th>
+        <th>Tanggal</th>
+        <th>Jam</th>
+        <th>Jumlah BossX</th>
+      </tr>
+    </thead>
+    <tbody id="history"></tbody>
+  </table>
 
   <div class="footer">©2025 Dashboard BossX • Rate: 0.000000001 BossX/detik • Auto-claim tiap 1 menit</div>
 
@@ -144,8 +149,9 @@
     const ratePerDetik = 0.000000001;
     let intervalMining;
     let intervalClaim;
-    let countdown = 60;
     let intervalTimer;
+    let countdown = 60;
+    let isMiningActive = false;
 
     function updateMining() {
       mining += ratePerDetik;
@@ -166,13 +172,19 @@
       const hari = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"][now.getDay()];
       const tanggal = now.toLocaleDateString("id-ID");
       const jam = now.toLocaleTimeString("id-ID");
-      return `${hari}, ${tanggal} - ${jam}`;
+      return { hari, tanggal, jam };
     }
 
     function tambahHistoryAutoClaim(amount) {
-      const log = document.createElement("li");
-      log.textContent = `✅ Auto-claim: ${formatWaktuSekarang()} → +${amount.toFixed(9)} BossX`;
-      document.getElementById("history").prepend(log);
+      const waktu = formatWaktuSekarang();
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${waktu.hari}</td>
+        <td>${waktu.tanggal}</td>
+        <td>${waktu.jam}</td>
+        <td>+${amount.toFixed(9)} BossX</td>
+      `;
+      document.getElementById("history").prepend(row);
     }
 
     function autoClaim() {
@@ -184,10 +196,11 @@
     }
 
     document.getElementById("onBtn").addEventListener("click", function () {
-      if (!intervalMining) {
+      if (!isMiningActive) {
         intervalMining = setInterval(updateMining, 1000);
         intervalClaim = setInterval(autoClaim, 60000);
         intervalTimer = setInterval(updateCountdown, 1000);
+        isMiningActive = true;
       }
     });
 
@@ -199,6 +212,7 @@
       intervalClaim = null;
       intervalTimer = null;
       countdown = 60;
+      isMiningActive = false;
       document.getElementById("countdown").textContent = "Auto-claim dalam: 60 detik";
     });
 
