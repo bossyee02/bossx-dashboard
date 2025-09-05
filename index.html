@@ -24,12 +24,18 @@
     }
 
     .saldo {
-      font-size: 2em;
+      font-size: 1.8em;
       background-color: #312e81;
       padding: 20px 40px;
       border-radius: 12px;
       box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
       margin-bottom: 30px;
+    }
+
+    .btn-container {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 20px;
     }
 
     .btn {
@@ -58,41 +64,34 @@
 <body>
   <h1>Dashboard BossX</h1>
   <div class="saldo" id="saldo">Saldo: 0 BX</div>
-  <button class="btn" id="toggleBtn">ON</button>
 
-  <div class="footer">Klik tombol untuk mulai atau berhenti • Versi ringan</div>
+  <div class="btn-container">
+    <button class="btn" id="onBtn">ON</button>
+    <button class="btn" id="offBtn">OFF</button>
+  </div>
+
+  <div class="footer">Rate: 0.000000001 BX/detik • Klik ON untuk mulai</div>
 
   <script>
     let saldo = 0;
-    const ratePerDetik = 1;
-    let aktif = true;
+    const ratePerDetik = 0.000000001;
     let interval;
 
     function updateSaldo() {
       saldo += ratePerDetik;
-      document.getElementById("saldo").textContent = "Saldo: " + saldo.toFixed(0) + " BX";
+      document.getElementById("saldo").textContent = "Saldo: " + saldo.toFixed(9) + " BX";
     }
 
-    function mulai() {
-      interval = setInterval(updateSaldo, 1000);
-    }
-
-    function berhenti() {
-      clearInterval(interval);
-    }
-
-    document.getElementById("toggleBtn").addEventListener("click", function () {
-      aktif = !aktif;
-      if (aktif) {
-        mulai();
-        this.textContent = "OFF";
-      } else {
-        berhenti();
-        this.textContent = "ON";
+    document.getElementById("onBtn").addEventListener("click", function () {
+      if (!interval) {
+        interval = setInterval(updateSaldo, 1000);
       }
     });
 
-    mulai(); // mulai otomatis saat halaman dibuka
+    document.getElementById("offBtn").addEventListener("click", function () {
+      clearInterval(interval);
+      interval = null;
+    });
   </script>
 </body>
 </html>
