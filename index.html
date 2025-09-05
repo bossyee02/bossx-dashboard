@@ -172,11 +172,11 @@
     </div>
   </main>
 
-  <div class="footer">©2025 Dashboard BossX • Tema ungu-pink & teks emas 💜💖✨</div>
+  <div class="footer">©2025 Dashboard BossX • Reset otomatis saat refresh 💜💖✨</div>
 
   <script>
-    let mining = parseFloat(localStorage.getItem("mining")) || 0;
-    let balance = parseFloat(localStorage.getItem("balance")) || 0;
+    let mining = 0;
+    let balance = 0;
     const ratePerDetik = 0.000000001;
     let intervalMining;
     let intervalClaim;
@@ -184,13 +184,9 @@
     let countdown = 60;
     let isMiningActive = false;
 
-    document.getElementById("mining").textContent = mining.toFixed(9) + " BossX";
-    document.getElementById("balance").textContent = balance.toFixed(9) + " BossX";
-
     function updateMining() {
       mining += ratePerDetik;
       document.getElementById("mining").textContent = mining.toFixed(9) + " BossX";
-      localStorage.setItem("mining", mining);
     }
 
     function updateCountdown() {
@@ -228,8 +224,6 @@
       mining = 0;
       document.getElementById("mining").textContent = "0.000000000 BossX";
       document.getElementById("balance").textContent = balance.toFixed(9) + " BossX";
-      localStorage.setItem("balance", balance);
-      localStorage.setItem("mining", mining);
     }
 
     document.getElementById("onBtn").addEventListener("click", function () {
