@@ -12,16 +12,17 @@
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
-      background-color: #FFD700;
-      color: #FFFFFF;
+      background: linear-gradient(135deg, #6a0dad, #ff69b4);
+      color: #FFD700;
     }
 
     header {
-      background-color: #b8860b;
+      background-color: rgba(0, 0, 0, 0.3);
       padding: 20px 40px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      border-bottom: 2px solid #FFD700;
       box-shadow: 0 2px 5px rgba(0,0,0,0.3);
     }
 
@@ -46,24 +47,25 @@
     }
 
     .card {
-      background-color: #b8860b;
+      background-color: rgba(0, 0, 0, 0.3);
       padding: 20px;
       border-radius: 12px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      border: 1px solid #FFD700;
+      box-shadow: 0 0 10px rgba(255,215,0,0.2);
       margin-bottom: 20px;
     }
 
     .card h2 {
       margin-top: 0;
       font-size: 1.4em;
-      color: #FFFFFF;
+      color: #FFD700;
     }
 
     .saldo-value {
       font-size: 1.6em;
       font-weight: bold;
       margin-top: 10px;
-      color: #FFFFFF;
+      color: #FFD700;
     }
 
     .btn-container {
@@ -75,8 +77,8 @@
     .btn {
       padding: 10px 20px;
       font-size: 1em;
-      background-color: #ffffff;
-      color: #b8860b;
+      background-color: #FFD700;
+      color: #6a0dad;
       border: none;
       border-radius: 8px;
       cursor: pointer;
@@ -84,14 +86,14 @@
     }
 
     .btn:hover {
-      background-color: #f0f0f0;
-      box-shadow: 0 0 10px #ffffff;
+      background-color: #ffec8b;
+      box-shadow: 0 0 10px #FFD700;
     }
 
     .timer {
       font-size: 1em;
       margin-top: 10px;
-      color: #FFFFFF;
+      color: #FFD700;
     }
 
     table {
@@ -101,19 +103,19 @@
     }
 
     th, td {
-      border: 1px solid #ffffff;
+      border: 1px solid #FFD700;
       padding: 10px;
       text-align: center;
     }
 
     th {
-      background-color: #ffffff;
-      color: #b8860b;
+      background-color: #FFD700;
+      color: #6a0dad;
     }
 
     td {
-      background-color: #f5deb3;
-      color: #b8860b;
+      background-color: rgba(255, 255, 255, 0.1);
+      color: #FFD700;
       font-size: 0.95em;
     }
 
@@ -121,7 +123,7 @@
       text-align: center;
       padding: 20px;
       font-size: 0.9em;
-      color: #FFFFFF;
+      color: #FFD700;
     }
   </style>
 </head>
@@ -170,7 +172,7 @@
     </div>
   </main>
 
-  <div class="footer">©2025 Dashboard BossX • Tampilan emas mewah & teks putih 💎</div>
+  <div class="footer">©2025 Dashboard BossX • Tema ungu-pink & teks emas 💜💖✨</div>
 
   <script>
     let mining = parseFloat(localStorage.getItem("mining")) || 0;
