@@ -5,17 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dashboard BossX</title>
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
+    * { box-sizing: border-box; }
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
       background: linear-gradient(135deg, #6a0dad, #ff69b4);
       color: #FFD700;
     }
-
     header {
       background-color: rgba(0, 0, 0, 0.3);
       padding: 20px 40px;
@@ -25,27 +21,14 @@
       border-bottom: 2px solid #FFD700;
       box-shadow: 0 2px 5px rgba(0,0,0,0.3);
     }
-
-    .logo-title h1 {
-      font-size: 1.8em;
-      margin: 0;
-    }
-
-    .user-info {
-      text-align: right;
-    }
-
-    .user-info div {
-      font-size: 1em;
-      margin: 2px 0;
-    }
-
+    .logo-title h1 { font-size: 1.8em; margin: 0; }
+    .user-info { text-align: right; }
+    .user-info div { font-size: 1em; margin: 2px 0; }
     main {
       padding: 30px 20px;
       max-width: 900px;
       margin: auto;
     }
-
     .card {
       background-color: rgba(0, 0, 0, 0.3);
       padding: 20px;
@@ -54,26 +37,23 @@
       box-shadow: 0 0 10px rgba(255,215,0,0.2);
       margin-bottom: 20px;
     }
-
     .card h2 {
       margin-top: 0;
       font-size: 1.4em;
       color: #FFD700;
     }
-
     .saldo-value {
       font-size: 1.6em;
       font-weight: bold;
       margin-top: 10px;
       color: #FFD700;
     }
-
     .btn-container {
       display: flex;
       gap: 15px;
       margin-top: 20px;
+      flex-wrap: wrap;
     }
-
     .btn {
       padding: 10px 20px;
       font-size: 1em;
@@ -84,41 +64,41 @@
       cursor: pointer;
       transition: background-color 0.3s, box-shadow 0.3s;
     }
-
     .btn:hover {
       background-color: #ffec8b;
       box-shadow: 0 0 10px #FFD700;
     }
-
     .timer {
       font-size: 1em;
       margin-top: 10px;
       color: #FFD700;
     }
-
+    input[type="number"] {
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      width: 200px;
+      margin-top: 10px;
+    }
     table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 10px;
     }
-
     th, td {
       border: 1px solid #FFD700;
       padding: 10px;
       text-align: center;
     }
-
     th {
       background-color: #FFD700;
       color: #6a0dad;
     }
-
     td {
       background-color: rgba(255, 255, 255, 0.1);
       color: #FFD700;
       font-size: 0.95em;
     }
-
     .footer {
       text-align: center;
       padding: 20px;
@@ -156,6 +136,17 @@
     </div>
 
     <div class="card">
+      <h2>Simulasi Wallet</h2>
+      <div class="saldo-value">BossX: <span id="walletBossX">0.000000000</span></div>
+      <div class="saldo-value">USDT: <span id="walletUSDT">0.00</span></div>
+      <input type="number" id="amountInput" placeholder="Masukkan jumlah" />
+      <div class="btn-container">
+        <button class="btn" onclick="deposit()">Deposit BossX</button>
+        <button class="btn" onclick="withdraw()">Withdraw BossX</button>
+      </div>
+    </div>
+
+    <div class="card">
       <h2>Riwayat Auto-Claim</h2>
       <table>
         <thead>
@@ -170,13 +161,30 @@
         <tbody id="history"></tbody>
       </table>
     </div>
+
+    <div class="card">
+      <h2>Riwayat Transaksi Wallet</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Waktu</th>
+            <th>Jenis</th>
+            <th>Jumlah</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="walletHistory"></tbody>
+      </table>
+    </div>
   </main>
 
-  <div class="footer">©2025 Dashboard BossX • Tampilan glamor & reset saat refresh 💜💖✨</div>
+  <div class="footer">©2025 Dashboard BossX • Simulasi wallet aktif 💼💖</div>
 
   <script>
     let mining = 0;
     let balance = 0;
+    let walletBossX = 0;
+    let walletUSDT = 0;
     const ratePerDetik = 0.000000001;
     let intervalMining;
     let intervalClaim;
@@ -224,6 +232,7 @@
       mining = 0;
       document.getElementById("mining").textContent = "0.000000000 BossX";
       document.getElementById("balance").textContent = balance.toFixed(9) + " BossX";
+      document.getElementById("balance").textContent = balance.toFixed(9) + " BossX";
     }
 
     document.getElementById("onBtn").addEventListener("click", function () {
@@ -246,7 +255,51 @@
       isMiningActive = false;
       document.getElementById("countdown").textContent = "Auto-claim dalam: 60 detik";
     });
-  </script>
 
-</body>
-</html>
+    function updateWalletDisplay() {
+      document.getElementById("walletBossX").textContent = walletBossX.toFixed(9);
+      document.getElementById("walletUSDT").textContent = walletUSDT.toFixed(2);
+    }
+
+    function logWalletTransaction(jenis, jumlah, status) {
+      const waktu = new Date().toLocaleString("id-ID");
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${waktu}</td>
+        <td>${jenis}</td>
+        <td>${jumlah}</td>
+        <td>${status}</td>
+      `;
+      document.getElementById("walletHistory").prepend(row);
+    }
+
+    function deposit() {
+      const amount = parseFloat(document.getElementById("amountInput").value);
+      if (isNaN(amount) || amount <= 0) {
+        alert("Masukkan jumlah yang valid");
+        return;
+      }
+      walletBossX += amount;
+      updateWalletDisplay();
+      logWalletTransaction("Deposit", "+" + amount.toFixed(9) + " BossX", "✅");
+    }
+
+    function withdraw() {
+      const amount = parseFloat(document.getElementById("amountInput").value);
+      if (isNaN(amount) || amount <= 0) {
+        alert("Masukkan jumlah yang valid");
+        return;
+      }
+      if (amount > walletBossX) {
+        alert("Saldo tidak cukup");
+        logWalletTransaction("Withdraw", "-" + amount.toFixed(9) + " BossX", "❌ Gagal");
+        return;
+      }
+      walletBossX -= amount;
+      updateWalletDisplay();
+      logWalletTransaction("Withdraw", "-" + amount.toFixed(9) + " BossX", "✅");
+    }
+
+    // Inisialisasi tampilan awal wallet
+    updateWalletDisplay();
+  </script>
