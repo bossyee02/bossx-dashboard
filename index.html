@@ -19,232 +19,50 @@
 
     h1 {
       font-size: 2.5em;
-      margin-bottom: 20px;
+      margin-bottom: 10px;
     }
 
-    .saldo-box {
+    .profile-box {
       background-color: #312e81;
-      padding: 20px;
+      padding: 20px 30px;
       border-radius: 12px;
-      box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+      box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
       margin-bottom: 20px;
       width: 90%;
-      max-width: 600px;
+      max-width: 500px;
+      text-align: left;
     }
 
-    .saldo-label {
+    .profile-label {
       font-size: 1.2em;
-      margin-bottom: 10px;
+      margin-bottom: 5px;
     }
 
-    .saldo-value {
-      font-size: 1.6em;
-    }
-
-    .btn-container {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 15px;
-      margin-bottom: 20px;
-      justify-content: center;
-    }
-
-    .btn {
-      padding: 10px 20px;
-      font-size: 1em;
-      background-color: #4f46e5;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
-
-    .btn:hover {
-      background-color: #4338ca;
-    }
-
-    .timer {
-      font-size: 1em;
-      margin-bottom: 10px;
-      color: #a5b4fc;
-    }
-
-    table {
-      width: 90%;
-      max-width: 800px;
-      border-collapse: collapse;
-      margin-bottom: 30px;
-    }
-
-    th, td {
-      border: 1px solid #4f46e5;
-      padding: 10px;
-      text-align: center;
-    }
-
-    th {
-      background-color: #4338ca;
-      color: white;
-    }
-
-    td {
-      background-color: #312e81;
-      color: #d1d5ff;
-      font-size: 0.95em;
+    .profile-value {
+      font-size: 1.5em;
+      font-weight: bold;
     }
 
     .footer {
       font-size: 0.9em;
       color: #a5b4fc;
-      margin-bottom: 30px;
+      margin-top: 40px;
     }
   </style>
 </head>
 <body>
   <h1>Dashboard BossX</h1>
 
-  <div class="saldo-box">
-    <div class="saldo-label">Saldo Mining (sementara):</div>
-    <div class="saldo-value" id="mining">0.000000000 BossX</div>
+  <div class="profile-box">
+    <div class="profile-label">👤 Username:</div>
+    <div class="profile-value" id="username">Fery Muliawan</div>
   </div>
 
-  <div class="saldo-box">
-    <div class="saldo-label">Saldo Balance (utama):</div>
-    <div class="saldo-value" id="balance">0.000000000 BossX</div>
+  <div class="profile-box">
+    <div class="profile-label">🪪 Profil ID:</div>
+    <div class="profile-value" id="profile">BX-2025-001</div>
   </div>
 
-  <div class="saldo-box">
-    <div class="saldo-label">Saldo USDT:</div>
-    <div class="saldo-value" id="usdt">0.00 USDT</div>
-  </div>
-
-  <div class="timer" id="countdown">Auto-claim dalam: 60 detik</div>
-
-  <div class="btn-container">
-    <button class="btn" id="onBtn">ON</button>
-    <button class="btn" id="offBtn">OFF</button>
-    <button class="btn" id="depositBtn">DEPOSIT USDT</button>
-    <button class="btn" id="withdrawBtn">WITHDRAWAL USDT</button>
-    <button class="btn" id="depositBossxBtn">DEPOSIT BossX</button>
-    <button class="btn" id="withdrawBossxBtn">WITHDRAWAL BossX</button>
-  </div>
-
-  <table>
-    <thead>
-      <tr>
-        <th>Hari</th>
-        <th>Tanggal</th>
-        <th>Jam</th>
-        <th>Jumlah BossX</th>
-      </tr>
-    </thead>
-    <tbody id="history"></tbody>
-  </table>
-
-  <div class="footer">©2025 Dashboard BossX • Rate: 0.000000001 BossX/detik • Auto-claim tiap 1 menit</div>
-
-  <script>
-    let mining = 0;
-    let balance = 0;
-    let usdt = 0;
-    const ratePerDetik = 0.000000001;
-    let intervalMining;
-    let intervalClaim;
-    let intervalTimer;
-    let countdown = 60;
-    let isMiningActive = false;
-
-    function updateMining() {
-      mining += ratePerDetik;
-      document.getElementById("mining").textContent = mining.toFixed(9) + " BossX";
-    }
-
-    function updateCountdown() {
-      countdown--;
-      document.getElementById("countdown").textContent = "Auto-claim dalam: " + countdown + " detik";
-      if (countdown <= 0) {
-        autoClaim();
-        countdown = 60;
-      }
-    }
-
-    function formatWaktuSekarang() {
-      const now = new Date();
-      const hari = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"][now.getDay()];
-      const tanggal = now.toLocaleDateString("id-ID");
-      const jam = now.toLocaleTimeString("id-ID");
-      return { hari, tanggal, jam };
-    }
-
-    function tambahHistoryAutoClaim(amount) {
-      const waktu = formatWaktuSekarang();
-      const row = document.createElement("tr");
-      row.innerHTML = `
-        <td>${waktu.hari}</td>
-        <td>${waktu.tanggal}</td>
-        <td>${waktu.jam}</td>
-        <td>+${amount.toFixed(9)} BossX</td>
-      `;
-      document.getElementById("history").prepend(row);
-    }
-
-    function autoClaim() {
-      balance += mining;
-      tambahHistoryAutoClaim(mining);
-      mining = 0;
-      document.getElementById("mining").textContent = "0.000000000 BossX";
-      document.getElementById("balance").textContent = balance.toFixed(9) + " BossX";
-    }
-
-    document.getElementById("onBtn").addEventListener("click", function () {
-      if (!isMiningActive) {
-        intervalMining = setInterval(updateMining, 1000);
-        intervalClaim = setInterval(autoClaim, 60000);
-        intervalTimer = setInterval(updateCountdown, 1000);
-        isMiningActive = true;
-      }
-    });
-
-    document.getElementById("offBtn").addEventListener("click", function () {
-      clearInterval(intervalMining);
-      clearInterval(intervalClaim);
-      clearInterval(intervalTimer);
-      intervalMining = null;
-      intervalClaim = null;
-      intervalTimer = null;
-      countdown = 60;
-      isMiningActive = false;
-      document.getElementById("countdown").textContent = "Auto-claim dalam: 60 detik";
-    });
-
-    document.getElementById("depositBtn").addEventListener("click", function () {
-      usdt += 10;
-      document.getElementById("usdt").textContent = usdt.toFixed(2) + " USDT";
-    });
-
-    document.getElementById("withdrawBtn").addEventListener("click", function () {
-      if (usdt >= 5) {
-        usdt -= 5;
-        document.getElementById("usdt").textContent = usdt.toFixed(2) + " USDT";
-      } else {
-        alert("Saldo USDT tidak cukup untuk withdrawal.");
-      }
-    });
-
-    document.getElementById("depositBossxBtn").addEventListener("click", function () {
-      balance += 100;
-      document.getElementById("balance").textContent = balance.toFixed(9) + " BossX";
-    });
-
-    document.getElementById("withdrawBossxBtn").addEventListener("click", function () {
-      if (balance >= 50) {
-        balance -= 50;
-        document.getElementById("balance").textContent = balance.toFixed(9) + " BossX";
-      } else {
-        alert("Saldo BossX tidak cukup untuk withdrawal.");
-      }
-    });
-  </script>
+  <div class="footer">©2025 Dashboard BossX • Versi Awal</div>
 </body>
 </html>
