@@ -15,9 +15,7 @@
     header {
       background-color: rgba(0,0,0,0.3);
       padding: 20px 40px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      display: flex; justify-content: space-between; align-items: center;
       border-bottom: 2px solid #FFD700;
       box-shadow: 0 2px 5px rgba(0,0,0,0.3);
     }
@@ -38,30 +36,18 @@
       margin-bottom: 20px;
     }
     .card h2 {
-      margin-top: 0;
-      font-size: 1.4em;
-      color: #FFD700;
+      margin-top: 0; font-size: 1.4em; color: #FFD700;
     }
     .saldo-value {
-      font-size: 1.6em;
-      font-weight: bold;
-      margin-top: 10px;
-      color: #FFD700;
+      font-size: 1.6em; font-weight: bold; margin-top: 10px; color: #FFD700;
     }
     .btn-container {
-      display: flex;
-      gap: 15px;
-      margin-top: 20px;
-      flex-wrap: wrap;
+      display: flex; gap: 15px; margin-top: 20px; flex-wrap: wrap;
     }
     .btn {
-      padding: 10px 20px;
-      font-size: 1em;
-      background-color: #FFD700;
-      color: #6a0dad;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
+      padding: 10px 20px; font-size: 1em;
+      background-color: #FFD700; color: #6a0dad;
+      border: none; border-radius: 8px; cursor: pointer;
       transition: background-color 0.3s, box-shadow 0.3s;
     }
     .btn:hover {
@@ -69,45 +55,32 @@
       box-shadow: 0 0 10px #FFD700;
     }
     .timer {
-      font-size: 1em;
-      margin-top: 10px;
-      color: #FFD700;
+      font-size: 1em; margin-top: 10px; color: #FFD700;
     }
     input[type="number"] {
-      padding: 10px;
-      border-radius: 8px;
-      border: none;
-      width: 200px;
-      margin-top: 10px;
+      padding: 10px; border-radius: 8px; border: none;
+      width: 200px; margin-top: 10px;
     }
     table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 10px;
+      width: 100%; border-collapse: collapse; margin-top: 10px;
     }
     th, td {
-      border: 1px solid #FFD700;
-      padding: 10px;
-      text-align: center;
+      border: 1px solid #FFD700; padding: 10px; text-align: center;
     }
     th {
-      background-color: #FFD700;
-      color: #6a0dad;
+      background-color: #FFD700; color: #6a0dad;
     }
     td {
       background-color: rgba(255,255,255,0.1);
-      color: #FFD700;
-      font-size: 0.95em;
+      color: #FFD700; font-size: 0.95em;
     }
     .footer {
-      text-align: center;
-      padding: 20px;
-      font-size: 0.9em;
-      color: #FFD700;
+      text-align: center; padding: 20px; font-size: 0.9em; color: #FFD700;
     }
   </style>
 </head>
 <body>
+
   <header>
     <div class="logo-title">
       <h1>Dashboard BossX</h1>
@@ -141,10 +114,10 @@
       <h2>Simulasi Wallet</h2>
       <div class="saldo-value">BossX: <span id="walletBossX">0.000000000</span></div>
       
-      <!-- Deposit BossX -->
+      <!-- Aktivasi Masternode -->
       <input type="number" id="amountInput" placeholder="Masukkan jumlah BossX" />
       <div class="btn-container">
-        <button class="btn" onclick="deposit()">Deposit BossX</button>
+        <button class="btn" onclick="aktivkanMasternode()">Aktivkan Masternode</button>
       </div>
     </div>
 
@@ -193,17 +166,20 @@
     let countdown = 60;
     let isMiningActive = false;
 
+    // Update masternode mining display
     function updateMining() {
       mining += ratePerDetik;
       document.getElementById("mining").textContent = mining.toFixed(9) + " BossX";
     }
 
+    // Update countdown display
     function updateCountdown() {
       countdown--;
       document.getElementById("countdown").textContent = "Auto-claim dalam: " + countdown + " detik";
       if (countdown <= 0) countdown = 60;
     }
 
+    // Format tanggal & waktu
     function formatWaktuSekarang() {
       const now = new Date();
       const hari = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"][now.getDay()];
@@ -214,6 +190,7 @@
       };
     }
 
+    // Tambah riwayat auto-claim
     function tambahHistoryAutoClaim(amount) {
       const w = formatWaktuSekarang();
       const row = document.createElement("tr");
@@ -227,6 +204,7 @@
       document.getElementById("history").prepend(row);
     }
 
+    // Auto-claim logic
     function autoClaim() {
       balance += mining;
       tambahHistoryAutoClaim(mining);
@@ -235,11 +213,8 @@
       document.getElementById("balance").textContent = balance.toFixed(9) + " BossX";
     }
 
+    // ON/OFF masternode
     document.getElementById("onBtn").addEventListener("click", function() {
-      if (walletBossX <= 0) {
-        alert("Deposit BossX dulu sebelum menjalankan masternode.");
-        return;
-      }
       if (!isMiningActive) {
         intervalMining = setInterval(updateMining, 1000);
         intervalClaim  = setInterval(autoClaim, 60000);
@@ -247,7 +222,6 @@
         isMiningActive = true;
       }
     });
-
     document.getElementById("offBtn").addEventListener("click", function() {
       clearInterval(intervalMining);
       clearInterval(intervalClaim);
@@ -257,10 +231,12 @@
       document.getElementById("countdown").textContent = "Auto-claim dalam: 60 detik";
     });
 
+    // Tampilkan saldo BossX di wallet
     function updateWalletDisplay() {
       document.getElementById("walletBossX").textContent = walletBossX.toFixed(9);
     }
 
+    // Catat transaksi wallet
     function logWalletTransaction(jenis, jumlah, status) {
       const waktu = new Date().toLocaleString("id-ID");
       const row = document.createElement("tr");
@@ -268,18 +244,21 @@
       document.getElementById("walletHistory").prepend(row);
     }
 
-    function deposit() {
+    // Fungsi aktivasi masternode via input BossX
+    function aktivkanMasternode() {
       const amt = parseFloat(document.getElementById("amountInput").value);
       if (isNaN(amt) || amt <= 0) {
-        alert("Masukkan jumlah BossX yang valid");
+        alert("Masukkan jumlah investasi BossX yang valid");
         return;
       }
       walletBossX += amt;
       updateWalletDisplay();
-      logWalletTransaction("Deposit BossX", "+" + amt.toFixed(9) + " BossX", "✅");
+      logWalletTransaction("Aktivasi Masternode", "+" + amt.toFixed(9) + " BossX", "✅");
+      // Jalankan masternode langsung
+      document.getElementById("onBtn").click();
     }
 
-    // Inisialisasi tampilan awal wallet
+    // Reset dan inisialisasi
     updateWalletDisplay();
   </script>
 </body>
