@@ -1,1 +1,36 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BossX Dashboard</title>
+  <style>
+    body {
+      background-color: #1e1b4b;
+      color: white;
+      font-family: sans-serif;
+      text-align: center;
+      padding-top: 50px;
+    }
+    .saldo {
+      font-size: 2em;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Dashboard BossX</h1>
+  <div class="saldo" id="saldo">Saldo: 0 BX</div>
+
+  <script>
+    let saldo = 0;
+    const ratePerDetik = 0.000044; // contoh rate
+
+    setInterval(() => {
+      saldo += ratePerDetik;
+      document.getElementById("saldo").textContent = "Saldo: " + saldo.toFixed(6) + " BX";
+    }, 1000);
+  </script>
+</body>
+</html>
 
