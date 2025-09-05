@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Dashboard BossX</title>
+  <title>Public Dashboard BossX</title>
   <style>
     * { box-sizing: border-box; }
     body {
@@ -21,17 +21,23 @@
       border-bottom: 2px solid #FFD700;
       box-shadow: 0 2px 5px rgba(0,0,0,0.3);
     }
-    .logo-title h1 { font-size: 1.8em; margin: 0; }
-    .user-info { text-align: right; }
-    .user-info div { font-size: 1em; margin: 2px 0; }
+    .logo-title h1 {
+      font-size: 1.8em;
+      margin: 0;
+    }
+    .user-info {
+      text-align: right;
+    }
+    .user-info div {
+      font-size: 1em;
+      margin: 2px 0;
+    }
 
     main {
       padding: 30px 20px;
       max-width: 1200px;
       margin: auto;
     }
-
-    /* wrapper dua kolom */
     .main-container {
       display: flex;
       gap: 20px;
@@ -49,7 +55,6 @@
       flex-direction: column;
       gap: 20px;
     }
-
     .card {
       background-color: rgba(0,0,0,0.3);
       padding: 20px;
@@ -129,7 +134,9 @@
 </head>
 <body>
   <header>
-    <div class="logo-title"><h1>Dashboard BossX</h1></div>
+    <div class="logo-title">
+      <h1>Public Dashboard BossX</h1>
+    </div>
     <div class="user-info">
       <div>👤 Username: <strong>boss</strong></div>
       <div>🪪 Profil ID: <strong>805</strong></div>
@@ -138,7 +145,7 @@
 
   <main>
     <div class="main-container">
-      <!-- Kolom Kiri -->
+      <!-- Kolom Kiri: Kontrol & Simulasi -->
       <div class="left-column">
         <div class="card">
           <h2>Masternodes Running</h2>
@@ -150,30 +157,34 @@
         </div>
 
         <div class="card">
-          <h2>Saldo Balance (utama)</h2>
+          <h2>Reward Masternode</h2>
           <div class="saldo-value" id="balance">0.000000000 BossX</div>
           <div class="timer" id="countdown">Auto-claim dalam: 60 detik</div>
         </div>
 
         <div class="card">
           <h2>Simulasi Wallet</h2>
-          <div class="saldo-value">BossX: <span id="walletBossX">0.000000000</span></div>
-          
+          <div class="saldo-value">
+            BossX: <span id="walletBossX">0.000000000</span>
+          </div>
           <input type="number" id="amountInput" placeholder="Masukkan jumlah BossX" />
           <div class="btn-container">
-            <button class="btn" onclick="aktivkanMasternode()">Aktivkan Masternode</button>
+            <button class="btn" onclick="aktivkanMasternode()">
+              Aktivkan Masternode
+            </button>
           </div>
         </div>
       </div>
 
-      <!-- Kolom Kanan: Tabel Riwayat -->
+      <!-- Kolom Kanan: Riwayat -->
       <div class="right-column">
         <div class="card">
           <h2>Riwayat Auto-Claim</h2>
           <table>
             <thead>
               <tr>
-                <th>Hari</th><th>Tanggal</th><th>Jam</th><th>Jumlah BossX</th><th>Auto-Claim</th>
+                <th>Hari</th><th>Tanggal</th><th>Jam</th>
+                <th>Jumlah BossX</th><th>Auto-Claim</th>
               </tr>
             </thead>
             <tbody id="history"></tbody>
@@ -195,7 +206,9 @@
     </div>
   </main>
 
-  <div class="footer">©2025 Dashboard BossX • Layout dua kolom untuk riwayat 💼✨</div>
+  <div class="footer">
+    ©2025 Public Dashboard BossX • Terbuka untuk umum 💼✨
+  </div>
 
   <script>
     let mining = 0;
@@ -210,72 +223,103 @@
       mining += ratePerDetik;
       document.getElementById("mining").textContent = mining.toFixed(9) + " BossX";
     }
+
     function updateCountdown() {
       countdown--;
-      document.getElementById("countdown").textContent = "Auto-claim dalam: " + countdown + " detik";
+      document.getElementById("countdown").textContent =
+        "Auto-claim dalam: " + countdown + " detik";
       if (countdown <= 0) countdown = 60;
     }
+
     function formatWaktuSekarang() {
       const now = new Date();
-      const hari = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"][now.getDay()];
+      const hari = [
+        "Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"
+      ][now.getDay()];
       return {
         hari,
         tanggal: now.toLocaleDateString("id-ID"),
         jam: now.toLocaleTimeString("id-ID")
       };
     }
+
     function tambahHistoryAutoClaim(amount) {
       const w = formatWaktuSekarang();
       const row = document.createElement("tr");
       row.innerHTML = `
-        <td>${w.hari}</td><td>${w.tanggal}</td><td>${w.jam}</td>
-        <td>+${amount.toFixed(9)} BossX</td><td>✅</td>
+        <td>${w.hari}</td>
+        <td>${w.tanggal}</td>
+        <td>${w.jam}</td>
+        <td>+${amount.toFixed(9)} BossX</td>
+        <td>✅</td>
       `;
       document.getElementById("history").prepend(row);
     }
+
     function autoClaim() {
       balance += mining;
       tambahHistoryAutoClaim(mining);
       mining = 0;
       document.getElementById("mining").textContent = "0.000000000 BossX";
-      document.getElementById("balance").textContent = balance.toFixed(9) + " BossX";
+      document.getElementById("balance").textContent =
+        balance.toFixed(9) + " BossX";
     }
+
     document.getElementById("onBtn").addEventListener("click", function() {
       if (!isMiningActive) {
         intervalMining = setInterval(updateMining, 1000);
-        intervalClaim  = setInterval(autoClaim, 60000);
-        intervalTimer  = setInterval(updateCountdown, 1000);
+        intervalClaim = setInterval(autoClaim, 60000);
+        intervalTimer = setInterval(updateCountdown, 1000);
         isMiningActive = true;
       }
     });
+
     document.getElementById("offBtn").addEventListener("click", function() {
       clearInterval(intervalMining);
       clearInterval(intervalClaim);
       clearInterval(intervalTimer);
-      countdown = 60; isMiningActive = false;
-      document.getElementById("countdown").textContent = "Auto-claim dalam: 60 detik";
+      countdown = 60;
+      isMiningActive = false;
+      document.getElementById("countdown").textContent =
+        "Auto-claim dalam: 60 detik";
     });
+
     function updateWalletDisplay() {
-      document.getElementById("walletBossX").textContent = walletBossX.toFixed(9);
+      document.getElementById("walletBossX").textContent =
+        walletBossX.toFixed(9);
     }
+
     function logWalletTransaction(jenis, jumlah, status) {
       const waktu = new Date().toLocaleString("id-ID");
       const row = document.createElement("tr");
-      row.innerHTML = `<td>${waktu}</td><td>${jenis}</td><td>${jumlah}</td><td>${status}</td>`;
+      row.innerHTML = `
+        <td>${waktu}</td>
+        <td>${jenis}</td>
+        <td>${jumlah}</td>
+        <td>${status}</td>
+      `;
       document.getElementById("walletHistory").prepend(row);
     }
+
     function aktivkanMasternode() {
-      const amt = parseFloat(document.getElementById("amountInput").value);
+      const amt = parseFloat(
+        document.getElementById("amountInput").value
+      );
       if (isNaN(amt) || amt <= 0) {
         alert("Masukkan jumlah investasi BossX yang valid");
         return;
       }
       walletBossX += amt;
       updateWalletDisplay();
-      logWalletTransaction("Aktivasi Masternode", "+" + amt.toFixed(9) + " BossX", "✅");
+      logWalletTransaction(
+        "Aktivasi Masternode",
+        "+" + amt.toFixed(9) + " BossX",
+        "✅"
+      );
       document.getElementById("onBtn").click();
     }
-    // Inisialisasi
+
+    // Inisialisasi tampilan awal
     updateWalletDisplay();
   </script>
 </body>
