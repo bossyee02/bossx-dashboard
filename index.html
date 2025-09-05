@@ -5,64 +5,94 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dashboard BossX</title>
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
-      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
       background-color: #1e1b4b;
       color: #ffffff;
-      font-family: 'Segoe UI', sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding-top: 30px;
     }
 
-    h1 {
-      font-size: 2.5em;
-      margin-bottom: 10px;
-    }
-
-    .profile-box {
+    header {
       background-color: #312e81;
-      padding: 20px 30px;
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    header h1 {
+      font-size: 1.8em;
+      margin: 0;
+    }
+
+    .user-info {
+      text-align: right;
+    }
+
+    .user-info div {
+      font-size: 1em;
+      margin: 2px 0;
+    }
+
+    main {
+      padding: 30px 20px;
+      max-width: 800px;
+      margin: auto;
+    }
+
+    .card {
+      background-color: #312e81;
+      padding: 20px;
       border-radius: 12px;
-      box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+      box-shadow: 0 0 10px rgba(255,255,255,0.1);
       margin-bottom: 20px;
-      width: 90%;
-      max-width: 500px;
-      text-align: left;
     }
 
-    .profile-label {
-      font-size: 1.2em;
-      margin-bottom: 5px;
-    }
-
-    .profile-value {
-      font-size: 1.5em;
-      font-weight: bold;
+    .card h2 {
+      margin-top: 0;
+      font-size: 1.4em;
     }
 
     .footer {
+      text-align: center;
+      padding: 20px;
       font-size: 0.9em;
       color: #a5b4fc;
-      margin-top: 40px;
     }
   </style>
 </head>
 <body>
-  <h1>Dashboard BossX</h1>
 
-  <div class="profile-box">
-    <div class="profile-label">👤 Username:</div>
-    <div class="profile-value" id="username">boss</div>
-  </div>
+  <header>
+    <h1>Dashboard BossX</h1>
+    <div class="user-info">
+      <div>👤 Username: <strong>boss</strong></div>
+      <div>🪪 Profil ID: <strong>805</strong></div>
+    </div>
+  </header>
 
-  <div class="profile-box">
-    <div class="profile-label">🪪 Profil ID:</div>
-    <div class="profile-value" id="profile">805</div>
-  </div>
+  <main>
+    <div class="card">
+      <h2>Selamat datang di dashboard Anda</h2>
+      <p>Di sini Anda bisa melihat saldo, riwayat transaksi, dan mengelola aset BossX Anda.</p>
+    </div>
 
-  <div class="footer">©2025 Dashboard BossX • Versi Awal</div>
+    <div class="card">
+      <h2>Langkah Selanjutnya</h2>
+      <ul>
+        <li>✅ Tambahkan saldo mining & balance</li>
+        <li>✅ Buat tombol ON/OFF untuk kontrol mining</li>
+        <li>✅ Tambahkan riwayat auto-claim</li>
+      </ul>
+    </div>
+  </main>
+
+  <div class="footer">©2025 Dashboard BossX • Dibuat dengan semangat 💪</div>
+
 </body>
 </html>
