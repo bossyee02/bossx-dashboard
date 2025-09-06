@@ -15,84 +15,127 @@
     header {
       background-color: rgba(0,0,0,0.3);
       padding: 20px 40px;
-      display: flex; justify-content: space-between; align-items: center;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       border-bottom: 2px solid #FFD700;
     }
     .logo-title {
-      display: flex; align-items: center;
+      display: flex;
+      align-items: center;
     }
     .logo-title img {
-      height: 40px; margin-right: 12px;
+      height: 40px;
+      margin-right: 12px;
     }
     .logo-title h1 {
-      margin: 0; font-size: 1.8em;
+      margin: 0;
+      font-size: 1.8em;
     }
     .user-info { text-align: right; }
     .user-info div { margin: 2px 0; font-size: 1em; }
 
     main {
-      padding: 30px 20px; max-width: 1200px; margin: auto;
+      padding: 30px 20px;
+      max-width: 1200px;
+      margin: auto;
     }
     .main-container {
-      display: flex; gap: 20px; flex-wrap: wrap;
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
     }
     .left-column {
-      flex: 1; display: flex; flex-direction: column; gap: 20px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
     }
     .right-column {
-      flex: 2; display: flex; flex-direction: column; gap: 20px;
+      flex: 2;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
     }
 
     .card {
       background-color: rgba(0,0,0,0.3);
-      padding: 20px; border-radius: 12px;
+      padding: 20px;
+      border-radius: 12px;
       border: 1px solid #FFD700;
     }
     .card h2 {
-      margin-top: 0; font-size: 1.4em; color: #FFD700;
+      margin-top: 0;
+      font-size: 1.4em;
+      color: #FFD700;
     }
     .saldo-value {
-      margin-top: 10px; font-size: 1.6em; font-weight: bold;
+      margin-top: 10px;
+      font-size: 1.6em;
+      font-weight: bold;
       color: #FFD700;
     }
     .timer {
-      margin-top: 10px; font-size: 1em; color: #FFD700;
+      margin-top: 10px;
+      font-size: 1em;
+      color: #FFD700;
     }
     .btn-container {
-      display: flex; gap: 15px; margin-top: 20px; flex-wrap: wrap;
+      display: flex;
+      gap: 15px;
+      margin-top: 20px;
+      flex-wrap: wrap;
     }
     .btn {
-      padding: 10px 20px; font-size: 1em;
-      background-color: #FFD700; color: #6a0dad;
-      border: none; border-radius: 8px; cursor: pointer;
+      padding: 10px 20px;
+      font-size: 1em;
+      background-color: #FFD700;
+      color: #6a0dad;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
       transition: background-color 0.3s, box-shadow 0.3s;
     }
     .btn:hover {
-      background-color: #ffec8b; box-shadow: 0 0 10px #FFD700;
+      background-color: #ffec8b;
+      box-shadow: 0 0 10px #FFD700;
     }
     .btn:disabled {
-      background-color: #333; color: #888; cursor: not-allowed;
+      background-color: #333;
+      color: #888;
+      cursor: not-allowed;
       box-shadow: none;
     }
     input[type="number"] {
-      margin-top: 10px; padding: 10px; width: 200px;
-      border: none; border-radius: 8px;
+      margin-top: 10px;
+      padding: 10px;
+      width: 200px;
+      border: none;
+      border-radius: 8px;
     }
     table {
-      width: 100%; border-collapse: collapse; margin-top: 10px;
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
     }
     th, td {
-      border: 1px solid #FFD700; padding: 10px; text-align: center;
+      border: 1px solid #FFD700;
+      padding: 10px;
+      text-align: center;
     }
     th {
-      background-color: #FFD700; color: #6a0dad;
+      background-color: #FFD700;
+      color: #6a0dad;
     }
     td {
       background-color: rgba(255,255,255,0.1);
-      color: #FFD700; font-size: 0.95em;
+      color: #FFD700;
+      font-size: 0.95em;
     }
     .footer {
-      text-align: center; padding: 20px; font-size: 0.9em;
+      text-align: center;
+      padding: 20px;
+      font-size: 0.9em;
       color: #FFD700;
     }
   </style>
@@ -117,7 +160,9 @@
         <div class="card">
           <h2>Validasi Masternode</h2>
           <div class="saldo-value" id="mining">0.000000000 BossX</div>
-          <div class="timer" id="stopCountdown">Belum berjalan</div>
+          <div class="timer" id="stopCountdown">
+            Stop validasi setiap hari jam 06:00 dalam: Belum berjalan
+          </div>
           <div class="btn-container">
             <button class="btn" id="onBtn">ON</button>
           </div>
@@ -146,33 +191,40 @@
         </div>
       </div>
 
-      <!-- Kolom Kanan: Riwayat -->
+      <!-- Kolom Kanan: Histories -->
       <div class="right-column">
         <div class="card">
-          <h2>Riwayat Auto-Claim</h2>
+          <h2>History</h2>
           <table>
             <thead>
-              <tr><th>Hari</th><th>Tanggal</th><th>Jam</th><th>Jumlah BossX</th><th>Auto-Claim</th></tr>
+              <tr>
+                <th>Hari</th><th>Tanggal</th><th>Jam</th>
+                <th>Jumlah BossX</th><th>Auto-Claim</th>
+              </tr>
             </thead>
             <tbody id="history"></tbody>
           </table>
         </div>
 
         <div class="card">
-          <h2>Riwayat Transaksi Wallet</h2>
+          <h2>History Aktivasi</h2>
           <table>
             <thead>
-              <tr><th>Waktu</th><th>Jenis</th><th>Jumlah</th><th>Status</th></tr>
+              <tr>
+                <th>Waktu</th><th>Jenis</th><th>Jumlah</th><th>Status</th>
+              </tr>
             </thead>
             <tbody id="walletHistory"></tbody>
           </table>
         </div>
 
         <div class="card">
-          <h2>Riwayat Convert</h2>
+          <h2>History Convert</h2>
           <table>
             <thead>
-              <tr><th>Waktu</th><th>Jumlah BossX</th><th>Jumlah USDT</th><th>Status</th></tr>
+              <tr>
+                <th>Waktu</th><th>Jumlah BossX</th><th>Jumlah USDT</th><th>Status</th>
+              </tr>
             </thead>
             <tbody id="convertHistory"></tbody>
           </table>
@@ -194,23 +246,23 @@
         stopCountdown = 0,
         countdown = 60;
 
-    const monthlyYieldRate = 0.10;        // 10%
-    const contractSeconds  = 31 * 24 * 60 * 60; // 2 678 400 detik
-    const bossXtoUSDT      = 1;           // 1 BossX = 1 USDT
+    const monthlyYieldRate = 0.10;               // 10%
+    const contractSeconds  = 31 * 24 * 60 * 60;  // 2.678.400 detik
+    const bossXtoUSDT      = 1;                  // 1 BossX = 1 USDT
 
     // DOM references
-    const onBtn       = document.getElementById("onBtn");
-    const miningLabel = document.getElementById("mining");
-    const stopLabel   = document.getElementById("stopCountdown");
-    const countdownLabel  = document.getElementById("countdown");
-    const balanceLabel    = document.getElementById("balance");
-    const walletLabel     = document.getElementById("walletBossX");
-    const amountInput     = document.getElementById("amountInput");
-    const historyBody     = document.getElementById("history");
-    const walletHistory   = document.getElementById("walletHistory");
-    const convertHistory  = document.getElementById("convertHistory");
-    const buyBtn          = document.getElementById("buyBtn");
-    const convertBtn      = document.getElementById("convertBtn");
+    const onBtn        = document.getElementById("onBtn");
+    const miningLabel  = document.getElementById("mining");
+    const stopLabel    = document.getElementById("stopCountdown");
+    const countdownLabel = document.getElementById("countdown");
+    const balanceLabel   = document.getElementById("balance");
+    const walletLabel    = document.getElementById("walletBossX");
+    const amountInput    = document.getElementById("amountInput");
+    const historyBody    = document.getElementById("history");
+    const walletHistory  = document.getElementById("walletHistory");
+    const convertHistory = document.getElementById("convertHistory");
+    const buyBtn         = document.getElementById("buyBtn");
+    const convertBtn     = document.getElementById("convertBtn");
 
     // Helpers
     function formatTime(sec) {
@@ -220,20 +272,16 @@
       return `${h}:${m}:${s}`;
     }
 
-    function formatNow() {
+    // Logging
+    function logAutoClaim(amount) {
+      if (amount <= 0) return;
       const now = new Date();
       const days = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
-      return {
+      const w = {
         hari: days[now.getDay()],
         tanggal: now.toLocaleDateString("id-ID"),
         jam: now.toLocaleTimeString("id-ID")
       };
-    }
-
-    // Logging
-    function logAutoClaim(amount) {
-      if (amount <= 0) return;
-      const w = formatNow();
       const row = document.createElement("tr");
       row.innerHTML = `
         <td>${w.hari}</td>
@@ -256,7 +304,8 @@
     function updateStopCountdown() {
       if (stopCountdown > 0) {
         stopCountdown--;
-        stopLabel.textContent = "Berhenti otomatis dalam: " + formatTime(stopCountdown);
+        stopLabel.textContent =
+          "Stop validasi setiap hari jam 06:00 dalam: " + formatTime(stopCountdown);
       } else {
         clearInterval(intervalStop);
         clearInterval(intervalMining);
@@ -295,10 +344,10 @@
       onBtn.disabled = true;
       stopCountdown = contractSeconds;
       countdown     = 60;
-      stopLabel.textContent = "Berhenti otomatis dalam: " + formatTime(stopCountdown);
-
-      intervalMining    = setInterval(updateMining,    1000);
-      intervalClaim     = setInterval(autoClaim,      60000);
+      stopLabel.textContent =
+        "Stop validasi setiap hari jam 06:00 dalam: " + formatTime(stopCountdown);
+      intervalMining    = setInterval(updateMining, 1000);
+      intervalClaim     = setInterval(autoClaim, 60000);
       intervalCountdown = setInterval(updateCountdown, 1000);
       intervalStop      = setInterval(updateStopCountdown, 1000);
     });
@@ -316,10 +365,8 @@
       walletBossX += amt;
       walletLabel.textContent = walletBossX + " BossX";
       logTx("Aktivasi Paket", "+" + amt + " BossX", walletHistory);
-
-      // hitung reward per detik
       rewardPerSecond = (amt * monthlyYieldRate) / contractSeconds;
-      hasPackage     = true;
+      hasPackage      = true;
       buyBtn.disabled = true;
     });
 
@@ -329,13 +376,18 @@
         return;
       }
       const usdt = balance * bossXtoUSDT;
-      logTx("Convert Reward", balance.toFixed(9) + " BossX → " + usdt.toFixed(9) + " USDT", convertHistory);
+      logTx(
+        "Convert Reward",
+        balance.toFixed(9) + " BossX → " + usdt.toFixed(9) + " USDT",
+        convertHistory
+      );
       balance = 0;
       balanceLabel.textContent = "0.000000000 BossX";
     });
 
     // Inisialisasi tampilan
-    stopLabel.textContent      = "Belum berjalan";
+    stopLabel.textContent      =
+      "Stop validasi setiap hari jam 06:00 dalam: Belum berjalan";
     countdownLabel.textContent = "Auto-claim dalam: 60 detik";
     walletLabel.textContent    = walletBossX + " BossX";
   </script>
