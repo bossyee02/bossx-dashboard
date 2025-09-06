@@ -21,8 +21,14 @@
       border-bottom: 2px solid #FFD700;
     }
     .logo-title { display: flex; align-items: center; }
-    .logo-title img { height: 40px; margin-right: 12px; }
-    .logo-title h1 { margin: 0; font-size: 1.8em; }
+    .logo-title img {
+      height: 60px;      /* diperbesar dari 40px menjadi 60px */
+      margin-right: 16px;
+    }
+    .logo-title h1 {
+      margin: 0;
+      font-size: 1.8em;
+    }
     .user-info { text-align: right; }
     .user-info div { margin: 2px 0; font-size: 1em; }
 
@@ -148,7 +154,7 @@
       <h1>Public Dashboard BossX</h1>
     </div>
     <div class="user-info">
-      <div>👤 Username: <strong>Fery M</strong></div>
+      <div>👤 Username: <strong>boss</strong></div>
       <div>🪪 Validator ID: <strong>805</strong></div>
     </div>
   </header>
@@ -180,7 +186,7 @@
         <div class="card">
           <h2>Paket Node</h2>
           <div class="saldo-value"><span id="walletBossX">0</span> BossX</div>
-          <input type="number" id="amountInput" placeholder="Minimal 50"/>
+          <input type="number" id="amountInput" placeholder="Minimal 50 BossX"/>
           <div class="btn-container">
             <button class="btn" id="buyBtn">Aktivasi Paket</button>
           </div>
@@ -311,7 +317,7 @@
     function updateStopCountdown() {
       if (stopCountdown > 0) {
         stopCountdown--;
-        stopLabel.textContent = 
+        stopLabel.textContent =
           "Stop validasi setiap hari jam 06:00 dalam: " + formatTime(stopCountdown);
       } else {
         clearInterval(intervalMining);
@@ -352,7 +358,8 @@
       onBtn.classList.add("active");
       stopCountdown = getSecondsToNext6AM();
       countdown = 60;
-      stopLabel.textContent = "Stop validasi setiap hari jam 06:00 dalam: " + formatTime(stopCountdown);
+      stopLabel.textContent =
+        "Stop validasi setiap hari jam 06:00 dalam: " + formatTime(stopCountdown);
       intervalMining    = setInterval(updateMining,    1000);
       intervalClaim     = setInterval(autoClaim,       60000);
       intervalCountdown = setInterval(updateCountdown,  1000);
