@@ -25,7 +25,7 @@
       align-items: center;
     }
     .logo-title img {
-      height: 80px;      /* ukuran logo diperbesar */
+      height: 80px;
       margin-right: 20px;
     }
     .logo-title h1 {
@@ -55,12 +55,8 @@
       flex-direction: column;
       gap: 20px;
     }
-    .left-column {
-      flex: 1;
-    }
-    .right-column {
-      flex: 2;
-    }
+    .left-column { flex: 1; }
+    .right-column { flex: 2; }
 
     .card {
       background-color: rgba(0,0,0,0.3);
@@ -198,9 +194,7 @@
           </div>
           <div class="btn-container">
             <button class="power-btn" id="onBtn" aria-label="Power">
-              <svg viewBox="0 0 24 24">
-                <path d="M12 2v10M5.636 5.636a8 8 0 1 0 11.314 0"/>
-              </svg>
+              <svg viewBox="0 0 24 24"><path d="M12 2v10M5.636 5.636a8 8 0 1 0 11.314 0"/></svg>
             </button>
           </div>
         </div>
@@ -217,7 +211,7 @@
         <div class="card">
           <h2>Paket Node</h2>
           <div class="saldo-value"><span id="walletBossX">0</span> BossX</div>
-          <input type="number" id="amountInput" placeholder="Minimal 50 BossX"/>
+          <input type="number" id="amountInput" placeholder="Minimal 50"/>
           <div class="btn-container">
             <button class="btn" id="buyBtn">Aktivasi Paket</button>
           </div>
@@ -236,11 +230,7 @@
           <table>
             <thead>
               <tr>
-                <th>Hari</th>
-                <th>Tanggal</th>
-                <th>Jam</th>
-                <th>Jumlah BossX</th>
-                <th>Auto-Claim</th>
+                <th>Hari</th><th>Tanggal</th><th>Jam</th><th>Jumlah BossX</th><th>Auto-Claim</th>
               </tr>
             </thead>
             <tbody id="history"></tbody>
@@ -253,8 +243,8 @@
             <thead>
               <tr>
                 <th>Waktu</th>
-                <th>Jenis</th>
                 <th>Jumlah</th>
+                <th>Jenis</th>
                 <th>Status</th>
               </tr>
             </thead>
@@ -267,10 +257,7 @@
           <table>
             <thead>
               <tr>
-                <th>Waktu</th>
-                <th>Jumlah BossX</th>
-                <th>Jumlah USDT</th>
-                <th>Status</th>
+                <th>Waktu</th><th>Jumlah BossX</th><th>Jumlah USDT</th><th>Status</th>
               </tr>
             </thead>
             <tbody id="convertHistory"></tbody>
@@ -280,9 +267,7 @@
     </div>
   </main>
 
-  <div class="footer">
-    ©2025 Dashboard BossX • Terbuka untuk umum 💼✨
-  </div>
+  <div class="footer">©2025 Dashboard BossX • Terbuka untuk umum 💼✨</div>
 
   <script>
     let mining = 0,
@@ -331,8 +316,7 @@
     }
 
     function getSecondsToNext6AM() {
-      const now = new Date();
-      const target = new Date(now);
+      const now = new Date(), target = new Date(now);
       target.setHours(6,0,0,0);
       if (now >= target) target.setDate(target.getDate() + 1);
       return Math.floor((target - now) / 1000);
@@ -356,10 +340,15 @@
       historyBody.prepend(row);
     }
 
-    function logTx(type, amt, container) {
+    function logTx(jenis, jumlah, container) {
       const time = new Date().toLocaleString("id-ID");
-      const row = document.createElement("tr");
-      row.innerHTML = `<td>${time}</td><td>${type}</td><td(${amt}</td><td>✅</td>`;
+      const row  = document.createElement("tr");
+      row.innerHTML = `
+        <td>${time}</td>
+        <td>${jumlah}</td>
+        <td>${jenis}</td>
+        <td>Aktif</td>
+      `;
       container.prepend(row);
     }
 
@@ -416,12 +405,14 @@
     });
 
     buyBtn.addEventListener("click", () => {
-      if (hasPackage) return alert("Paket hanya dapat diaktifkan sekali.");
       const amt = parseInt(amountInput.value, 10);
       if (isNaN(amt) || amt < 50) return alert("Minimal paket adalah 50 BossX.");
+      if (hasPackage) return alert("Paket hanya dapat diaktifkan sekali.");
+
+      logTx("Aktivasi Paket", amt + " BossX", walletHistory);
+
       walletBossX += amt;
       walletLabel.textContent = walletBossX + " BossX";
-      logTx("Aktivasi Paket", "+" + amt + " BossX", walletHistory);
       rewardPerSecond = (amt * monthlyYieldRate) / contractSeconds;
       hasPackage = true;
       buyBtn.disabled = true;
