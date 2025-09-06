@@ -23,10 +23,18 @@
     .user-info { text-align: right; }
     .user-info div { margin: 2px 0; font-size: 1em; }
 
-    main { padding: 30px 20px; max-width: 1200px; margin: auto; }
-    .main-container { display: flex; gap: 20px; flex-wrap: wrap; }
-    .left-column { flex: 1; display: flex; flex-direction: column; gap: 20px; }
-    .right-column { flex: 2; display: flex; flex-direction: column; gap: 20px; }
+    main {
+      padding: 30px 20px; max-width: 1200px; margin: auto;
+    }
+    .main-container {
+      display: flex; gap: 20px; flex-wrap: wrap;
+    }
+    .left-column {
+      flex: 1; display: flex; flex-direction: column; gap: 20px;
+    }
+    .right-column {
+      flex: 2; display: flex; flex-direction: column; gap: 20px;
+    }
 
     .card {
       background-color: rgba(0,0,0,0.3);
@@ -36,66 +44,45 @@
     }
     .card h2 { margin-top: 0; font-size: 1.4em; color: #FFD700; }
     .saldo-value {
-      margin-top: 10px;
-      font-weight: bold;
-      font-size: 1.6em;
-      color: #FFD700;
+      margin-top: 10px; font-weight: bold; font-size: 1.6em; color: #FFD700;
     }
-    .timer { margin-top: 10px; font-size: 1em; color: #FFD700; }
+    .timer {
+      margin-top: 10px; font-size: 1em; color: #FFD700;
+    }
     .btn-container {
       display: flex; gap: 15px; margin-top: 20px; flex-wrap: wrap;
     }
     .btn {
-      padding: 10px 20px;
-      font-size: 1em;
-      background-color: #FFD700;
-      color: #6a0dad;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
+      padding: 10px 20px; font-size: 1em;
+      background-color: #FFD700; color: #6a0dad;
+      border: none; border-radius: 8px; cursor: pointer;
       transition: background-color 0.3s, box-shadow 0.3s;
     }
     .btn:hover {
-      background-color: #ffec8b;
-      box-shadow: 0 0 10px #FFD700;
+      background-color: #ffec8b; box-shadow: 0 0 10px #FFD700;
     }
     .btn:disabled {
-      background-color: #333;
-      color: #888;
-      cursor: not-allowed;
-      box-shadow: none;
+      background-color: #333; color: #888; cursor: not-allowed; box-shadow: none;
     }
     input[type="number"] {
-      margin-top: 10px;
-      padding: 10px;
-      width: 200px;
-      border: none;
-      border-radius: 8px;
+      margin-top: 10px; padding: 10px; width: 200px;
+      border: none; border-radius: 8px;
     }
     table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 10px;
+      width: 100%; border-collapse: collapse; margin-top: 10px;
     }
     th, td {
-      border: 1px solid #FFD700;
-      padding: 10px;
-      text-align: center;
+      border: 1px solid #FFD700; padding: 10px; text-align: center;
     }
     th {
-      background-color: #FFD700;
-      color: #6a0dad;
+      background-color: #FFD700; color: #6a0dad;
     }
     td {
       background-color: rgba(255,255,255,0.1);
-      color: #FFD700;
-      font-size: 0.95em;
+      color: #FFD700; font-size: 0.95em;
     }
     .footer {
-      text-align: center;
-      padding: 20px;
-      font-size: 0.9em;
-      color: #FFD700;
+      text-align: center; padding: 20px; font-size: 0.9em; color: #FFD700;
     }
   </style>
 </head>
@@ -114,7 +101,7 @@
       <div class="left-column">
         <div class="card">
           <h2>Masternodes Running</h2>
-          <div class="saldo-value" id="mining">0.000000000 BossX</div>
+          <div class="saldo-value" id="mining">0,000000000 BossX</div>
           <div class="timer" id="stopCountdown">Berhenti otomatis dalam: 00:00:00</div>
           <div class="btn-container">
             <button class="btn" id="onBtn">ON</button>
@@ -123,12 +110,14 @@
 
         <div class="card">
           <h2>Reward Masternode</h2>
-          <div class="saldo-value" id="balance">0.000000000 BossX</div>
+          <div class="saldo-value" id="balance">0,000000000 BossX</div>
           <div class="timer" id="countdown">Auto-claim dalam: 60 detik</div>
           <div class="btn-container">
             <button class="btn" id="convertBtn">Convert to USDT</button>
           </div>
-          <div class="saldo-value">USDT: <span id="usdtBalance">0.00</span></div>
+          <div class="saldo-value">
+            USDT: <span id="usdtBalance">0.00</span>
+          </div>
         </div>
 
         <div class="card">
@@ -192,7 +181,7 @@
     let walletBossX = 0;
     let usdtBalance = 0;
     const ratePerDetik = 0.000000001;
-    const bossXtoUSDT = 0.01;
+    const bossXtoUSDT = 1; // 1 BossX = 1 USDT
     let countdown = 60;
     let stopCountdown = getSecondsToNext6AM();
     let isMiningActive = false;
@@ -214,11 +203,12 @@
     }
 
     function updateStopCountdown() {
+      const btnOn = document.getElementById("onBtn");
       if (stopCountdown > 0) {
         stopCountdown--;
         document.getElementById("stopCountdown").textContent =
           "Berhenti otomatis dalam: " + formatTime(stopCountdown);
-        document.getElementById("onBtn").disabled = true;
+        btnOn.disabled = true;
       } else {
         clearInterval(intervalStop);
         clearInterval(intervalMining);
@@ -227,7 +217,7 @@
         isMiningActive = false;
         document.getElementById("stopCountdown").textContent =
           "06:00 tercapai, klik ON untuk mulai lagi";
-        document.getElementById("onBtn").disabled = false;
+        btnOn.disabled = false;
       }
     }
 
@@ -273,7 +263,7 @@
       balance += mining;
       tambahHistoryAutoClaim(mining);
       mining = 0;
-      document.getElementById("mining").textContent = "0.000000000 BossX";
+      document.getElementById("mining").textContent = "0,000000000 BossX";
       document.getElementById("balance").textContent =
         balance.toFixed(9) + " BossX";
     }
@@ -318,7 +308,7 @@
       logWalletTransaction("Convert Reward", "+" + usdt.toFixed(2) + " USDT", "✅");
       logConvertHistory(balance, usdt);
       balance = 0;
-      document.getElementById("balance").textContent = "0.000000000 BossX";
+      document.getElementById("balance").textContent = "0,000000000 BossX";
       updateWalletDisplay();
     }
 
@@ -337,16 +327,17 @@
     document.getElementById("onBtn").addEventListener("click", () => {
       if (isMiningActive || stopCountdown > 0) return;
       isMiningActive = true;
-      document.getElementById("onBtn").disabled = true;
+      const btnOn = document.getElementById("onBtn");
+      btnOn.disabled = true;
       countdown = 60;
       stopCountdown = getSecondsToNext6AM();
       document.getElementById("stopCountdown").textContent =
         "Berhenti otomatis dalam: " + formatTime(stopCountdown);
 
       intervalMining = setInterval(updateMining, 1000);
-      intervalClaim   = setInterval(autoClaim, 60000);
+      intervalClaim = setInterval(autoClaim, 60000);
       intervalCountdown = setInterval(updateCountdown, 1000);
-      intervalStop    = setInterval(updateStopCountdown, 1000);
+      intervalStop = setInterval(updateStopCountdown, 1000);
     });
 
     document.getElementById("buyBtn").addEventListener("click", aktivkanMasternode);
