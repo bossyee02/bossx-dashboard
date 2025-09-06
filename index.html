@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title> Dashboard BossX</title>
+  <title>Public Dashboard BossX</title>
   <style>
     * { box-sizing: border-box; }
     body {
@@ -31,23 +31,12 @@
       max-width: 1200px;
       margin: auto;
     }
-    .main-container {
-      display: flex;
-      gap: 20px;
-      flex-wrap: wrap;
+    .main-container { display: flex; gap: 20px; flex-wrap: wrap; }
+    .left-column, .right-column {
+      display: flex; flex-direction: column; gap: 20px;
     }
-    .left-column {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-    .right-column {
-      flex: 2;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
+    .left-column { flex: 1; }
+    .right-column { flex: 2; }
 
     .card {
       background-color: rgba(0,0,0,0.3);
@@ -72,10 +61,7 @@
       color: #FFD700;
     }
     .btn-container {
-      display: flex;
-      gap: 15px;
-      margin-top: 20px;
-      flex-wrap: wrap;
+      display: flex; gap: 15px; margin-top: 20px; flex-wrap: wrap;
     }
     .btn {
       padding: 10px 20px;
@@ -97,6 +83,30 @@
       cursor: not-allowed;
       box-shadow: none;
     }
+
+    /* power button */
+    .power-btn {
+      width: 56px; height: 56px;
+      border: 2px solid #888;
+      border-radius: 50%;
+      background-color: #222;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      transition: background-color 0.3s, border-color 0.3s;
+    }
+    .power-btn svg {
+      width: 28px; height: 28px;
+      stroke: #888; stroke-width: 2; fill: none;
+      transition: stroke 0.3s;
+    }
+    .power-btn.active {
+      background-color: #2ecc71;
+      border-color: #27ae60;
+    }
+    .power-btn.active svg {
+      stroke: #fff;
+    }
+
     input[type="number"] {
       margin-top: 10px;
       padding: 10px;
@@ -135,31 +145,29 @@
   <header>
     <div class="logo-title">
       <img src="https://i.ibb.co/qYBkPDH3/Picsart-25-04-01-16-25-47-054.png" alt="Logo BossX"/>
-      <h1> Dashboard BossX</h1>
+      <h1>Public Dashboard BossX</h1>
     </div>
     <div class="user-info">
-      <div>👤 Username: <strong>Fery M</strong></div>
+      <div>👤 Username: <strong>boss</strong></div>
       <div>🪪 Validator ID: <strong>805</strong></div>
     </div>
   </header>
 
   <main>
     <div class="main-container">
-      <!-- Kiri -->
+      <!-- Left Column -->
       <div class="left-column">
-        <!-- Validasi Masternode -->
         <div class="card">
           <h2>Validasi Masternode</h2>
           <div class="saldo-value" id="mining">0.000000000 BossX</div>
-          <div class="timer" id="stopCountdown">
-            Stop validasi setiap hari jam 06:00 dalam hitungan mundur : Belum berjalan
-          </div>
+          <div class="timer" id="stopCountdown">Stop validasi setiap hari jam 06:00 dalam: Belum berjalan</div>
           <div class="btn-container">
-            <button class="btn" id="onBtn">ON</button>
+            <button class="power-btn" id="onBtn" aria-label="Power">
+              <svg viewBox="0 0 24 24"><path d="M12 2v10M5.636 5.636a8 8 0 1 0 11.314 0"/></svg>
+            </button>
           </div>
         </div>
 
-        <!-- Reward Validasi -->
         <div class="card">
           <h2>Reward Validasi</h2>
           <div class="saldo-value" id="balance">0.000000000 BossX</div>
@@ -169,68 +177,48 @@
           </div>
         </div>
 
-        <!-- Paket Node -->
         <div class="card">
           <h2>Paket Node</h2>
-          <div class="saldo-value">
-            <span id="walletBossX">0</span> BossX
-          </div>
-          <input type="number" id="amountInput" placeholder="Minimal 50 BossX"/>
+          <div class="saldo-value"><span id="walletBossX">0</span> BossX</div>
+          <input type="number" id="amountInput" placeholder="Minimal 50"/>
           <div class="btn-container">
             <button class="btn" id="buyBtn">Aktivasi Paket</button>
           </div>
         </div>
 
-        <!-- Balance USDT -->
         <div class="card">
           <h2>Balance USDT</h2>
           <div class="saldo-value" id="usdtBalanceCard">0.00 USDT</div>
         </div>
       </div>
 
-      <!-- Kanan -->
+      <!-- Right Column -->
       <div class="right-column">
         <div class="card">
           <h2>History Validasi</h2>
           <table>
             <thead>
               <tr>
-                <th>Hari</th>
-                <th>Tanggal</th>
-                <th>Jam</th>
-                <th>Jumlah BossX</th>
-                <th>Auto-Claim</th>
+                <th>Hari</th><th>Tanggal</th><th>Jam</th><th>Jumlah BossX</th><th>Auto-Claim</th>
               </tr>
             </thead>
             <tbody id="history"></tbody>
           </table>
         </div>
-
         <div class="card">
           <h2>History Aktivasi</h2>
           <table>
             <thead>
-              <tr>
-                <th>Waktu</th>
-                <th>Jenis</th>
-                <th>Jumlah</th>
-                <th>Status</th>
-              </tr>
+              <tr><th>Waktu</th><th>Jenis</th><th>Jumlah</th><th>Status</th></tr>
             </thead>
             <tbody id="walletHistory"></tbody>
           </table>
         </div>
-
         <div class="card">
           <h2>History Convert</h2>
           <table>
             <thead>
-              <tr>
-                <th>Waktu</th>
-                <th>Jumlah BossX</th>
-                <th>Jumlah USDT</th>
-                <th>Status</th>
-              </tr>
+              <tr><th>Waktu</th><th>Jumlah BossX</th><th>Jumlah USDT</th><th>Status</th></tr>
             </thead>
             <tbody id="convertHistory"></tbody>
           </table>
@@ -242,7 +230,6 @@
   <div class="footer">©2025 Public Dashboard BossX • Terbuka untuk umum 💼✨</div>
 
   <script>
-    // State & Konstanta
     let mining = 0,
         balance = 0,
         walletBossX = 0,
@@ -253,11 +240,10 @@
         stopCountdown = 0,
         countdown = 60;
 
-    const monthlyYieldRate = 0.10;             // 10%
-    const contractSeconds  = 31 * 24 * 60 * 60; // 2.678.400 detik
-    const bossXtoUSDT      = 1;                // 1 BossX = 1 USDT
+    const monthlyYieldRate = 0.10;
+    const contractSeconds  = 31 * 24 * 60 * 60;
+    const bossXtoUSDT      = 1;
 
-    // DOM references
     const onBtn          = document.getElementById("onBtn");
     const miningLabel    = document.getElementById("mining");
     const stopLabel      = document.getElementById("stopCountdown");
@@ -272,7 +258,6 @@
     const buyBtn         = document.getElementById("buyBtn");
     const convertBtn     = document.getElementById("convertBtn");
 
-    // Helpers
     function formatTime(sec) {
       const h = String(Math.floor(sec/3600)).padStart(2,'0'),
             m = String(Math.floor((sec%3600)/60)).padStart(2,'0'),
@@ -291,7 +276,8 @@
     }
 
     function getSecondsToNext6AM() {
-      const now = new Date(), target = new Date(now);
+      const now = new Date();
+      const target = new Date(now);
       target.setHours(6,0,0,0);
       if (now >= target) target.setDate(target.getDate() + 1);
       return Math.floor((target - now) / 1000);
@@ -301,7 +287,6 @@
       usdtLabel.textContent = usdtBalance.toFixed(2) + " USDT";
     }
 
-    // Logging
     function logAutoClaim(amount) {
       if (amount <= 0) return;
       const w = formatNow();
@@ -323,20 +308,20 @@
       container.prepend(row);
     }
 
-    // Core update functions
     function updateStopCountdown() {
       if (stopCountdown > 0) {
         stopCountdown--;
-        stopLabel.textContent =
+        stopLabel.textContent = 
           "Stop validasi setiap hari jam 06:00 dalam: " + formatTime(stopCountdown);
       } else {
-        clearInterval(intervalStop);
         clearInterval(intervalMining);
         clearInterval(intervalClaim);
         clearInterval(intervalCountdown);
+        clearInterval(intervalStop);
         isMiningActive = false;
-        stopLabel.textContent = "06:00 tercapai, klik ON untuk mulai lagi";
         onBtn.disabled = false;
+        onBtn.classList.remove("active");
+        stopLabel.textContent = "06:00 tercapai, klik ON untuk mulai lagi";
       }
     }
 
@@ -360,61 +345,44 @@
       balanceLabel.textContent = balance.toFixed(9) + " BossX";
     }
 
-    // Event Listeners
     onBtn.addEventListener("click", () => {
       if (!hasPackage || isMiningActive) return;
       isMiningActive = true;
       onBtn.disabled = true;
+      onBtn.classList.add("active");
       stopCountdown = getSecondsToNext6AM();
-      countdown     = 60;
-      stopLabel.textContent =
-        "Stop validasi setiap hari jam 06:00 dalam: " + formatTime(stopCountdown);
-
+      countdown = 60;
+      stopLabel.textContent = "Stop validasi setiap hari jam 06:00 dalam: " + formatTime(stopCountdown);
       intervalMining    = setInterval(updateMining,    1000);
-      intervalClaim     = setInterval(autoClaim,      60000);
-      intervalCountdown = setInterval(updateCountdown, 1000);
+      intervalClaim     = setInterval(autoClaim,       60000);
+      intervalCountdown = setInterval(updateCountdown,  1000);
       intervalStop      = setInterval(updateStopCountdown, 1000);
     });
 
     buyBtn.addEventListener("click", () => {
-      if (hasPackage) {
-        alert("Paket hanya dapat diaktifkan sekali.");
-        return;
-      }
+      if (hasPackage) return alert("Paket hanya dapat diaktifkan sekali.");
       const amt = parseInt(amountInput.value, 10);
-      if (isNaN(amt) || amt < 50) {
-        alert("Minimal paket adalah 50 BossX.");
-        return;
-      }
+      if (isNaN(amt) || amt < 50) return alert("Minimal paket adalah 50 BossX.");
       walletBossX += amt;
       walletLabel.textContent = walletBossX + " BossX";
       logTx("Aktivasi Paket", "+" + amt + " BossX", walletHistory);
-
       rewardPerSecond = (amt * monthlyYieldRate) / contractSeconds;
-      hasPackage      = true;
+      hasPackage = true;
       buyBtn.disabled = true;
     });
 
     convertBtn.addEventListener("click", () => {
-      if (balance < 1) {
-        alert("Minimal convert adalah 1 BossX");
-        return;
-      }
+      if (balance < 1) return alert("Minimal convert adalah 1 BossX");
       const usdt = balance * bossXtoUSDT;
       usdtBalance += usdt;
       updateUSDTDisplay();
-      logTx(
-        "Convert Reward",
-        balance.toFixed(9) + " BossX → " + usdt.toFixed(2) + " USDT",
-        convertHistory
-      );
+      logTx("Convert Reward", balance.toFixed(9) + " BossX → " + usdt.toFixed(2) + " USDT", convertHistory);
       balance = 0;
       balanceLabel.textContent = "0.000000000 BossX";
     });
 
-    // Inisialisasi tampilan
-    stopLabel.textContent      =
-      "Stop validasi setiap hari jam 06:00 dalam: Belum berjalan";
+    // initialize display
+    stopLabel.textContent      = "Stop validasi setiap hari jam 06:00 dalam: Belum berjalan";
     countdownLabel.textContent = "Auto-claim dalam: 60 detik";
     walletLabel.textContent    = walletBossX + " BossX";
     updateUSDTDisplay();
