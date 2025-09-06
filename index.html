@@ -16,7 +16,8 @@
       background-color: rgba(0,0,0,0.3);
       padding: 20px 40px;
       display: flex; justify-content: space-between; align-items: center;
-      border-bottom: 2px solid #FFD700; box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+      border-bottom: 2px solid #FFD700;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
     }
     .logo-title h1 { font-size: 1.8em; margin: 0; }
     .user-info { text-align: right; }
@@ -34,7 +35,8 @@
     .card {
       background-color: rgba(0,0,0,0.3);
       padding: 20px; border-radius: 12px;
-      border: 1px solid #FFD700; box-shadow: 0 0 10px rgba(255,215,0,0.2);
+      border: 1px solid #FFD700;
+      box-shadow: 0 0 10px rgba(255,215,0,0.2);
     }
     .card h2 {
       margin-top: 0; font-size: 1.4em; color: #FFD700;
@@ -51,8 +53,19 @@
       border: none; border-radius: 8px; cursor: pointer;
       transition: background-color 0.3s, box-shadow 0.3s;
     }
-    .btn:hover { background-color: #ffec8b; box-shadow: 0 0 10px #FFD700; }
-    .timer { font-size: 1em; margin-top: 10px; color: #FFD700; }
+    .btn:hover {
+      background-color: #ffec8b;
+      box-shadow: 0 0 10px #FFD700;
+    }
+    .btn:disabled {
+      background-color: #333333;
+      color: #888888;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+    .timer {
+      font-size: 1em; margin-top: 10px; color: #FFD700;
+    }
     input[type="number"] {
       padding: 10px; border-radius: 8px; border: none;
       width: 200px; margin-top: 10px;
@@ -64,7 +77,10 @@
       border: 1px solid #FFD700; padding: 10px; text-align: center;
     }
     th { background-color: #FFD700; color: #6a0dad; }
-    td { background-color: rgba(255,255,255,0.1); color: #FFD700; font-size: 0.95em; }
+    td {
+      background-color: rgba(255,255,255,0.1);
+      color: #FFD700; font-size: 0.95em;
+    }
     .footer {
       text-align: center; padding: 20px; font-size: 0.9em; color: #FFD700;
     }
@@ -81,12 +97,14 @@
 
   <main>
     <div class="main-container">
-      <!-- Kolom Kiri -->
+      <!-- Kiri: Kontrol & Simulasi -->
       <div class="left-column">
         <div class="card">
           <h2>Masternodes Running</h2>
           <div class="saldo-value" id="mining">0,000000000 BossX</div>
-          <div class="timer" id="stopCountdown">Berhenti otomatis dalam: 00:00:00</div>
+          <div class="timer" id="stopCountdown">
+            Berhenti otomatis dalam: 00:00:00
+          </div>
           <div class="btn-container">
             <button class="btn" id="onBtn">ON</button>
           </div>
@@ -95,7 +113,9 @@
         <div class="card">
           <h2>Reward Masternode</h2>
           <div class="saldo-value" id="balance">0,000000000 BossX</div>
-          <div class="timer" id="countdown">Auto-claim dalam: 60 detik</div>
+          <div class="timer" id="countdown">
+            Auto-claim dalam: 60 detik
+          </div>
           <div class="btn-container">
             <button class="btn" id="convertBtn">Convert to USDT</button>
           </div>
@@ -106,22 +126,28 @@
 
         <div class="card">
           <h2>Buy Nodes</h2>
-          <div class="saldo-value">BossX: <span id="walletBossX">0</span></div>
-          <input type="number" id="amountInput" placeholder="Masukkan jumlah BossX"/>
+          <div class="saldo-value">
+            BossX: <span id="walletBossX">0</span>
+          </div>
+          <input type="number" id="amountInput"
+                 placeholder="Masukkan jumlah BossX"/>
           <div class="btn-container">
-            <button class="btn" id="buyBtn">Aktivkan Masternode</button>
+            <button class="btn" id="buyBtn">
+              Aktivkan Masternode
+            </button>
           </div>
         </div>
       </div>
 
-      <!-- Kolom Kanan -->
+      <!-- Kanan: Riwayat -->
       <div class="right-column">
         <div class="card">
           <h2>Riwayat Auto-Claim</h2>
           <table>
             <thead>
               <tr>
-                <th>Hari</th><th>Tanggal</th><th>Jam</th><th>Jumlah BossX</th><th>Auto-Claim</th>
+                <th>Hari</th><th>Tanggal</th><th>Jam</th>
+                <th>Jumlah BossX</th><th>Auto-Claim</th>
               </tr>
             </thead>
             <tbody id="history"></tbody>
@@ -133,7 +159,8 @@
           <table>
             <thead>
               <tr>
-                <th>Waktu</th><th>Jenis</th><th>Jumlah</th><th>Status</th>
+                <th>Waktu</th><th>Jenis</th>
+                <th>Jumlah</th><th>Status</th>
               </tr>
             </thead>
             <tbody id="walletHistory"></tbody>
@@ -145,7 +172,8 @@
           <table>
             <thead>
               <tr>
-                <th>Waktu</th><th>Jumlah BossX</th><th>Jumlah USDT</th><th>Status</th>
+                <th>Waktu</th><th>Jumlah BossX</th>
+                <th>Jumlah USDT</th><th>Status</th>
               </tr>
             </thead>
             <tbody id="convertHistory"></tbody>
@@ -218,7 +246,8 @@
 
     function formatWaktuSekarang() {
       const now = new Date();
-      const hariArr = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
+      const hariArr = ["Minggu","Senin","Selasa","Rabu",
+                       "Kamis","Jumat","Sabtu"];
       return {
         hari: hariArr[now.getDay()],
         tanggal: now.toLocaleDateString("id-ID"),
@@ -231,8 +260,7 @@
       const w = formatWaktuSekarang();
       const row = document.createElement("tr");
       row.innerHTML = `
-        <td>${w.hari}</td>
-        <td>${w.tanggal}</td>
+        <td>${w.hari}</td><td>${w.tanggal}</td>
         <td>${w.jam}</td>
         <td>+${amount.toFixed(9)} BossX</td>
         <td>✅</td>
@@ -245,7 +273,8 @@
       balance += mining;
       tambahHistoryAutoClaim(mining);
       mining = 0;
-      document.getElementById("mining").textContent = "0,000000000 BossX";
+      document.getElementById("mining").textContent =
+        "0,000000000 BossX";
       document.getElementById("balance").textContent =
         balance.toFixed(9) + " BossX";
     }
@@ -260,7 +289,8 @@
       const waktu = new Date().toLocaleString("id-ID");
       const row = document.createElement("tr");
       row.innerHTML = `
-        <td>${waktu}</td><td>${jenis}</td><td>${jumlah}</td><td>${status}</td>
+        <td>${waktu}</td><td>${jenis}</td>
+        <td>${jumlah}</td><td>${status}</td>
       `;
       document.getElementById("walletHistory").prepend(row);
     }
@@ -284,49 +314,63 @@
       }
       const usdt = balance * bossXtoUSDT;
       usdtBalance += usdt;
-      logWalletTransaction("Convert Reward", "+" + usdt.toFixed(2) + " USDT", "✅");
+      logWalletTransaction(
+        "Convert Reward", "+" + usdt.toFixed(2) + " USDT", "✅"
+      );
       logConvertHistory(balance, usdt);
       balance = 0;
-      document.getElementById("balance").textContent = "0,000000000 BossX";
+      document.getElementById("balance").textContent =
+        "0,000000000 BossX";
       updateWalletDisplay();
     }
 
     function aktivkanMasternode() {
-      const amt = parseInt(document.getElementById("amountInput").value, 10);
+      const amt = parseInt(
+        document.getElementById("amountInput").value, 10
+      );
       if (isNaN(amt) || amt <= 0) {
         alert("Masukkan jumlah investasi BossX yang valid");
         return;
       }
       walletBossX += amt;
       updateWalletDisplay();
-      logWalletTransaction("Aktivasi Masternode", "+" + amt + " BossX", "✅");
-      document.getElementById("onBtn").click();
+      logWalletTransaction(
+        "Aktivasi Masternode", "+" + amt + " BossX", "✅"
+      );
+      onBtn.click();
     }
 
-    // event listeners
-    document.getElementById("onBtn").addEventListener("click", () => {
+    // Event listeners
+    const onBtn = document.getElementById("onBtn");
+    onBtn.addEventListener("click", () => {
       if (isMiningActive) return;
       isMiningActive = true;
-      document.getElementById("onBtn").disabled = true;
+      onBtn.disabled = true;
       countdown = 60;
       stopCountdown = getSecondsToNext6AM();
       document.getElementById("stopCountdown").textContent =
         "Berhenti otomatis dalam: " + formatTime(stopCountdown);
+
       intervalMining = setInterval(updateMining, 1000);
       intervalClaim  = setInterval(autoClaim, 60000);
       intervalTimer  = setInterval(updateCountdown, 1000);
       intervalStop   = setInterval(updateStopCountdown, 1000);
     });
-    document.getElementById("buyBtn").addEventListener("click", aktivkanMasternode);
-    document.getElementById("convertBtn").addEventListener("click", convertToUSDT);
+    document.getElementById("buyBtn").addEventListener(
+      "click", aktivkanMasternode
+    );
+    document.getElementById("convertBtn").addEventListener(
+      "click", convertToUSDT
+    );
 
-    // inisialisasi awal
+    // Inisialisasi awal
+    stopCountdown = getSecondsToNext6AM();
     document.getElementById("stopCountdown").textContent =
-      "Berhenti otomatis dalam: " + formatTime(getSecondsToNext6AM());
+      "Berhenti otomatis dalam: " + formatTime(stopCountdown);
+    onBtn.disabled = stopCountdown > 0;
     updateWalletDisplay();
     document.getElementById("countdown").textContent =
       "Auto-claim dalam: " + countdown + " detik";
   </script>
 </body>
 </html>
-```
