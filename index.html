@@ -6,268 +6,269 @@
   <title>Dashboard BossX</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
+    /* ─── Design Tokens ───────────────────────────────────────────────── */
+    :root {
+      --gap: 16px;
+      --radius: 12px;
+      --color-primary: #6a0dad;
+      --color-accent: #FFD700;
+      --sidebar-width: 250px;
+      --sidebar-collapsed: 60px;
+    }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, #6a0dad, #ff69b4);
-      color: #FFD700;
-      display: flex;
-      height: 100vh;
+      background: linear-gradient(135deg, var(--color-primary), #ff69b4);
+      color: var(--color-accent);
+      display: flex; height: 100vh;
     }
 
-    /* Grid two‐column: sidebar + content */
+    /* ─── Grid Layout ─────────────────────────────────────────────────── */
     .container {
       display: grid;
-      grid-template-columns: 250px 1fr;
+      grid-template-columns: var(--sidebar-width) 1fr;
       transition: grid-template-columns 0.3s ease;
       width: 100%;
     }
     .container.collapsed {
-      grid-template-columns: 60px 1fr;
+      grid-template-columns: var(--sidebar-collapsed) 1fr;
     }
 
-    /* Sidebar */
+    /* ─── Sidebar & Animation ─────────────────────────────────────────── */
     .sidebar {
       background: rgba(0,0,0,0.4);
-      display: flex;
-      flex-direction: column;
+      overflow: hidden;
+      transition: width 0.3s ease;
     }
     .sidebar-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 16px;
-      border-bottom: 1px solid #FFD700;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: var(--gap);
+      border-bottom: 1px solid var(--color-accent);
     }
     .sidebar-logo {
-      height: 60px;
-      transition: height 0.3s ease;
+      height: 48px; transition: height 0.3s ease;
+    }
+    .sidebar-logo-text {
+      margin-left: 8px;
+      font-size: 1.4rem; font-weight: bold;
+      color: var(--color-accent);
+      transition: opacity 0.3s ease;
     }
     .container.collapsed .sidebar-logo {
-      height: 40px;
+      height: 32px;
+    }
+    .container.collapsed .sidebar-logo-text {
+      opacity: 0;
     }
     .collapse-btn {
-      background: none;
-      border: none;
-      color: #FFD700;
-      font-size: 1.4rem;
-      cursor: pointer;
+      background: none; border: none; color: var(--color-accent);
+      font-size: 1.6rem; cursor: pointer;
     }
+
     .sidebar-nav {
-      flex: 1;
-      margin-top: 16px;
-      display: flex;
-      flex-direction: column;
+      display: flex; flex-direction: column; padding-top: var(--gap);
     }
     .nav-item {
-      display: flex;
-      align-items: center;
-      padding: 12px 16px;
-      color: #FFD700;
+      position: relative;
+      display: flex; align-items: center;
+      padding: 12px var(--gap);
+      color: var(--color-accent);
       text-decoration: none;
       transition: background 0.2s;
     }
     .nav-item:hover { background: rgba(255,215,0,0.1); }
     .nav-item.active { background: rgba(255,215,0,0.2); }
     .nav-item .icon {
-      width: 24px;
-      text-align: center;
-      font-size: 1.2rem;
+      width: 24px; text-align: center; font-size: 1.2rem;
     }
     .nav-item .label {
-      margin-left: 12px;
-      white-space: nowrap;
-    }
-    .container.collapsed .label {
-      display: none;
+      margin-left: 12px; white-space: nowrap;
     }
 
-    /* Main content */
-    .content {
+    /* Tooltip for collapsed sidebar */
+    .nav-item .tooltip {
+      position: absolute;
+      left: calc(var(--sidebar-collapsed) + 8px);
+      top: 50%; transform: translateY(-50%);
+      background: #000; color: #fff;
+      padding: 4px 8px; border-radius: 4px;
+      white-space: nowrap; opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+      font-size: 0.9rem;
+      z-index: 10;
+    }
+    .container.collapsed .nav-item:hover .tooltip {
+      opacity: 1;
+    }
+
+    /* Overlay menu for mobile portrait */
+    .overlay-menu {
+      position: fixed; top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.85);
+      display: none; flex-direction: column; align-items: center;
+      padding-top: 80px; z-index: 1000;
+      transition: opacity 0.3s ease;
+    }
+    .overlay-menu.active {
       display: flex;
-      flex-direction: column;
+    }
+    .overlay-menu .close-btn {
+      position: absolute; top: 16px; right: 16px;
+      background: none; border: none; color: var(--color-accent);
+      font-size: 2rem; cursor: pointer;
+    }
+    .overlay-menu .nav-item {
+      margin-bottom: 24px; font-size: 1.4rem;
+    }
+
+    /* ─── Main Content ───────────────────────────────────────────────── */
+    .content {
+      display: flex; flex-direction: column;
     }
     header {
       background: rgba(0,0,0,0.3);
-      padding: 20px 40px;
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-      border-bottom: 2px solid #FFD700;
+      padding: var(--gap) calc(var(--gap)*2);
+      display: flex; justify-content: flex-end; align-items: center;
+      border-bottom: 2px solid var(--color-accent);
     }
     .user-info {
-      display: flex;
-      align-items: center;
-      gap: 16px;
+      display: flex; align-items: center; gap: 12px;
     }
     .user-info img {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      border: 2px solid #FFD700;
+      width: 64px; height: 64px;
+      border-radius: 50%; border: 2px solid var(--color-accent);
       object-fit: cover;
     }
     .user-info .info-text {
-      display: flex;
-      flex-direction: column;
-      line-height: 1.2;
-      text-align: right;
+      display: flex; flex-direction: column; text-align: right;
     }
+    .user-info h2 { font-size: 1.2rem; }
+    .user-info p  { font-size: 0.9rem; opacity: 0.8; }
+
     main {
-      flex: 1;
-      padding: 30px 20px;
-      max-width: 1200px;
-      margin: auto;
-      display: flex;
-      gap: 20px;
-      flex-wrap: wrap;
+      flex: 1; padding: var(--gap); max-width: 1200px;
+      margin: auto; display: flex; gap: var(--gap); flex-wrap: wrap;
     }
     .left-column, .right-column {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
+      display: flex; flex-direction: column; gap: var(--gap);
     }
     .left-column { flex: 1; }
-    .right-column { flex: 2; }
+    .right-column{ flex: 2; }
 
     .card {
       background: rgba(0,0,0,0.3);
-      padding: 20px;
-      border-radius: 12px;
-      border: 1px solid #FFD700;
+      padding: var(--gap); border-radius: var(--radius);
+      border: 1px solid var(--color-accent);
     }
-    .card h2 {
-      margin-bottom: 10px;
-      font-size: 1.4rem;
-    }
+    .card h2 { margin-bottom: 8px; font-size: 1.2rem; }
     .saldo-value {
-      font-size: 1.6rem;
-      font-weight: bold;
-      margin-bottom: 8px;
+      font-size: 1.4rem; font-weight: bold; margin-bottom: 8px;
     }
-    .timer {
-      font-size: 1rem;
-      margin-bottom: 12px;
-    }
-    .btn-container {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
+    .timer { margin-bottom: 12px; }
+    .btn-container { display: flex; gap: 8px; flex-wrap: wrap; }
+
     .btn {
-      padding: 10px 20px;
-      background: #FFD700;
-      color: #6a0dad;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
+      padding: 8px 16px; background: var(--color-accent);
+      color: var(--color-primary); border: none;
+      border-radius: 8px; cursor: pointer;
       transition: background 0.3s;
     }
     .btn:hover { background: #ffec8b; }
     .btn:disabled { background: #333; color: #888; cursor: not-allowed; }
+
     .power-btn {
-      width: 56px; height: 56px;
-      border: 2px solid #888; border-radius: 50%;
-      background: #222; display: flex;
-      align-items: center; justify-content: center;
+      width: 48px; height: 48px; border: 2px solid #888;
+      border-radius: 50%; background: #222;
+      display: flex; align-items: center; justify-content: center;
       cursor: pointer; transition: all 0.3s;
     }
     .power-btn.active {
       background: #2ecc71; border-color: #27ae60;
     }
-    .power-btn svg { width: 28px; height: 28px; stroke: #888; fill: none; }
+    .power-btn svg {
+      width: 24px; height: 24px; stroke: #888; fill: none;
+    }
     .power-btn.active svg { stroke: #fff; }
 
     input[type="number"] {
-      padding: 8px; width: 150px;
-      border-radius: 6px; border: none;
-      margin-bottom: 12px;
+      padding: 6px; width: 100px;
+      border-radius: 6px; border: none; margin-bottom: 8px;
     }
 
-    /* Table & Filter */
+    /* Filter & Table */
     .filter-bar {
       display: flex; align-items: center; margin-bottom: 8px;
     }
-    .filter-bar .icon { margin-right: 6px; font-size: 1.2rem; }
+    .filter-bar .icon { margin-right: 6px; }
     .filter-bar input {
-      flex: 1; padding: 6px 10px;
-      border: 1px solid #FFD700;
-      border-radius: 6px;
-      background: rgba(255,255,255,0.1);
-      color: #FFD700;
+      flex: 1; padding: 6px;
+      border: 1px solid var(--color-accent);
+      border-radius: 6px; background: rgba(255,255,255,0.1);
+      color: var(--color-accent);
     }
     table {
-      width: 100%; border-collapse: collapse; margin-top: 10px;
+      width: 100%; border-collapse: collapse; margin-top: 8px;
     }
     th, td {
-      border: 1px solid #FFD700; padding: 8px;
-      text-align: center;
+      border: 1px solid var(--color-accent);
+      padding: 6px; text-align: center; font-size: 0.9rem;
     }
-    th { background: #FFD700; color: #6a0dad; }
-    td { background: rgba(255,255,255,0.1); font-size: 0.95rem; }
+    th { background: var(--color-accent); color: var(--color-primary); }
 
     /* Footer */
     .footer {
-      text-align: center; padding: 16px;
+      text-align: center; padding: var(--gap);
       background: rgba(0,0,0,0.2);
     }
 
-    /* Bottom tab bar – portrait mobile */
-    @media (max-width: 480px) and (orientation: portrait) {
+    /* ─── Responsive Overlay & Breakpoints ───────────────────────────── */
+    @media (max-width: 768px) {
       aside.sidebar, header { display: none; }
       .container { grid-template-columns: 1fr; }
       main {
-        padding: 16px 12px 76px;
-        display: block;
+        padding: var(--gap); display: block;
       }
-      .left-column, .right-column {
-        flex: 1 1 100%;
-      }
-      .card { margin-bottom: 16px; padding: 12px; }
-      .card h2 { font-size: 1.2rem; }
-      /* hide all sections by default */
-      [data-section] { display: none; }
-      /* show only active section */
-      [data-section].active { display: block; }
-      /* bottom nav */
-      .bottom-nav {
-        position: fixed; bottom: 0; left: 0;
-        width: 100%; display: flex;
-        border-top: 1px solid #FFD700;
-        background: rgba(0,0,0,0.3); z-index: 1000;
-      }
-      .tab-btn {
-        flex: 1; padding: 10px 0;
-        background: none; border: none;
-        color: #FFD700; font-size: 1.4rem;
-      }
-      .tab-btn.active {
-        background: rgba(255,215,0,0.2);
-      }
+      .left-column, .right-column { flex: 1 1 100%; }
+      .card { margin-bottom: var(--gap); }
+      .overlay-menu { display: none; }
     }
   </style>
 </head>
 <body>
   <div id="container" class="container">
+
     <!-- Sidebar -->
     <aside class="sidebar">
       <div class="sidebar-header">
-        <img src="https://i.ibb.co/qYBkPDH3/Picsart-25-04-01-16-25-47-054.png"
-             alt="Logo BossX" class="sidebar-logo"/>
+        <div style="display:flex; align-items:center;">
+          <img
+            src="https://i.ibb.co/qYBkPDH3/Picsart-25-04-01-16-25-47-054.png"
+            alt="Logo BossX"
+            class="sidebar-logo"
+          />
+          <span class="sidebar-logo-text">BossX</span>
+        </div>
         <button class="collapse-btn" id="toggleSidebar">☰</button>
       </div>
       <nav class="sidebar-nav">
         <a href="#" class="nav-item active">
           <span class="icon">🏠</span><span class="label">Dashboard</span>
+          <span class="tooltip">Dashboard</span>
         </a>
         <a href="#" class="nav-item">
           <span class="icon">⚙️</span><span class="label">Settings</span>
+          <span class="tooltip">Settings</span>
         </a>
         <a href="#" class="nav-item">
           <span class="icon">📜</span><span class="label">History</span>
+          <span class="tooltip">History</span>
         </a>
         <a href="#" class="nav-item">
           <span class="icon">🔒</span><span class="label">Logout</span>
+          <span class="tooltip">Logout</span>
         </a>
       </nav>
     </aside>
@@ -277,7 +278,7 @@
       <header>
         <div class="user-info">
           <img src="https://i.ibb.co/gbVsGLy0/FB-IMG-1617237754232.jpg"
-               alt="Avatar Fery Muliawan"/>
+               alt="Avatar"/>
           <div class="info-text">
             <h2>Fery Muliawan</h2>
             <p>Validator ID: 8055</p>
@@ -286,8 +287,8 @@
       </header>
 
       <main>
-        <!-- Dashboard section -->
-        <div class="left-column" data-section="dash">
+        <!-- Dashboard / left-column -->
+        <div class="left-column">
           <div class="card">
             <h2>Validasi Masternode</h2>
             <div class="saldo-value" id="mining">0.000000000 BossX</div>
@@ -322,14 +323,13 @@
           </div>
         </div>
 
-        <!-- History & Chart section -->
-        <div class="right-column" data-section="history">
+        <!-- History & Chart / right-column -->
+        <div class="right-column">
           <div class="card">
             <h2>History Aktivasi</h2>
             <div class="filter-bar">
               <span class="icon">🔍</span>
-              <input type="search" id="filterAktivasi"
-                     placeholder="Cari History Aktivasi…"/>
+              <input type="search" id="filterAktivasi" placeholder="Cari…"/>
             </div>
             <table>
               <thead>
@@ -342,8 +342,7 @@
             <h2>History Convert</h2>
             <div class="filter-bar">
               <span class="icon">🔍</span>
-              <input type="search" id="filterConvert"
-                     placeholder="Cari History Convert…"/>
+              <input type="search" id="filterConvert" placeholder="Cari…"/>
             </div>
             <table>
               <thead>
@@ -356,8 +355,7 @@
             <h2>History Validasi</h2>
             <div class="filter-bar">
               <span class="icon">🔍</span>
-              <input type="search" id="filterValidasi"
-                     placeholder="Cari History Validasi…"/>
+              <input type="search" id="filterValidasi" placeholder="Cari…"/>
             </div>
             <table>
               <thead>
@@ -377,87 +375,90 @@
     </div>
   </div>
 
-  <!-- Bottom tab bar for mobile portrait -->
-  <nav class="bottom-nav">
-    <button class="tab-btn active" data-tab="dash">🏠</button>
-    <button class="tab-btn" data-tab="history">📜</button>
-  </nav>
+  <!-- Overlay Menu Mobile -->
+  <div id="overlayMenu" class="overlay-menu">
+    <button id="closeOverlay" class="close-btn">✕</button>
+    <a href="#" class="nav-item"><span>🏠 Dashboard</span></a>
+    <a href="#" class="nav-item"><span>📜 History</span></a>
+    <a href="#" class="nav-item"><span>⚙️ Settings</span></a>
+    <a href="#" class="nav-item"><span>🔒 Logout</span></a>
+  </div>
 
   <script>
     window.addEventListener('DOMContentLoaded', () => {
-      // Element refs
-      const container = document.getElementById('container');
-      const toggleBtn = document.getElementById('toggleSidebar');
-      const buyBtn    = document.getElementById('buyBtn');
-      const onBtn     = document.getElementById('onBtn');
-      const convertBtn= document.getElementById('convertBtn');
+      const container   = document.getElementById('container');
+      const toggleBtn   = document.getElementById('toggleSidebar');
+      const overlayMenu = document.getElementById('overlayMenu');
+      const closeOverlay= document.getElementById('closeOverlay');
+      // elements for logic…
+      const buyBtn      = document.getElementById('buyBtn');
+      const onBtn       = document.getElementById('onBtn');
+      const convertBtn  = document.getElementById('convertBtn');
       const amountInput = document.getElementById('amountInput');
-      const walletHistory = document.getElementById('walletHistory');
-      const convertHistory= document.getElementById('convertHistory');
-      const historyBody   = document.getElementById('history');
-      const miningLabel   = document.getElementById('mining');
-      const stopLabel     = document.getElementById('stopCountdown');
-      const countdownLabel= document.getElementById('countdown');
-      const balanceLabel  = document.getElementById('balance');
-      const walletLabel   = document.getElementById('walletBossX');
-      const usdtLabel     = document.getElementById('usdtBalanceCard');
+      const walletHistory   = document.getElementById('walletHistory');
+      const convertHistory  = document.getElementById('convertHistory');
+      const historyBody     = document.getElementById('history');
+      const miningLabel     = document.getElementById('mining');
+      const stopLabel       = document.getElementById('stopCountdown');
+      const countdownLabel  = document.getElementById('countdown');
+      const balanceLabel    = document.getElementById('balance');
+      const walletLabel     = document.getElementById('walletBossX');
+      const usdtLabel       = document.getElementById('usdtBalanceCard');
 
-      // State & constants
+      // state & constants…
       let mining=0, balance=0, walletBossX=0, usdtBalance=0;
       let isMining=false, hasPackage=false;
       let rewardPerSecond=0, stopSec=0, countdown=60;
       const monthlyRate=0.10, secInContract=31*24*60*60, bxToUsdt=1;
 
-      // Helper functions
-      function formatTime(s){ 
+      // helpers…
+      function formatTime(s){
         const h=String(Math.floor(s/3600)).padStart(2,'0'),
               m=String(Math.floor((s%3600)/60)).padStart(2,'0'),
               sec=String(s%60).padStart(2,'0');
         return `${h}:${m}:${sec}`;
       }
-      function now(){ 
+      function now(){
         const d=new Date();
         const days=["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
         return { hari: days[d.getDay()], tanggal: d.toLocaleDateString("id-ID"), jam: d.toLocaleTimeString("id-ID") };
       }
-      function next6AM(){ 
+      function next6AM(){
         const n=new Date(), t=new Date(n);
         t.setHours(6,0,0,0);
         if(n>=t) t.setDate(t.getDate()+1);
         return Math.floor((t-n)/1000);
       }
-      function updateUsdt(){ usdtLabel.textContent = usdtBalance.toFixed(2)+" USDT"; }
-
-      // Logging
+      function updateUsdt(){
+        usdtLabel.textContent = usdtBalance.toFixed(2) + " USDT";
+      }
+      // logging…
       function logAuto(a){
-        if(a<=0)return;
-        const w=now();
-        const row=document.createElement("tr");
+        if(a<=0) return;
+        const w=now(), row=document.createElement("tr");
         row.innerHTML=`<td>${w.hari}</td><td>${w.tanggal}</td><td>${w.jam}</td>
                        <td>+${a.toFixed(9)} BossX</td><td>✅</td>`;
         historyBody.prepend(row);
       }
       function logTx(type,amt,cont){
-        const w=now();
-        const r=document.createElement("tr");
+        const w=now(), r=document.createElement("tr");
         r.innerHTML=`<td>${w.hari}</td><td>${w.tanggal} ${w.jam}</td>
                      <td>${amt}</td><td>${type}</td><td>Aktif</td>`;
         cont.prepend(r);
       }
       function logCv(bx,usdt){
-        const w=now();
-        const r=document.createElement("tr");
+        const w=now(), r=document.createElement("tr");
         r.innerHTML=`<td>${w.hari}</td><td>${w.tanggal} ${w.jam}</td>
                      <td>${bx.toFixed(9)}</td><td>${usdt.toFixed(2)}</td><td>✅</td>`;
         convertHistory.prepend(r);
       }
 
-      // Attach filters
+      // filter tables…
       function attachFilter(id,tbody){
         document.getElementById(id).addEventListener('input',e=>{
           const t=e.target.value.toLowerCase();
           Array.from(tbody.rows).forEach(r=>{
-            r.style.display=r.textContent.toLowerCase().includes(t)?'':'none';
+            r.style.display = r.textContent.toLowerCase().includes(t)?'':'none';
           });
         });
       }
@@ -465,13 +466,18 @@
       attachFilter('filterConvert',convertHistory);
       attachFilter('filterValidasi',historyBody);
 
-      // Sidebar toggle
-      toggleBtn.addEventListener('click',()=>{
-        container.classList.toggle('collapsed');
+      // sidebar & overlay toggle
+      toggleBtn.addEventListener('click', ()=>{
+        if(window.innerWidth <= 768){
+          overlayMenu.classList.toggle('active');
+        } else {
+          container.classList.toggle('collapsed');
+        }
       });
+      closeOverlay.addEventListener('click', ()=> overlayMenu.classList.remove('active'));
 
-      // Aktivasi Paket
-      buyBtn.addEventListener("click",()=>{
+      // aktivasi paket
+      buyBtn.addEventListener("click", ()=>{
         const amt=Number(amountInput.value);
         if(isNaN(amt)||amt<50) return alert("Minimal paket adalah 50 BossX.");
         if(hasPackage) return alert("Paket hanya dapat diaktifkan sekali.");
@@ -482,8 +488,8 @@
         buyBtn.disabled=true;
       });
 
-      // Power ON/OFF
-      onBtn.addEventListener("click",()=>{
+      // power ON/OFF
+      onBtn.addEventListener("click", ()=>{
         if(!hasPackage||isMining) return;
         isMining=true; onBtn.disabled=true; onBtn.classList.add("active");
         stopSec=next6AM(); countdown=60;
@@ -515,49 +521,29 @@
         },1000);
       });
 
-      // Convert to USDT
-      convertBtn.addEventListener("click",()=>{
+      // convert to USDT
+      convertBtn.addEventListener("click", ()=>{
         if(balance<1) return alert("Minimal convert adalah 1 BossX");
         const usdt=balance*bxToUsdt; usdtBalance+=usdt; updateUsdt();
         logCv(balance,usdt); balance=0;
         balanceLabel.textContent="0.000000000 BossX";
       });
 
-      // Init displays
+      // init displays & chart
       stopLabel.textContent="Belum berjalan";
       countdownLabel.textContent="Auto-claim: 60s";
       walletLabel.textContent=walletBossX+" BossX";
       updateUsdt();
 
-      // Chart.js
-      const ctx = document.getElementById('dailyRewardBarChart').getContext('2d');
+      const ctx=document.getElementById('dailyRewardBarChart').getContext('2d');
       const grad=ctx.createLinearGradient(0,0,0,400);
       grad.addColorStop(0,'purple'); grad.addColorStop(1,'gold');
       new Chart(ctx,{ type:'bar',
         data:{ labels:['Senin','Selasa','Rabu','Kamis','Jumat','Sabtu','Minggu'],
-          datasets:[{ label:'Reward BossX', data:[12.5,15.2,14.8,16.0,17.3,18.1,19.0],
-                      backgroundColor:grad }]},
-        options:{ scales:{ x:{ ticks:{ color:'#FFD700' }},
-                         y:{ ticks:{ color:'#FFD700' }, beginAtZero:false }},
-                  plugins:{ legend:{ labels:{ color:'#FFD700' }}}}
+          datasets:[{ label:'Reward BossX', data:[12.5,15.2,14.8,16.0,17.3,18.1,19.0], backgroundColor:grad }]},
+        options:{ scales:{ x:{ ticks:{ color:var(--color-accent) }}, y:{ ticks:{ color:var(--color-accent) }, beginAtZero:false }},
+                  plugins:{ legend:{ labels:{ color:var(--color-accent) }}}}
       });
-
-      // Bottom nav tab switching (portrait mobile)
-      if(window.matchMedia('(max-width:480px) and (orientation: portrait)').matches){
-        const tabs=document.querySelectorAll('.tab-btn');
-        tabs.forEach(btn=>{
-          btn.addEventListener('click',()=>{
-            tabs.forEach(b=>b.classList.remove('active'));
-            btn.classList.add('active');
-            const t=btn.getAttribute('data-tab');
-            document.querySelectorAll('[data-section]').forEach(sec=>{
-              sec.classList.toggle('active', sec.getAttribute('data-section')===t);
-            });
-          });
-        });
-        // show dashboard by default
-        document.querySelector('[data-section="dash"]').classList.add('active');
-      }
     });
   </script>
 </body>
