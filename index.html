@@ -107,7 +107,7 @@
 
   <main>
     <div class="main-container">
-      <!-- Kiri -->
+      <!-- Kolom Kiri -->
       <div class="left-column">
         <div class="card">
           <h2>Validasi Masternode</h2>
@@ -143,22 +143,17 @@
         <div class="card">
           <h2>Balance USDT</h2>
           <div class="saldo-value" id="usdtBalanceCard">0.00 USDT</div>
-          <input type="number" id="depositInput" placeholder="Masukkan USDT"/>
-          <div class="btn-container">
-            <button class="btn" id="depositBtn">Deposit USDT</button>
-          </div>
         </div>
       </div>
 
-      <!-- Kanan -->
+      <!-- Kolom Kanan -->
       <div class="right-column">
         <div class="card">
           <h2>History Validasi</h2>
           <table>
             <thead>
               <tr>
-                <th>Hari</th><th>Tanggal</th><th>Jam</th>
-                <th>Jumlah BossX</th><th>Auto-Claim</th>
+                <th>Hari</th><th>Tanggal</th><th>Jam</th><th>Jumlah BossX</th><th>Auto-Claim</th>
               </tr>
             </thead>
             <tbody id="history"></tbody>
@@ -169,9 +164,7 @@
           <h2>History Aktivasi</h2>
           <table>
             <thead>
-              <tr>
-                <th>Waktu</th><th>Jenis</th><th>Jumlah</th><th>Status</th>
-              </tr>
+              <tr><th>Waktu</th><th>Jenis</th><th>Jumlah</th><th>Status</th></tr>
             </thead>
             <tbody id="walletHistory"></tbody>
           </table>
@@ -181,9 +174,7 @@
           <h2>History Convert</h2>
           <table>
             <thead>
-              <tr>
-                <th>Waktu</th><th>Jumlah BossX</th><th>Jumlah USDT</th><th>Status</th>
-              </tr>
+              <tr><th>Waktu</th><th>Jumlah BossX</th><th>Jumlah USDT</th><th>Status</th></tr>
             </thead>
             <tbody id="convertHistory"></tbody>
           </table>
@@ -219,13 +210,11 @@
     const walletLabel     = document.getElementById("walletBossX");
     const usdtBalanceCard = document.getElementById("usdtBalanceCard");
     const amountInput     = document.getElementById("amountInput");
-    const depositInput    = document.getElementById("depositInput");
     const historyBody     = document.getElementById("history");
     const walletHistory   = document.getElementById("walletHistory");
     const convertHistory  = document.getElementById("convertHistory");
     const buyBtn          = document.getElementById("buyBtn");
     const convertBtn      = document.getElementById("convertBtn");
-    const depositBtn      = document.getElementById("depositBtn");
 
     function formatTime(sec) {
       const h = String(Math.floor(sec/3600)).padStart(2,'0'),
@@ -242,13 +231,6 @@
         tanggal: now.toLocaleDateString("id-ID"),
         jam: now.toLocaleTimeString("id-ID")
       };
-    }
-
-    function getSecondsToNext6AM() {
-      const now = new Date(), target = new Date(now);
-      target.setHours(6,0,0,0);
-      if (now >= target) target.setDate(target.getDate()+1);
-      return Math.floor((target - now)/1000);
     }
 
     function updateUSDTDisplay() {
@@ -316,8 +298,8 @@
       if (!hasPackage || isMiningActive) return;
       isMiningActive = true;
       onBtn.disabled = true;
-      countdown    = 60;
-      stopCountdown= getSecondsToNext6AM();
+      stopCountdown = getSecondsToNext6AM();
+      countdown     = 60;
       stopLabel.textContent =
         "Stop validasi setiap hari jam 06:00 dalam: " + formatTime(stopCountdown);
 
@@ -328,15 +310,9 @@
     });
 
     buyBtn.addEventListener("click", () => {
-      if (hasPackage) {
-        alert("Paket hanya dapat diaktifkan sekali.");
-        return;
-      }
+      if (hasPackage) return alert("Paket hanya dapat diaktifkan sekali.");
       const amt = parseInt(amountInput.value, 10);
-      if (isNaN(amt) || amt < 50) {
-        alert("Minimal paket adalah 50 BossX.");
-        return;
-      }
+      if (isNaN(amt) || amt < 50) return alert("Minimal paket adalah 50 BossX.");
       walletBossX += amt;
       walletLabel.textContent = walletBossX + " BossX";
       logTx("Aktivasi Paket", "+" + amt + " BossX", walletHistory);
@@ -346,10 +322,7 @@
     });
 
     convertBtn.addEventListener("click", () => {
-      if (balance < 1) {
-        alert("Minimal convert adalah 1 BossX");
-        return;
-      }
+      if (balance < 1) return alert("Minimal convert adalah 1 BossX");
       const usdt = balance * bossXtoUSDT;
       usdtBalance += usdt;
       updateUSDTDisplay();
@@ -362,18 +335,7 @@
       balanceLabel.textContent = "0.000000000 BossX";
     });
 
-    depositBtn.addEventListener("click", () => {
-      const amt = parseFloat(depositInput.value);
-      if (isNaN(amt) || amt <= 0) {
-        alert("Masukkan jumlah USDT yang valid");
-        return;
-      }
-      usdtBalance += amt;
-      updateUSDTDisplay();
-      logTx("Deposit USDT", "+" + amt.toFixed(2) + " USDT", convertHistory);
-    });
-
-    // Inisialisasi tampilan
+    // Init display
     stopLabel.textContent      =
       "Stop validasi setiap hari jam 06:00 dalam: Belum berjalan";
     countdownLabel.textContent = "Auto-claim dalam: 60 detik";
