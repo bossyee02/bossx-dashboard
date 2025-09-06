@@ -16,7 +16,8 @@
       background-color: rgba(0,0,0,0.3);
       padding: 20px 40px;
       display: flex; justify-content: space-between; align-items: center;
-      border-bottom: 2px solid #FFD700; box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+      border-bottom: 2px solid #FFD700;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
     }
     .logo-title h1 { font-size: 1.8em; margin: 0; }
     .user-info { text-align: right; }
@@ -85,7 +86,7 @@
       <div class="left-column">
         <div class="card">
           <h2>Masternodes Running</h2>
-          <div class="saldo-value" id="mining">0,000000000 BossX</div>
+          <div class="saldo-value" id="mining">0.000000000 BossX</div>
           <div class="timer" id="stopCountdown">Berhenti otomatis dalam: 00:00:00</div>
           <div class="btn-container">
             <button class="btn" id="onBtn">ON</button>
@@ -94,16 +95,28 @@
 
         <div class="card">
           <h2>Reward Masternode</h2>
-          <div class="saldo-value" id="balance">0,000000000 BossX</div>
+          <div class="saldo-value" id="balance">0.000000000 BossX</div>
           <div class="timer" id="countdown">Auto-claim dalam: 60 detik</div>
+          <div class="btn-container">
+            <button class="btn" onclick="convertToUSDT()">
+              Convert to USDT
+            </button>
+          </div>
+          <div class="saldo-value">
+            USDT: <span id="usdtBalance">0.00</span>
+          </div>
         </div>
 
         <div class="card">
           <h2>Buy Nodes</h2>
-          <div class="saldo-value">BossX: <span id="walletBossX">0</span></div>
+          <div class="saldo-value">
+            BossX: <span id="walletBossX">0</span>
+          </div>
           <input type="number" id="amountInput" placeholder="Masukkan jumlah BossX"/>
           <div class="btn-container">
-            <button class="btn" onclick="aktivkanMasternode()">Aktivkan Masternode</button>
+            <button class="btn" onclick="aktivkanMasternode()">
+              Aktivkan Masternode
+            </button>
           </div>
         </div>
       </div>
@@ -115,7 +128,8 @@
           <table>
             <thead>
               <tr>
-                <th>Hari</th><th>Tanggal</th><th>Jam</th><th>Jumlah BossX</th><th>Auto-Claim</th>
+                <th>Hari</th><th>Tanggal</th><th>Jam</th>
+                <th>Jumlah BossX</th><th>Auto-Claim</th>
               </tr>
             </thead>
             <tbody id="history"></tbody>
@@ -137,13 +151,17 @@
     </div>
   </main>
 
-  <div class="footer">©2025 Public Dashboard BossX • Terbuka untuk umum 💼✨</div>
+  <div class="footer">
+    ©2025 Public Dashboard BossX • Terbuka untuk umum 💼✨
+  </div>
 
   <script>
     let mining = 0;
     let balance = 0;
     let walletBossX = 0;
+    let usdtBalance = 0;
     const ratePerDetik = 0.000000001;
+    const bossXtoUSDT = 0.01; // 1 BossX = 0.01 USDT
     let intervalMining, intervalClaim, intervalTimer, intervalStop;
     let countdown = 60;
     let stopCountdown = 0;
@@ -223,9 +241,42 @@
       balance += mining;
       tambahHistoryAutoClaim(mining);
       mining = 0;
-      document.getElementById("mining").textContent = "0,000000000 BossX";
+      document.getElementById("mining").textContent = "0.000000000 BossX";
       document.getElementById("balance").textContent =
         balance.toFixed(9) + " BossX";
+    }
+
+    function updateWalletDisplay() {
+      document.getElementById("walletBossX").textContent = walletBossX;
+      document.getElementById("usdtBalance").textContent =
+        usdtBalance.toFixed(2);
+    }
+
+    function logWalletTransaction(jenis, jumlah, status) {
+      const waktu = new Date().toLocaleString("id-ID");
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${waktu}</td><td>${jenis}</td><td>${jumlah}</td><td>${status}</td>
+      `;
+      document.getElementById("walletHistory").prepend(row);
+    }
+
+    function convertToUSDT() {
+      if (balance <= 0) {
+        alert("Tidak ada reward untuk dikonversi");
+        return;
+      }
+      const usdt = balance * bossXtoUSDT;
+      usdtBalance += usdt;
+      logWalletTransaction(
+        "Convert Reward",
+        "+" + usdt.toFixed(2) + " USDT",
+        "✅"
+      );
+      balance = 0;
+      document.getElementById("balance").textContent =
+        balance.toFixed(9) + " BossX";
+      updateWalletDisplay();
     }
 
     document.getElementById("onBtn").addEventListener("click", function() {
@@ -243,10 +294,12 @@
       intervalStop   = setInterval(updateStopCountdown, 1000);
     });
 
-    // Inisialisasi
+    // Inisialisasi tampilan awal
     document.getElementById("stopCountdown").textContent =
       "Berhenti otomatis dalam: " + formatTime(getSecondsToNext6AM());
     updateWalletDisplay();
+    document.getElementById("countdown").textContent =
+      "Auto-claim dalam: " + countdown + " detik";
   </script>
 </body>
 </html>
