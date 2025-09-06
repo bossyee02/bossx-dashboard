@@ -16,8 +16,7 @@
       background-color: rgba(0,0,0,0.3);
       padding: 20px 40px;
       display: flex; justify-content: space-between; align-items: center;
-      border-bottom: 2px solid #FFD700;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+      border-bottom: 2px solid #FFD700; box-shadow: 0 2px 5px rgba(0,0,0,0.3);
     }
     .logo-title h1 { font-size: 1.8em; margin: 0; }
     .user-info { text-align: right; }
@@ -41,7 +40,8 @@
       margin-top: 0; font-size: 1.4em; color: #FFD700;
     }
     .saldo-value {
-      font-size: 1.6em; font-weight: bold; margin-top: 10px; color: #FFD700;
+      font-size: 1.6em; font-weight: bold; margin-top: 10px;
+      color: #FFD700;
     }
     .btn-container {
       display: flex; gap: 15px; margin-top: 20px; flex-wrap: wrap;
@@ -86,7 +86,7 @@
       <div class="left-column">
         <div class="card">
           <h2>Masternodes Running</h2>
-          <div class="saldo-value" id="mining">0.000000000 BossX</div>
+          <div class="saldo-value" id="mining">0,000000000 BossX</div>
           <div class="timer" id="stopCountdown">Berhenti otomatis dalam: 00:00:00</div>
           <div class="btn-container">
             <button class="btn" id="onBtn">ON</button>
@@ -95,12 +95,10 @@
 
         <div class="card">
           <h2>Reward Masternode</h2>
-          <div class="saldo-value" id="balance">0.000000000 BossX</div>
+          <div class="saldo-value" id="balance">0,000000000 BossX</div>
           <div class="timer" id="countdown">Auto-claim dalam: 60 detik</div>
           <div class="btn-container">
-            <button class="btn" onclick="convertToUSDT()">
-              Convert to USDT
-            </button>
+            <button class="btn" id="convertBtn">Convert to USDT</button>
           </div>
           <div class="saldo-value">
             USDT: <span id="usdtBalance">0.00</span>
@@ -109,14 +107,10 @@
 
         <div class="card">
           <h2>Buy Nodes</h2>
-          <div class="saldo-value">
-            BossX: <span id="walletBossX">0</span>
-          </div>
+          <div class="saldo-value">BossX: <span id="walletBossX">0</span></div>
           <input type="number" id="amountInput" placeholder="Masukkan jumlah BossX"/>
           <div class="btn-container">
-            <button class="btn" onclick="aktivkanMasternode()">
-              Aktivkan Masternode
-            </button>
+            <button class="btn" id="buyBtn">Aktivkan Masternode</button>
           </div>
         </div>
       </div>
@@ -151,9 +145,7 @@
     </div>
   </main>
 
-  <div class="footer">
-    ©2025 Public Dashboard BossX • Terbuka untuk umum 💼✨
-  </div>
+  <div class="footer">©2025 Public Dashboard BossX • Terbuka untuk umum 💼✨</div>
 
   <script>
     let mining = 0;
@@ -161,7 +153,7 @@
     let walletBossX = 0;
     let usdtBalance = 0;
     const ratePerDetik = 0.000000001;
-    const bossXtoUSDT = 0.01; // 1 BossX = 0.01 USDT
+    const bossXtoUSDT = 0.01;
     let intervalMining, intervalClaim, intervalTimer, intervalStop;
     let countdown = 60;
     let stopCountdown = 0;
@@ -241,7 +233,7 @@
       balance += mining;
       tambahHistoryAutoClaim(mining);
       mining = 0;
-      document.getElementById("mining").textContent = "0.000000000 BossX";
+      document.getElementById("mining").textContent = "0,000000000 BossX";
       document.getElementById("balance").textContent =
         balance.toFixed(9) + " BossX";
     }
@@ -268,17 +260,25 @@
       }
       const usdt = balance * bossXtoUSDT;
       usdtBalance += usdt;
-      logWalletTransaction(
-        "Convert Reward",
-        "+" + usdt.toFixed(2) + " USDT",
-        "✅"
-      );
+      logWalletTransaction("Convert Reward", "+" + usdt.toFixed(2) + " USDT", "✅");
       balance = 0;
-      document.getElementById("balance").textContent =
-        balance.toFixed(9) + " BossX";
+      document.getElementById("balance").textContent = "0,000000000 BossX";
       updateWalletDisplay();
     }
 
+    function aktivkanMasternode() {
+      const amt = parseInt(document.getElementById("amountInput").value, 10);
+      if (isNaN(amt) || amt <= 0) {
+        alert("Masukkan jumlah investasi BossX yang valid");
+        return;
+      }
+      walletBossX += amt;
+      updateWalletDisplay();
+      logWalletTransaction("Aktivasi Masternode", "+" + amt + " BossX", "✅");
+      document.getElementById("onBtn").click();
+    }
+
+    // event listeners
     document.getElementById("onBtn").addEventListener("click", function() {
       if (isMiningActive) return;
       isMiningActive = true;
@@ -294,7 +294,10 @@
       intervalStop   = setInterval(updateStopCountdown, 1000);
     });
 
-    // Inisialisasi tampilan awal
+    document.getElementById("buyBtn").addEventListener("click", aktivkanMasternode);
+    document.getElementById("convertBtn").addEventListener("click", convertToUSDT);
+
+    // inisialisasi awal
     document.getElementById("stopCountdown").textContent =
       "Berhenti otomatis dalam: " + formatTime(getSecondsToNext6AM());
     updateWalletDisplay();
