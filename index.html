@@ -4,7 +4,6 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Dashboard BossX</title>
-  <!-- Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -16,7 +15,7 @@
       height: 100vh;
     }
 
-    /* Container Grid */
+    /* Grid two‐column: sidebar + content */
     .container {
       display: grid;
       grid-template-columns: 250px 1fr;
@@ -83,13 +82,13 @@
       display: none;
     }
 
-    /* Content */
+    /* Main content */
     .content {
       display: flex;
       flex-direction: column;
     }
     header {
-      background-color: rgba(0,0,0,0.3);
+      background: rgba(0,0,0,0.3);
       padding: 20px 40px;
       display: flex;
       justify-content: flex-end;
@@ -114,15 +113,6 @@
       line-height: 1.2;
       text-align: right;
     }
-    .user-info .info-text h2 {
-      font-size: 1.4rem;
-      margin-bottom: 4px;
-    }
-    .user-info .info-text p {
-      font-size: 1rem;
-      opacity: 0.85;
-    }
-
     main {
       flex: 1;
       padding: 30px 20px;
@@ -141,7 +131,7 @@
     .right-column { flex: 2; }
 
     .card {
-      background-color: rgba(0,0,0,0.3);
+      background: rgba(0,0,0,0.3);
       padding: 20px;
       border-radius: 12px;
       border: 1px solid #FFD700;
@@ -149,7 +139,6 @@
     .card h2 {
       margin-bottom: 10px;
       font-size: 1.4rem;
-      color: #FFD700;
     }
     .saldo-value {
       font-size: 1.6rem;
@@ -165,101 +154,96 @@
       gap: 12px;
       flex-wrap: wrap;
     }
-    .btn, .power-btn {
-      cursor: pointer;
-      transition: all 0.3s;
-    }
     .btn {
       padding: 10px 20px;
-      background-color: #FFD700;
+      background: #FFD700;
       color: #6a0dad;
       border: none;
       border-radius: 8px;
-      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s;
     }
-    .btn:hover { background-color: #ffec8b; }
-    .btn:disabled {
-      background-color: #333;
-      color: #888;
-      cursor: not-allowed;
-    }
+    .btn:hover { background: #ffec8b; }
+    .btn:disabled { background: #333; color: #888; cursor: not-allowed; }
     .power-btn {
-      width: 56px;
-      height: 56px;
-      border: 2px solid #888;
-      border-radius: 50%;
-      background-color: #222;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      width: 56px; height: 56px;
+      border: 2px solid #888; border-radius: 50%;
+      background: #222; display: flex;
+      align-items: center; justify-content: center;
+      cursor: pointer; transition: all 0.3s;
     }
     .power-btn.active {
-      background-color: #2ecc71;
-      border-color: #27ae60;
+      background: #2ecc71; border-color: #27ae60;
     }
-    .power-btn svg {
-      width: 28px;
-      height: 28px;
-      stroke: #888;
-      stroke-width: 2;
-      fill: none;
-    }
-    .power-btn.active svg {
-      stroke: #fff;
-    }
+    .power-btn svg { width: 28px; height: 28px; stroke: #888; fill: none; }
+    .power-btn.active svg { stroke: #fff; }
+
     input[type="number"] {
-      padding: 8px;
-      width: 150px;
-      border-radius: 6px;
-      border: none;
+      padding: 8px; width: 150px;
+      border-radius: 6px; border: none;
       margin-bottom: 12px;
     }
 
-    /* Filter */
+    /* Table & Filter */
     .filter-bar {
-      display: flex;
-      align-items: center;
-      margin-bottom: 8px;
+      display: flex; align-items: center; margin-bottom: 8px;
     }
-    .filter-bar .icon {
-      margin-right: 6px;
-      font-size: 1.2rem;
-    }
+    .filter-bar .icon { margin-right: 6px; font-size: 1.2rem; }
     .filter-bar input {
-      flex: 1;
-      padding: 6px 10px;
+      flex: 1; padding: 6px 10px;
       border: 1px solid #FFD700;
       border-radius: 6px;
       background: rgba(255,255,255,0.1);
       color: #FFD700;
     }
-
-    /* Table */
     table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 10px;
+      width: 100%; border-collapse: collapse; margin-top: 10px;
     }
     th, td {
-      border: 1px solid #FFD700;
-      padding: 8px;
+      border: 1px solid #FFD700; padding: 8px;
       text-align: center;
     }
-    th {
-      background-color: #FFD700;
-      color: #6a0dad;
-    }
-    td {
-      background-color: rgba(255,255,255,0.1);
-      font-size: 0.95rem;
+    th { background: #FFD700; color: #6a0dad; }
+    td { background: rgba(255,255,255,0.1); font-size: 0.95rem; }
+
+    /* Footer */
+    .footer {
+      text-align: center; padding: 16px;
+      background: rgba(0,0,0,0.2);
     }
 
-    .footer {
-      text-align: center;
-      padding: 16px;
-      font-size: 0.9rem;
-      background: rgba(0,0,0,0.2);
-      color: #FFD700;
+    /* Bottom tab bar – portrait mobile */
+    @media (max-width: 480px) and (orientation: portrait) {
+      aside.sidebar, header { display: none; }
+      .container { grid-template-columns: 1fr; }
+      main {
+        padding: 16px 12px 76px;
+        display: block;
+      }
+      .left-column, .right-column {
+        flex: 1 1 100%;
+      }
+      .card { margin-bottom: 16px; padding: 12px; }
+      .card h2 { font-size: 1.2rem; }
+      /* hide all sections by default */
+      [data-section] { display: none; }
+      /* show only active section */
+      [data-section].active { display: block; }
+      /* bottom nav */
+      .bottom-nav {
+        position: fixed; bottom: 0; left: 0;
+        width: 100%; display: flex;
+        border-top: 1px solid #FFD700;
+        background: rgba(0,0,0,0.3); z-index: 1000;
+      }
+      .tab-btn {
+        flex: 1; padding: 10px 0;
+        background: none; border: none;
+        color: #FFD700; font-size: 1.4rem;
+      }
+      .tab-btn.active {
+        background: rgba(255,215,0,0.2);
+      }
     }
   </style>
 </head>
@@ -269,8 +253,7 @@
     <aside class="sidebar">
       <div class="sidebar-header">
         <img src="https://i.ibb.co/qYBkPDH3/Picsart-25-04-01-16-25-47-054.png"
-             alt="Logo BossX"
-             class="sidebar-logo"/>
+             alt="Logo BossX" class="sidebar-logo"/>
         <button class="collapse-btn" id="toggleSidebar">☰</button>
       </div>
       <nav class="sidebar-nav">
@@ -303,15 +286,17 @@
       </header>
 
       <main>
-        <!-- Left Column -->
-        <div class="left-column">
+        <!-- Dashboard section -->
+        <div class="left-column" data-section="dash">
           <div class="card">
             <h2>Validasi Masternode</h2>
             <div class="saldo-value" id="mining">0.000000000 BossX</div>
             <div class="timer" id="stopCountdown">Belum berjalan</div>
             <div class="btn-container">
               <button class="power-btn" id="onBtn">
-                <svg viewBox="0 0 24 24"><path d="M12 2v10M5.6 5.6a8 8 0 1 0 11.3 0"/></svg>
+                <svg viewBox="0 0 24 24">
+                  <path d="M12 2v10M5.6 5.6a8 8 0 1 0 11.3 0"/>
+                </svg>
               </button>
             </div>
           </div>
@@ -337,13 +322,14 @@
           </div>
         </div>
 
-        <!-- Right Column -->
-        <div class="right-column">
+        <!-- History & Chart section -->
+        <div class="right-column" data-section="history">
           <div class="card">
             <h2>History Aktivasi</h2>
             <div class="filter-bar">
               <span class="icon">🔍</span>
-              <input type="search" id="filterAktivasi" placeholder="Cari History Aktivasi…"/>
+              <input type="search" id="filterAktivasi"
+                     placeholder="Cari History Aktivasi…"/>
             </div>
             <table>
               <thead>
@@ -356,7 +342,8 @@
             <h2>History Convert</h2>
             <div class="filter-bar">
               <span class="icon">🔍</span>
-              <input type="search" id="filterConvert" placeholder="Cari History Convert…"/>
+              <input type="search" id="filterConvert"
+                     placeholder="Cari History Convert…"/>
             </div>
             <table>
               <thead>
@@ -369,7 +356,8 @@
             <h2>History Validasi</h2>
             <div class="filter-bar">
               <span class="icon">🔍</span>
-              <input type="search" id="filterValidasi" placeholder="Cari History Validasi…"/>
+              <input type="search" id="filterValidasi"
+                     placeholder="Cari History Validasi…"/>
             </div>
             <table>
               <thead>
@@ -389,199 +377,187 @@
     </div>
   </div>
 
+  <!-- Bottom tab bar for mobile portrait -->
+  <nav class="bottom-nav">
+    <button class="tab-btn active" data-tab="dash">🏠</button>
+    <button class="tab-btn" data-tab="history">📜</button>
+  </nav>
+
   <script>
     window.addEventListener('DOMContentLoaded', () => {
       // Element refs
       const container = document.getElementById('container');
       const toggleBtn = document.getElementById('toggleSidebar');
+      const buyBtn    = document.getElementById('buyBtn');
+      const onBtn     = document.getElementById('onBtn');
+      const convertBtn= document.getElementById('convertBtn');
       const amountInput = document.getElementById('amountInput');
-      const buyBtn = document.getElementById('buyBtn');
-      const onBtn = document.getElementById('onBtn');
-      const convertBtn = document.getElementById('convertBtn');
       const walletHistory = document.getElementById('walletHistory');
-      const convertHistory = document.getElementById('convertHistory');
-      const historyBody = document.getElementById('history');
-      const miningLabel = document.getElementById('mining');
-      const stopLabel = document.getElementById('stopCountdown');
-      const countdownLabel = document.getElementById('countdown');
-      const balanceLabel = document.getElementById('balance');
-      const walletLabel = document.getElementById('walletBossX');
-      const usdtLabel = document.getElementById('usdtBalanceCard');
+      const convertHistory= document.getElementById('convertHistory');
+      const historyBody   = document.getElementById('history');
+      const miningLabel   = document.getElementById('mining');
+      const stopLabel     = document.getElementById('stopCountdown');
+      const countdownLabel= document.getElementById('countdown');
+      const balanceLabel  = document.getElementById('balance');
+      const walletLabel   = document.getElementById('walletBossX');
+      const usdtLabel     = document.getElementById('usdtBalanceCard');
 
       // State & constants
-      let mining = 0, balance = 0, walletBossX = 0, usdtBalance = 0;
-      let isMiningActive = false, hasPackage = false;
-      let rewardPerSecond = 0, stopCountdown = 0, countdown = 60;
-      const monthlyYieldRate = 0.10;
-      const contractSeconds = 31 * 24 * 60 * 60;
-      const bossXtoUSDT = 1;
+      let mining=0, balance=0, walletBossX=0, usdtBalance=0;
+      let isMining=false, hasPackage=false;
+      let rewardPerSecond=0, stopSec=0, countdown=60;
+      const monthlyRate=0.10, secInContract=31*24*60*60, bxToUsdt=1;
 
-      // Helpers
-      function formatTime(sec) {
-        const h = String(Math.floor(sec/3600)).padStart(2,'0'),
-              m = String(Math.floor((sec%3600)/60)).padStart(2,'0'),
-              s = String(sec%60).padStart(2,'0');
-        return `${h}:${m}:${s}`;
+      // Helper functions
+      function formatTime(s){ 
+        const h=String(Math.floor(s/3600)).padStart(2,'0'),
+              m=String(Math.floor((s%3600)/60)).padStart(2,'0'),
+              sec=String(s%60).padStart(2,'0');
+        return `${h}:${m}:${sec}`;
       }
-      function formatNow() {
-        const d = new Date();
-        const days = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
+      function now(){ 
+        const d=new Date();
+        const days=["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
         return { hari: days[d.getDay()], tanggal: d.toLocaleDateString("id-ID"), jam: d.toLocaleTimeString("id-ID") };
       }
-      function getSecondsToNext6AM() {
-        const now = new Date(), target = new Date(now);
-        target.setHours(6,0,0,0);
-        if (now >= target) target.setDate(target.getDate()+1);
-        return Math.floor((target - now)/1000);
+      function next6AM(){ 
+        const n=new Date(), t=new Date(n);
+        t.setHours(6,0,0,0);
+        if(n>=t) t.setDate(t.getDate()+1);
+        return Math.floor((t-n)/1000);
       }
-      function updateUSDT() {
-        usdtLabel.textContent = usdtBalance.toFixed(2) + " USDT";
-      }
-      function logAutoClaim(amount) {
-        if (amount <= 0) return;
-        const w = formatNow();
-        const row = document.createElement("tr");
-        row.innerHTML = `<td>${w.hari}</td><td>${w.tanggal}</td><td>${w.jam}</td>
-                         <td>+${amount.toFixed(9)} BossX</td><td>✅</td>`;
+      function updateUsdt(){ usdtLabel.textContent = usdtBalance.toFixed(2)+" USDT"; }
+
+      // Logging
+      function logAuto(a){
+        if(a<=0)return;
+        const w=now();
+        const row=document.createElement("tr");
+        row.innerHTML=`<td>${w.hari}</td><td>${w.tanggal}</td><td>${w.jam}</td>
+                       <td>+${a.toFixed(9)} BossX</td><td>✅</td>`;
         historyBody.prepend(row);
       }
-      function logTx(type, amt, container) {
-        const w = formatNow();
-        const row = document.createElement("tr");
-        row.innerHTML = `<td>${w.hari}</td><td>${w.tanggal} ${w.jam}</td>
-                         <td>${amt}</td><td>${type}</td><td>Aktif</td>`;
-        container.prepend(row);
+      function logTx(type,amt,cont){
+        const w=now();
+        const r=document.createElement("tr");
+        r.innerHTML=`<td>${w.hari}</td><td>${w.tanggal} ${w.jam}</td>
+                     <td>${amt}</td><td>${type}</td><td>Aktif</td>`;
+        cont.prepend(r);
       }
-      function logConvert(bxAmt, usdtAmt) {
-        const w = formatNow();
-        const row = document.createElement("tr");
-        row.innerHTML = `<td>${w.hari}</td><td>${w.tanggal} ${w.jam}</td>
-                         <td>${bxAmt.toFixed(9)}</td><td>${usdtAmt.toFixed(2)}</td><td>✅</td>`;
-        convertHistory.prepend(row);
+      function logCv(bx,usdt){
+        const w=now();
+        const r=document.createElement("tr");
+        r.innerHTML=`<td>${w.hari}</td><td>${w.tanggal} ${w.jam}</td>
+                     <td>${bx.toFixed(9)}</td><td>${usdt.toFixed(2)}</td><td>✅</td>`;
+        convertHistory.prepend(r);
       }
 
       // Attach filters
-      function attachTableFilter(inputId, tbody) {
-        const inputEl = document.getElementById(inputId);
-        inputEl.addEventListener('input', () => {
-          const term = inputEl.value.toLowerCase();
-          Array.from(tbody.rows).forEach(row => {
-            row.style.display = row.textContent.toLowerCase().includes(term) ? '' : 'none';
+      function attachFilter(id,tbody){
+        document.getElementById(id).addEventListener('input',e=>{
+          const t=e.target.value.toLowerCase();
+          Array.from(tbody.rows).forEach(r=>{
+            r.style.display=r.textContent.toLowerCase().includes(t)?'':'none';
           });
         });
       }
-      attachTableFilter('filterAktivasi', walletHistory);
-      attachTableFilter('filterConvert', convertHistory);
-      attachTableFilter('filterValidasi', historyBody);
+      attachFilter('filterAktivasi',walletHistory);
+      attachFilter('filterConvert',convertHistory);
+      attachFilter('filterValidasi',historyBody);
 
       // Sidebar toggle
-      toggleBtn.addEventListener('click', () => {
+      toggleBtn.addEventListener('click',()=>{
         container.classList.toggle('collapsed');
       });
 
-      // Aktivasi logic
-      buyBtn.addEventListener("click", () => {
-        const amt = Number(amountInput.value);
-        if (isNaN(amt) || amt < 50) return alert("Minimal paket adalah 50 BossX.");
-        if (hasPackage) return alert("Paket hanya dapat diaktifkan sekali.");
-        hasPackage = true;
-        rewardPerSecond = (amt * monthlyYieldRate) / contractSeconds;
-        walletBossX += amt;
-        walletLabel.textContent = walletBossX + " BossX";
-        logTx("Aktivasi Paket", amt + " BossX", walletHistory);
-        buyBtn.disabled = true;
+      // Aktivasi Paket
+      buyBtn.addEventListener("click",()=>{
+        const amt=Number(amountInput.value);
+        if(isNaN(amt)||amt<50) return alert("Minimal paket adalah 50 BossX.");
+        if(hasPackage) return alert("Paket hanya dapat diaktifkan sekali.");
+        hasPackage=true;
+        rewardPerSecond=(amt*monthlyRate)/secInContract;
+        walletBossX+=amt; walletLabel.textContent=walletBossX+" BossX";
+        logTx("Aktivasi Paket",amt+" BossX",walletHistory);
+        buyBtn.disabled=true;
       });
 
-      // Power ON logic
-      onBtn.addEventListener("click", () => {
-        if (!hasPackage || isMiningActive) return;
-        isMiningActive = true;
-        onBtn.disabled = true;
-        onBtn.classList.add("active");
-        stopCountdown = getSecondsToNext6AM();
-        countdown = 60;
-        stopLabel.textContent = `Stop validasi jam 06:00 dalam: ${formatTime(stopCountdown)}`;
-
-        const mineInt = setInterval(() => {
-          mining += rewardPerSecond;
-          miningLabel.textContent = mining.toFixed(9) + " BossX";
-        }, 1000);
-
-        const claimInt = setInterval(() => {
-          if (mining > 0) {
-            balance += mining;
-            logAutoClaim(mining);
-            mining = 0;
-            miningLabel.textContent = "0.000000000 BossX";
-            balanceLabel.textContent = balance.toFixed(9) + " BossX";
+      // Power ON/OFF
+      onBtn.addEventListener("click",()=>{
+        if(!hasPackage||isMining) return;
+        isMining=true; onBtn.disabled=true; onBtn.classList.add("active");
+        stopSec=next6AM(); countdown=60;
+        stopLabel.textContent=`Stop validasi jam 06:00 dalam: ${formatTime(stopSec)}`;
+        const mi=setInterval(()=>{
+          mining+=rewardPerSecond;
+          miningLabel.textContent=mining.toFixed(9)+" BossX";
+        },1000);
+        const ci=setInterval(()=>{
+          if(mining>0){
+            balance+=mining; logAuto(mining);
+            mining=0; miningLabel.textContent="0.000000000 BossX";
+            balanceLabel.textContent=balance.toFixed(9)+" BossX";
           }
-        }, 60000);
-
-        const cdInt = setInterval(() => {
-          countdown--;
-          countdownLabel.textContent = `Auto-claim: ${countdown}s`;
-          if (countdown <= 0) countdown = 60;
-        }, 1000);
-
-        const stopInt = setInterval(() => {
-          stopCountdown--;
-          if (stopCountdown > 0) {
-            stopLabel.textContent = `Stop validasi jam 06:00 dalam: ${formatTime(stopCountdown)}`;
+        },60000);
+        const cd=setInterval(()=>{
+          countdown--; countdownLabel.textContent=`Auto-claim: ${countdown}s`;
+          if(countdown<=0) countdown=60;
+        },1000);
+        const si=setInterval(()=>{
+          stopSec--;
+          if(stopSec>0){
+            stopLabel.textContent=`Stop validasi jam 06:00 dalam: ${formatTime(stopSec)}`;
           } else {
-            clearInterval(mineInt);
-            clearInterval(claimInt);
-            clearInterval(cdInt);
-            clearInterval(stopInt);
-            isMiningActive = false;
-            onBtn.disabled = false;
-            onBtn.classList.remove("active");
-            stopLabel.textContent = "06:00 tercapai, klik ON untuk mulai lagi";
+            clearInterval(mi); clearInterval(ci); clearInterval(cd); clearInterval(si);
+            isMining=false; onBtn.disabled=false; onBtn.classList.remove("active");
+            stopLabel.textContent="06:00 tercapai, klik ON untuk mulai lagi";
           }
-        }, 1000);
+        },1000);
       });
 
-      // Convert logic
-      convertBtn.addEventListener("click", () => {
-        if (balance < 1) return alert("Minimal convert adalah 1 BossX");
-        const usdt = balance * bossXtoUSDT;
-        usdtBalance += usdt;
-        updateUSDT();
-        logConvert(balance, usdt);
-        balance = 0;
-        balanceLabel.textContent = "0.000000000 BossX";
+      // Convert to USDT
+      convertBtn.addEventListener("click",()=>{
+        if(balance<1) return alert("Minimal convert adalah 1 BossX");
+        const usdt=balance*bxToUsdt; usdtBalance+=usdt; updateUsdt();
+        logCv(balance,usdt); balance=0;
+        balanceLabel.textContent="0.000000000 BossX";
       });
 
-      // Initialize
-      stopLabel.textContent = "Belum berjalan";
-      countdownLabel.textContent = "Auto-claim: 60s";
-      walletLabel.textContent = walletBossX + " BossX";
-      updateUSDT();
+      // Init displays
+      stopLabel.textContent="Belum berjalan";
+      countdownLabel.textContent="Auto-claim: 60s";
+      walletLabel.textContent=walletBossX+" BossX";
+      updateUsdt();
 
       // Chart.js
       const ctx = document.getElementById('dailyRewardBarChart').getContext('2d');
-      const grad = ctx.createLinearGradient(0, 0, 0, 400);
-      grad.addColorStop(0, 'purple');
-      grad.addColorStop(1, 'gold');
-      new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels: ['Senin','Selasa','Rabu','Kamis','Jumat','Sabtu','Minggu'],
-          datasets: [{
-            label: 'Reward BossX',
-            data: [12.5,15.2,14.8,16.0,17.3,18.1,19.0],
-            backgroundColor: grad
-          }]
-        },
-        options: {
-          scales: {
-            x: { ticks: { color: '#FFD700' } },
-            y: { ticks: { color: '#FFD700' }, beginAtZero: false }
-          },
-          plugins: {
-            legend: { labels: { color: '#FFD700' } }
-          }
-        }
+      const grad=ctx.createLinearGradient(0,0,0,400);
+      grad.addColorStop(0,'purple'); grad.addColorStop(1,'gold');
+      new Chart(ctx,{ type:'bar',
+        data:{ labels:['Senin','Selasa','Rabu','Kamis','Jumat','Sabtu','Minggu'],
+          datasets:[{ label:'Reward BossX', data:[12.5,15.2,14.8,16.0,17.3,18.1,19.0],
+                      backgroundColor:grad }]},
+        options:{ scales:{ x:{ ticks:{ color:'#FFD700' }},
+                         y:{ ticks:{ color:'#FFD700' }, beginAtZero:false }},
+                  plugins:{ legend:{ labels:{ color:'#FFD700' }}}}
       });
+
+      // Bottom nav tab switching (portrait mobile)
+      if(window.matchMedia('(max-width:480px) and (orientation: portrait)').matches){
+        const tabs=document.querySelectorAll('.tab-btn');
+        tabs.forEach(btn=>{
+          btn.addEventListener('click',()=>{
+            tabs.forEach(b=>b.classList.remove('active'));
+            btn.classList.add('active');
+            const t=btn.getAttribute('data-tab');
+            document.querySelectorAll('[data-section]').forEach(sec=>{
+              sec.classList.toggle('active', sec.getAttribute('data-section')===t);
+            });
+          });
+        });
+        // show dashboard by default
+        document.querySelector('[data-section="dash"]').classList.add('active');
+      }
     });
   </script>
 </body>
