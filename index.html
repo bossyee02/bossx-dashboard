@@ -4,6 +4,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Dashboard BossX</title>
+  <!-- Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -14,30 +15,36 @@
       min-height: 100vh;
       display: flex;
     }
+
+    /* Container Grid */
     .container {
-      display: flex; width: 100%;
+      display: grid;
+      grid-template-columns: 250px 1fr;
+      transition: grid-template-columns 0.3s ease;
+      width: 100%;
+      height: 100vh;
     }
+    .container.collapsed {
+      grid-template-columns: 60px 1fr;
+    }
+
     /* Sidebar */
     .sidebar {
-      width: 250px;
       background: rgba(0,0,0,0.4);
-      transition: width 0.3s;
       display: flex;
       flex-direction: column;
-    }
-    .sidebar.collapsed {
-      width: 60px;
     }
     .sidebar-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 20px;
+      padding: 16px;
       border-bottom: 1px solid #FFD700;
     }
     .sidebar-header .logo {
       color: #FFD700;
       font-size: 1.2rem;
+      font-weight: bold;
     }
     .collapse-btn {
       background: none;
@@ -48,24 +55,18 @@
     }
     .sidebar-nav {
       flex: 1;
-      display: flex;
-      flex-direction: column;
-      margin-top: 20px;
+      margin-top: 16px;
     }
     .nav-item {
       display: flex;
       align-items: center;
-      padding: 12px 20px;
+      padding: 12px 16px;
       color: #FFD700;
       text-decoration: none;
       transition: background 0.2s;
     }
-    .nav-item:hover {
-      background: rgba(255,215,0,0.1);
-    }
-    .nav-item.active {
-      background: rgba(255,215,0,0.2);
-    }
+    .nav-item:hover { background: rgba(255,215,0,0.1); }
+    .nav-item.active { background: rgba(255,215,0,0.2); }
     .nav-item .icon {
       font-size: 1.2rem;
       width: 24px;
@@ -75,13 +76,12 @@
       margin-left: 12px;
       white-space: nowrap;
     }
-    .sidebar.collapsed .label {
+    .container.collapsed .label {
       display: none;
     }
 
     /* Content */
     .content {
-      flex: 1;
       display: flex;
       flex-direction: column;
     }
@@ -94,30 +94,41 @@
       border-bottom: 2px solid #FFD700;
     }
     .logo-title {
-      display: flex; align-items: center;
+      display: flex;
+      align-items: center;
     }
     .logo-title img {
-      height: 80px; margin-right: 20px;
+      height: 80px;
+      margin-right: 20px;
     }
     .logo-title h1 {
-      font-size: 1.8rem; color: #FFD700;
+      font-size: 1.8rem;
+      color: #FFD700;
     }
     .user-info {
-      display: flex; align-items: center; gap: 16px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
     }
     .user-info img {
-      width: 80px; height: 80px;
-      border-radius: 50%; border: 2px solid #FFD700;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: 2px solid #FFD700;
       object-fit: cover;
     }
     .user-info .info-text {
-      display: flex; flex-direction: column; line-height: 1.2;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.2;
     }
     .user-info .info-text h2 {
-      font-size: 1.4rem; margin-bottom: 4px;
+      font-size: 1.4rem;
+      margin-bottom: 4px;
     }
     .user-info .info-text p {
-      font-size: 1rem; opacity: 0.85;
+      font-size: 1rem;
+      opacity: 0.85;
     }
 
     main {
@@ -125,88 +136,144 @@
       padding: 30px 20px;
       max-width: 1200px;
       margin: auto;
-      display: flex; gap: 20px; flex-wrap: wrap;
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
     }
     .left-column, .right-column {
-      display: flex; flex-direction: column; gap: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
     }
     .left-column { flex: 1; }
     .right-column { flex: 2; }
 
     .card {
       background-color: rgba(0,0,0,0.3);
-      padding: 20px; border-radius: 12px;
+      padding: 20px;
+      border-radius: 12px;
       border: 1px solid #FFD700;
     }
     .card h2 {
-      margin-bottom: 10px; font-size: 1.4rem;
+      margin-bottom: 10px;
+      font-size: 1.4rem;
       color: #FFD700;
     }
     .saldo-value {
-      font-size: 1.6rem; font-weight: bold;
+      font-size: 1.6rem;
+      font-weight: bold;
       margin-bottom: 8px;
     }
     .timer {
-      font-size: 1rem; margin-bottom: 12px;
+      font-size: 1rem;
+      margin-bottom: 12px;
     }
     .btn-container {
-      display: flex; gap: 12px; flex-wrap: wrap;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
     }
-    .btn, .power-btn { cursor: pointer; transition: all 0.3s; }
+    .btn, .power-btn {
+      cursor: pointer;
+      transition: all 0.3s;
+    }
     .btn {
       padding: 10px 20px;
-      background-color: #FFD700; color: #6a0dad;
-      border: none; border-radius: 8px; font-size: 1rem;
+      background-color: #FFD700;
+      color: #6a0dad;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
     }
     .btn:hover { background-color: #ffec8b; }
     .btn:disabled {
-      background-color: #333; color: #888; cursor: not-allowed;
+      background-color: #333;
+      color: #888;
+      cursor: not-allowed;
     }
     .power-btn {
-      width: 56px; height: 56px;
-      border: 2px solid #888; border-radius: 50%;
+      width: 56px;
+      height: 56px;
+      border: 2px solid #888;
+      border-radius: 50%;
       background-color: #222;
-      display: flex; align-items: center; justify-content: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     .power-btn.active {
-      background-color: #2ecc71; border-color: #27ae60;
+      background-color: #2ecc71;
+      border-color: #27ae60;
     }
     .power-btn svg {
-      width: 28px; height: 28px;
-      stroke: #888; stroke-width: 2; fill: none;
+      width: 28px;
+      height: 28px;
+      stroke: #888;
+      stroke-width: 2;
+      fill: none;
     }
     .power-btn.active svg {
       stroke: #fff;
     }
     input[type="number"] {
-      padding: 8px; width: 150px; border-radius: 6px; border: none;
+      padding: 8px;
+      width: 150px;
+      border-radius: 6px;
+      border: none;
       margin-bottom: 12px;
     }
+
+    /* Table & Filter */
+    .filter-bar {
+      display: flex;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .filter-bar .icon {
+      margin-right: 6px;
+      font-size: 1.2rem;
+    }
+    .filter-bar input {
+      flex: 1;
+      padding: 6px 10px;
+      border: 1px solid #FFD700;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.1);
+      color: #FFD700;
+    }
     table {
-      width: 100%; border-collapse: collapse; margin-top: 10px;
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
     }
     th, td {
-      border: 1px solid #FFD700; padding: 8px;
+      border: 1px solid #FFD700;
+      padding: 8px;
       text-align: center;
     }
     th {
-      background-color: #FFD700; color: #6a0dad;
+      background-color: #FFD700;
+      color: #6a0dad;
     }
     td {
       background-color: rgba(255,255,255,0.1);
       font-size: 0.95rem;
     }
+
     .footer {
-      text-align: center; padding: 16px;
-      font-size: 0.9rem; background: rgba(0,0,0,0.2);
+      text-align: center;
+      padding: 16px;
+      font-size: 0.9rem;
+      background: rgba(0,0,0,0.2);
       color: #FFD700;
     }
   </style>
 </head>
 <body>
 
-  <div class="container">
-    <aside class="sidebar" id="sidebar">
+  <div id="container" class="container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
       <div class="sidebar-header">
         <span class="logo">BossX</span>
         <button class="collapse-btn" id="toggleSidebar">☰</button>
@@ -231,6 +298,7 @@
       </nav>
     </aside>
 
+    <!-- Main Content -->
     <div class="content">
       <header>
         <div class="logo-title">
@@ -249,7 +317,6 @@
       <main>
         <!-- Left Column -->
         <div class="left-column">
-          <!-- Validasi Masternode Card -->
           <div class="card">
             <h2>Validasi Masternode</h2>
             <div class="saldo-value" id="mining">0.000000000 BossX</div>
@@ -260,7 +327,6 @@
               </button>
             </div>
           </div>
-          <!-- Reward Validasi Card -->
           <div class="card">
             <h2>Reward Validasi</h2>
             <div class="saldo-value" id="balance">0.000000000 BossX</div>
@@ -269,7 +335,6 @@
               <button class="btn" id="convertBtn">Convert to USDT</button>
             </div>
           </div>
-          <!-- Paket Node Card -->
           <div class="card">
             <h2>Paket Node</h2>
             <div class="saldo-value"><span id="walletBossX">0</span> BossX</div>
@@ -278,17 +343,21 @@
               <button class="btn" id="buyBtn">Aktivasi Paket</button>
             </div>
           </div>
-          <!-- Balance USDT Card -->
           <div class="card">
             <h2>Balance USDT</h2>
             <div class="saldo-value" id="usdtBalanceCard">0.00 USDT</div>
           </div>
         </div>
+
         <!-- Right Column -->
         <div class="right-column">
           <!-- History Aktivasi -->
           <div class="card">
             <h2>History Aktivasi</h2>
+            <div class="filter-bar">
+              <span class="icon">🔍</span>
+              <input type="search" id="filterAktivasi" placeholder="Cari History Aktivasi…"/>
+            </div>
             <table>
               <thead>
                 <tr><th>Hari</th><th>Waktu</th><th>Jumlah</th><th>Jenis</th><th>Status</th></tr>
@@ -299,6 +368,10 @@
           <!-- History Convert -->
           <div class="card">
             <h2>History Convert</h2>
+            <div class="filter-bar">
+              <span class="icon">🔍</span>
+              <input type="search" id="filterConvert" placeholder="Cari History Convert…"/>
+            </div>
             <table>
               <thead>
                 <tr><th>Hari</th><th>Waktu</th><th>BossX</th><th>USDT</th><th>Status</th></tr>
@@ -309,6 +382,10 @@
           <!-- History Validasi -->
           <div class="card">
             <h2>History Validasi</h2>
+            <div class="filter-bar">
+              <span class="icon">🔍</span>
+              <input type="search" id="filterValidasi" placeholder="Cari History Validasi…"/>
+            </div>
             <table>
               <thead>
                 <tr><th>Hari</th><th>Tanggal</th><th>Jam</th><th>BossX</th><th>Auto-Claim</th></tr>
@@ -329,18 +406,49 @@
   </div>
 
   <script>
-    // Collapse Sidebar
-    const sidebar = document.getElementById('sidebar');
-    const toggleBtn = document.getElementById('toggleSidebar');
-    toggleBtn.addEventListener('click', () => {
-      sidebar.classList.toggle('collapsed');
+    // Sidebar collapse
+    const container = document.getElementById('container');
+    document.getElementById('toggleSidebar').addEventListener('click', () => {
+      container.classList.toggle('collapsed');
     });
 
-    // Chart.js Bar Chart: Tren Reward Harian
+    // Utility: format waktu & tanggal
+    function formatTime(sec) {
+      const h = String(Math.floor(sec/3600)).padStart(2,'0'),
+            m = String(Math.floor((sec%3600)/60)).padStart(2,'0'),
+            s = String(sec%60).padStart(2,'0');
+      return `${h}:${m}:${s}`;
+    }
+    function formatNow() {
+      const d = new Date();
+      const days = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
+      return {
+        hari: days[d.getDay()],
+        tanggal: d.toLocaleDateString("id-ID"),
+        jam: d.toLocaleTimeString("id-ID")
+      };
+    }
+
+    // Table filter
+    function attachTableFilter(inputId, tableBodyId) {
+      const inputEl = document.getElementById(inputId);
+      const tbody  = document.getElementById(tableBodyId);
+      inputEl.addEventListener('input', () => {
+        const term = inputEl.value.toLowerCase();
+        Array.from(tbody.rows).forEach(row => {
+          row.style.display = row.textContent.toLowerCase().includes(term) ? '' : 'none';
+        });
+      });
+    }
+    attachTableFilter('filterAktivasi', 'walletHistory');
+    attachTableFilter('filterConvert',   'convertHistory');
+    attachTableFilter('filterValidasi',  'history');
+
+    // Chart.js: Tren Reward Harian (Bar Chart)
     const ctx = document.getElementById('dailyRewardBarChart').getContext('2d');
-    const grad = ctx.createLinearGradient(0, 0, 0, 400);
-    grad.addColorStop(0, 'purple');
-    grad.addColorStop(1, 'gold');
+    const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+    gradient.addColorStop(0, 'purple');
+    gradient.addColorStop(1, 'gold');
     new Chart(ctx, {
       type: 'bar',
       data: {
@@ -348,7 +456,7 @@
         datasets: [{
           label: 'Reward BossX',
           data: [12.5,15.2,14.8,16.0,17.3,18.1,19.0],
-          backgroundColor: grad
+          backgroundColor: gradient
         }]
       },
       options: {
@@ -361,6 +469,8 @@
         }
       }
     });
+
+    // (Optional) You can add your existing mining/auto-claim/convert logic here...
   </script>
 </body>
 </html>
