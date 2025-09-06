@@ -22,8 +22,8 @@
     }
     .logo-title { display: flex; align-items: center; }
     .logo-title img {
-      height: 60px;      /* diperbesar dari 40px menjadi 60px */
-      margin-right: 16px;
+      height: 80px;      /* diperbesar lagi dari 60px menjadi 80px */
+      margin-right: 20px;
     }
     .logo-title h1 {
       margin: 0;
@@ -66,9 +66,7 @@
       font-size: 1em;
       color: #FFD700;
     }
-    .btn-container {
-      display: flex; gap: 15px; margin-top: 20px; flex-wrap: wrap;
-    }
+    .btn-container { display: flex; gap: 15px; margin-top: 20px; flex-wrap: wrap; }
     .btn {
       padding: 10px 20px;
       font-size: 1em;
@@ -79,10 +77,7 @@
       cursor: pointer;
       transition: background-color 0.3s, box-shadow 0.3s;
     }
-    .btn:hover {
-      background-color: #ffec8b;
-      box-shadow: 0 0 10px #FFD700;
-    }
+    .btn:hover { background-color: #ffec8b; box-shadow: 0 0 10px #FFD700; }
     .btn:disabled {
       background-color: #333;
       color: #888;
@@ -121,9 +116,7 @@
       border-radius: 8px;
     }
     table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 10px;
+      width: 100%; border-collapse: collapse; margin-top: 10px;
     }
     th, td {
       border: 1px solid #FFD700;
@@ -140,10 +133,7 @@
       font-size: 0.95em;
     }
     .footer {
-      text-align: center;
-      padding: 20px;
-      font-size: 0.9em;
-      color: #FFD700;
+      text-align: center; padding: 20px; font-size: 0.9em; color: #FFD700;
     }
   </style>
 </head>
@@ -214,18 +204,14 @@
         <div class="card">
           <h2>History Aktivasi</h2>
           <table>
-            <thead>
-              <tr><th>Waktu</th><th>Jenis</th><th>Jumlah</th><th>Status</th></tr>
-            </thead>
+            <thead><tr><th>Waktu</th><th>Jenis</th><th>Jumlah</th><th>Status</th></tr></thead>
             <tbody id="walletHistory"></tbody>
           </table>
         </div>
         <div class="card">
           <h2>History Convert</h2>
           <table>
-            <thead>
-              <tr><th>Waktu</th><th>Jumlah BossX</th><th>Jumlah USDT</th><th>Status</th></tr>
-            </thead>
+            <thead><tr><th>Waktu</th><th>Jumlah BossX</th><th>Jumlah USDT</th><th>Status</th></tr></thead>
             <tbody id="convertHistory"></tbody>
           </table>
         </div>
@@ -274,16 +260,11 @@
     function formatNow() {
       const now = new Date();
       const days = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
-      return {
-        hari: days[now.getDay()],
-        tanggal: now.toLocaleDateString("id-ID"),
-        jam: now.toLocaleTimeString("id-ID")
-      };
+      return { hari: days[now.getDay()], tanggal: now.toLocaleDateString("id-ID"), jam: now.toLocaleTimeString("id-ID") };
     }
 
     function getSecondsToNext6AM() {
-      const now = new Date();
-      const target = new Date(now);
+      const now = new Date(), target = new Date(now);
       target.setHours(6,0,0,0);
       if (now >= target) target.setDate(target.getDate() + 1);
       return Math.floor((target - now) / 1000);
@@ -297,13 +278,7 @@
       if (amount <= 0) return;
       const w = formatNow();
       const row = document.createElement("tr");
-      row.innerHTML = `
-        <td>${w.hari}</td>
-        <td>${w.tanggal}</td>
-        <td>${w.jam}</td>
-        <td>+${amount.toFixed(9)} BossX</td>
-        <td>✅</td>
-      `;
+      row.innerHTML = `<td>${w.hari}</td><td>${w.tanggal}</td><td>${w.jam}</td><td>+${amount.toFixed(9)} BossX</td><td>✅</td>`;
       historyBody.prepend(row);
     }
 
@@ -317,8 +292,7 @@
     function updateStopCountdown() {
       if (stopCountdown > 0) {
         stopCountdown--;
-        stopLabel.textContent =
-          "Stop validasi setiap hari jam 06:00 dalam: " + formatTime(stopCountdown);
+        stopLabel.textContent = "Stop validasi setiap hari jam 06:00 dalam: " + formatTime(stopCountdown);
       } else {
         clearInterval(intervalMining);
         clearInterval(intervalClaim);
@@ -358,8 +332,7 @@
       onBtn.classList.add("active");
       stopCountdown = getSecondsToNext6AM();
       countdown = 60;
-      stopLabel.textContent =
-        "Stop validasi setiap hari jam 06:00 dalam: " + formatTime(stopCountdown);
+      stopLabel.textContent = "Stop validasi setiap hari jam 06:00 dalam: " + formatTime(stopCountdown);
       intervalMining    = setInterval(updateMining,    1000);
       intervalClaim     = setInterval(autoClaim,       60000);
       intervalCountdown = setInterval(updateCountdown,  1000);
