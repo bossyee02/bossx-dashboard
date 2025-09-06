@@ -1,3 +1,6 @@
+Berikut versi **full** `index.html` dengan penambahan satu card baru **Riwayat Convert** yang mencatat setiap konversi BossX ke USDT:
+
+```html
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -40,8 +43,7 @@
       margin-top: 0; font-size: 1.4em; color: #FFD700;
     }
     .saldo-value {
-      font-size: 1.6em; font-weight: bold; margin-top: 10px;
-      color: #FFD700;
+      font-size: 1.6em; font-weight: bold; margin-top: 10px; color: #FFD700;
     }
     .btn-container {
       display: flex; gap: 15px; margin-top: 20px; flex-wrap: wrap;
@@ -122,8 +124,7 @@
           <table>
             <thead>
               <tr>
-                <th>Hari</th><th>Tanggal</th><th>Jam</th>
-                <th>Jumlah BossX</th><th>Auto-Claim</th>
+                <th>Hari</th><th>Tanggal</th><th>Jam</th><th>Jumlah BossX</th><th>Auto-Claim</th>
               </tr>
             </thead>
             <tbody id="history"></tbody>
@@ -141,11 +142,25 @@
             <tbody id="walletHistory"></tbody>
           </table>
         </div>
+
+        <div class="card">
+          <h2>Riwayat Convert</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Waktu</th><th>Jumlah BossX</th><th>Jumlah USDT</th><th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="convertHistory"></tbody>
+          </table>
+        </div>
       </div>
     </div>
   </main>
 
-  <div class="footer">©2025 Public Dashboard BossX • Terbuka untuk umum 💼✨</div>
+  <div class="footer">
+    ©2025 Public Dashboard BossX • Terbuka untuk umum 💼✨
+  </div>
 
   <script>
     let mining = 0;
@@ -253,6 +268,18 @@
       document.getElementById("walletHistory").prepend(row);
     }
 
+    function logConvertHistory(bossX, usdt) {
+      const waktu = new Date().toLocaleString("id-ID");
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${waktu}</td>
+        <td>${bossX.toFixed(9)}</td>
+        <td>${usdt.toFixed(2)}</td>
+        <td>✅</td>
+      `;
+      document.getElementById("convertHistory").prepend(row);
+    }
+
     function convertToUSDT() {
       if (balance <= 0) {
         alert("Tidak ada reward untuk dikonversi");
@@ -261,6 +288,7 @@
       const usdt = balance * bossXtoUSDT;
       usdtBalance += usdt;
       logWalletTransaction("Convert Reward", "+" + usdt.toFixed(2) + " USDT", "✅");
+      logConvertHistory(balance, usdt);
       balance = 0;
       document.getElementById("balance").textContent = "0,000000000 BossX";
       updateWalletDisplay();
@@ -279,21 +307,19 @@
     }
 
     // event listeners
-    document.getElementById("onBtn").addEventListener("click", function() {
+    document.getElementById("onBtn").addEventListener("click", () => {
       if (isMiningActive) return;
       isMiningActive = true;
-      this.disabled = true;
+      document.getElementById("onBtn").disabled = true;
       countdown = 60;
       stopCountdown = getSecondsToNext6AM();
       document.getElementById("stopCountdown").textContent =
         "Berhenti otomatis dalam: " + formatTime(stopCountdown);
-
       intervalMining = setInterval(updateMining, 1000);
       intervalClaim  = setInterval(autoClaim, 60000);
       intervalTimer  = setInterval(updateCountdown, 1000);
       intervalStop   = setInterval(updateStopCountdown, 1000);
     });
-
     document.getElementById("buyBtn").addEventListener("click", aktivkanMasternode);
     document.getElementById("convertBtn").addEventListener("click", convertToUSDT);
 
@@ -306,3 +332,4 @@
   </script>
 </body>
 </html>
+```
