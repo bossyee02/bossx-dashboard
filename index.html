@@ -40,8 +40,7 @@
       margin-top: 0; font-size: 1.4em; color: #FFD700;
     }
     .saldo-value {
-      font-size: 1.6em; font-weight: bold; margin-top: 10px;
-      color: #FFD700;
+      font-size: 1.6em; font-weight: bold; margin-top: 10px; color: #FFD700;
     }
     .btn-container {
       display: flex; gap: 15px; margin-top: 20px; flex-wrap: wrap;
@@ -53,9 +52,7 @@
       transition: background-color 0.3s, box-shadow 0.3s;
     }
     .btn:hover { background-color: #ffec8b; box-shadow: 0 0 10px #FFD700; }
-    .timer {
-      font-size: 1em; margin-top: 10px; color: #FFD700;
-    }
+    .timer { font-size: 1em; margin-top: 10px; color: #FFD700; }
     input[type="number"] {
       padding: 10px; border-radius: 8px; border: none;
       width: 200px; margin-top: 10px;
@@ -88,7 +85,7 @@
       <div class="left-column">
         <div class="card">
           <h2>Masternodes Running</h2>
-          <div class="saldo-value" id="mining">0 BossX</div>
+          <div class="saldo-value" id="mining">0,000000000 BossX</div>
           <div class="timer" id="stopCountdown">Berhenti otomatis dalam: 00:00:00</div>
           <div class="btn-container">
             <button class="btn" id="onBtn">ON</button>
@@ -97,7 +94,7 @@
 
         <div class="card">
           <h2>Reward Masternode</h2>
-          <div class="saldo-value" id="balance">0 BossX</div>
+          <div class="saldo-value" id="balance">0,000000000 BossX</div>
           <div class="timer" id="countdown">Auto-claim dalam: 60 detik</div>
         </div>
 
@@ -146,24 +143,20 @@
     let mining = 0;
     let balance = 0;
     let walletBossX = 0;
-    const ratePerDetik = 1; // ganti ke 0.000000001 untuk produksi
+    const ratePerDetik = 0.000000001;
     let intervalMining, intervalClaim, intervalTimer, intervalStop;
     let countdown = 60;
     let stopCountdown = 0;
     let isMiningActive = false;
 
-    // Hitung detik sampai 06:00 berikutnya
     function getSecondsToNext6AM() {
       const now = new Date();
       let target = new Date(now);
       target.setHours(6,0,0,0);
-      if (now >= target) {
-        target.setDate(target.getDate() + 1);
-      }
+      if (now >= target) target.setDate(target.getDate() + 1);
       return Math.floor((target - now) / 1000);
     }
 
-    // Format HH:MM:SS
     function formatTime(sec) {
       const h = String(Math.floor(sec/3600)).padStart(2,'0');
       const m = String(Math.floor((sec%3600)/60)).padStart(2,'0');
@@ -171,7 +164,6 @@
       return `${h}:${m}:${s}`;
     }
 
-    // Update timer ke 06:00
     function updateStopCountdown() {
       if (stopCountdown > 0) {
         stopCountdown--;
@@ -189,14 +181,12 @@
       }
     }
 
-    // Tambang BossX
     function updateMining() {
       mining += ratePerDetik;
       document.getElementById("mining").textContent =
-        Math.floor(mining) + " BossX";
+        mining.toFixed(9) + " BossX";
     }
 
-    // Auto-claim tiap 60 detik
     function updateCountdown() {
       countdown--;
       document.getElementById("countdown").textContent =
@@ -204,7 +194,6 @@
       if (countdown <= 0) countdown = 60;
     }
 
-    // Format waktu sekarang
     function formatWaktuSekarang() {
       const now = new Date();
       const hariArr = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
@@ -215,14 +204,16 @@
       };
     }
 
-    // Riwayat auto-claim
     function tambahHistoryAutoClaim(amount) {
       if (amount <= 0) return;
       const w = formatWaktuSekarang();
       const row = document.createElement("tr");
       row.innerHTML = `
-        <td>${w.hari}</td><td>${w.tanggal}</td><td>${w.jam}</td>
-        <td>+${Math.floor(amount)} BossX</td><td>✅</td>
+        <td>${w.hari}</td>
+        <td>${w.tanggal}</td>
+        <td>${w.jam}</td>
+        <td>+${amount.toFixed(9)} BossX</td>
+        <td>✅</td>
       `;
       document.getElementById("history").prepend(row);
     }
@@ -232,12 +223,11 @@
       balance += mining;
       tambahHistoryAutoClaim(mining);
       mining = 0;
-      document.getElementById("mining").textContent = "0 BossX";
+      document.getElementById("mining").textContent = "0,000000000 BossX";
       document.getElementById("balance").textContent =
-        Math.floor(balance) + " BossX";
+        balance.toFixed(9) + " BossX";
     }
 
-    // Tombol ON
     document.getElementById("onBtn").addEventListener("click", function() {
       if (isMiningActive) return;
       isMiningActive = true;
@@ -253,39 +243,10 @@
       intervalStop   = setInterval(updateStopCountdown, 1000);
     });
 
-    // Update tampilan awal
+    // Inisialisasi
     document.getElementById("stopCountdown").textContent =
       "Berhenti otomatis dalam: " + formatTime(getSecondsToNext6AM());
-
-    function updateWalletDisplay() {
-      document.getElementById("walletBossX").textContent = walletBossX;
-    }
-
-    function logWalletTransaction(jenis, jumlah, status) {
-      const waktu = new Date().toLocaleString("id-ID");
-      const row = document.createElement("tr");
-      row.innerHTML = `
-        <td>${waktu}</td><td>${jenis}</td><td>${jumlah}</td><td>${status}</td>
-      `;
-      document.getElementById("walletHistory").prepend(row);
-    }
-
-    function aktivkanMasternode() {
-      const amt = parseInt(document.getElementById("amountInput").value, 10);
-      if (isNaN(amt) || amt <= 0) {
-        alert("Masukkan jumlah investasi BossX yang valid");
-        return;
-      }
-      walletBossX += amt;
-      updateWalletDisplay();
-      logWalletTransaction("Aktivasi Masternode", "+" + amt + " BossX", "✅");
-      document.getElementById("onBtn").click();
-    }
-
-    // Inisialisasi wallet dan timer
     updateWalletDisplay();
-    document.getElementById("countdown").textContent =
-      "Auto-claim dalam: " + countdown + " detik";
   </script>
 </body>
 </html>
