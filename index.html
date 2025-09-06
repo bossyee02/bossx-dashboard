@@ -48,7 +48,6 @@
       margin: 0;
       line-height: 1.2;
     }
-
     main {
       padding: 30px 20px;
       max-width: 1200px;
@@ -66,7 +65,6 @@
     }
     .left-column { flex: 1; }
     .right-column { flex: 2; }
-
     .card {
       background-color: rgba(0,0,0,0.3);
       padding: 20px;
@@ -183,7 +181,7 @@
       <h1>Dashboard BossX</h1>
     </div>
     <div class="user-info">
-      <img src="https://i.ibb.co/your-avatar.png" alt="Avatar Fery M"/>
+      <img src="https://i.ibb.co/gbVsGLy0/FB-IMG-1617237754232.jpg" alt="Avatar Fery M"/>
       <div>👤 <strong>Fery M</strong></div>
       <div>🪪 Validator ID: <strong>805</strong></div>
     </div>
@@ -203,7 +201,6 @@
             </button>
           </div>
         </div>
-
         <div class="card">
           <h2>Reward Validasi</h2>
           <div class="saldo-value" id="balance">0.000000000 BossX</div>
@@ -212,7 +209,6 @@
             <button class="btn" id="convertBtn">Convert to USDT</button>
           </div>
         </div>
-
         <div class="card">
           <h2>Paket Node</h2>
           <div class="saldo-value"><span id="walletBossX">0</span> BossX</div>
@@ -221,7 +217,6 @@
             <button class="btn" id="buyBtn">Aktivasi Paket</button>
           </div>
         </div>
-
         <div class="card">
           <h2>Balance USDT</h2>
           <div class="saldo-value" id="usdtBalanceCard">0.00 USDT</div>
@@ -234,33 +229,25 @@
           <h2>History Aktivasi</h2>
           <table>
             <thead>
-              <tr>
-                <th>Hari</th><th>Waktu</th><th>Jumlah</th><th>Jenis</th><th>Status</th>
-              </tr>
+              <tr><th>Hari</th><th>Waktu</th><th>Jumlah</th><th>Jenis</th><th>Status</th></tr>
             </thead>
             <tbody id="walletHistory"></tbody>
           </table>
         </div>
-
         <div class="card">
           <h2>History Convert</h2>
           <table>
             <thead>
-              <tr>
-                <th>Hari</th><th>Waktu</th><th>Jumlah BossX</th><th>Jumlah USDT</th><th>Status</th>
-              </tr>
+              <tr><th>Hari</th><th>Waktu</th><th>Jumlah BossX</th><th>Jumlah USDT</th><th>Status</th></tr>
             </thead>
             <tbody id="convertHistory"></tbody>
           </table>
         </div>
-
         <div class="card">
           <h2>History Validasi</h2>
           <table>
             <thead>
-              <tr>
-                <th>Hari</th><th>Tanggal</th><th>Jam</th><th>Jumlah BossX</th><th>Auto-Claim</th>
-              </tr>
+              <tr><th>Hari</th><th>Tanggal</th><th>Jam</th><th>Jumlah BossX</th><th>Auto-Claim</th></tr>
             </thead>
             <tbody id="history"></tbody>
           </table>
@@ -310,11 +297,7 @@
     function formatNow() {
       const d = new Date();
       const days = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
-      return {
-        hari: days[d.getDay()],
-        tanggal: d.toLocaleDateString("id-ID"),
-        jam: d.toLocaleTimeString("id-ID")
-      };
+      return { hari: days[d.getDay()], tanggal: d.toLocaleDateString("id-ID"), jam: d.toLocaleTimeString("id-ID") };
     }
     function getSecondsToNext6AM() {
       const now = new Date(), target = new Date(now);
@@ -329,41 +312,25 @@
       if (amount <= 0) return;
       const w = formatNow();
       const row = document.createElement("tr");
-      row.innerHTML = `
-        <td>${w.hari}</td><td>${w.tanggal}</td><td>${w.jam}</td>
-        <td>+${amount.toFixed(9)} BossX</td><td>✅</td>
-      `;
+      row.innerHTML = `<td>${w.hari}</td><td>${w.tanggal}</td><td>${w.jam}</td><td>+${amount.toFixed(9)} BossX</td><td>✅</td>`;
       historyBody.prepend(row);
     }
     function logTx(jenis, jumlah, container) {
       const w = formatNow();
       const row = document.createElement("tr");
-      row.innerHTML = `
-        <td>${w.hari}</td>
-        <td>${w.tanggal} ${w.jam}</td>
-        <td>${jumlah}</td>
-        <td>${jenis}</td>
-        <td>Aktif</td>
-      `;
+      row.innerHTML = `<td>${w.hari}</td><td>${w.tanggal} ${w.jam}</td><td>${jumlah}</td><td>${jenis}</td><td>Aktif</td>`;
       container.prepend(row);
     }
     function logConvert(bxAmt, usdtAmt) {
       const w = formatNow();
       const row = document.createElement("tr");
-      row.innerHTML = `
-        <td>${w.hari}</td>
-        <td>${w.tanggal} ${w.jam}</td>
-        <td>${bxAmt.toFixed(9)}</td>
-        <td>${usdtAmt.toFixed(2)}</td>
-        <td>✅</td>
-      `;
+      row.innerHTML = `<td>${w.hari}</td><td>${w.tanggal} ${w.jam}</td><td>${bxAmt.toFixed(9)}</td><td>${usdtAmt.toFixed(2)}</td><td>✅</td>`;
       convertHistory.prepend(row);
     }
     function updateStopCountdown() {
       if (stopCountdown > 0) {
         stopCountdown--;
-        stopLabel.textContent =
-          "Stop validasi setiap hari jam 06:00 dalam: " + formatTime(stopCountdown);
+        stopLabel.textContent = "Stop validasi setiap hari jam 06:00 dalam: " + formatTime(stopCountdown);
       } else {
         clearInterval(intervalMining);
         clearInterval(intervalClaim);
@@ -392,7 +359,6 @@
       miningLabel.textContent = "0.000000000 BossX";
       balanceLabel.textContent = balance.toFixed(9) + " BossX";
     }
-
     onBtn.addEventListener("click", () => {
       if (!hasPackage || isMiningActive) return;
       isMiningActive = true;
@@ -400,8 +366,7 @@
       onBtn.classList.add("active");
       stopCountdown = getSecondsToNext6AM();
       countdown = 60;
-      stopLabel.textContent =
-        "Stop validasi setiap hari jam 06:00 dalam: " + formatTime(stopCountdown);
+      stopLabel.textContent = "Stop validasi setiap hari jam 06:00 dalam: " + formatTime(stopCountdown);
       intervalMining    = setInterval(updateMining,    1000);
       intervalClaim     = setInterval(autoClaim,       60000);
       intervalCountdown = setInterval(updateCountdown, 1000);
