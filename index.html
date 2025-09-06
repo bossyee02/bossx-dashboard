@@ -145,6 +145,7 @@
             </button>
           </div>
         </div>
+
         <div class="card">
           <h2>Reward Validasi</h2>
           <div class="saldo-value" id="balance">0.000000000 BossX</div>
@@ -153,6 +154,7 @@
             <button class="btn" id="convertBtn">Convert to USDT</button>
           </div>
         </div>
+
         <div class="card">
           <h2>Paket Node</h2>
           <div class="saldo-value"><span id="walletBossX">0</span> BossX</div>
@@ -162,6 +164,7 @@
             <button class="btn" id="resetBtn">Reset Test</button>
           </div>
         </div>
+
         <div class="card">
           <h2>Balance USDT</h2>
           <div class="saldo-value" id="usdtBalanceCard">0.00 USDT</div>
@@ -174,11 +177,18 @@
           <h2>History Aktivasi</h2>
           <table>
             <thead>
-              <tr><th>Waktu</th><th>Jumlah</th><th>Jenis</th><th>Status</th></tr>
+              <tr>
+                <th>Hari</th>
+                <th>Waktu</th>
+                <th>Jumlah</th>
+                <th>Jenis</th>
+                <th>Status</th>
+              </tr>
             </thead>
             <tbody id="walletHistory"></tbody>
           </table>
         </div>
+
         <div class="card">
           <h2>History Convert</h2>
           <table>
@@ -188,6 +198,7 @@
             <tbody id="convertHistory"></tbody>
           </table>
         </div>
+
         <div class="card">
           <h2>History Validasi</h2>
           <table>
@@ -213,6 +224,7 @@
         rewardPerSecond = 0,
         stopCountdown = 0,
         countdown = 60;
+    let intervalMining, intervalClaim, intervalCountdown, intervalStop;
 
     const monthlyYieldRate = 0.10;
     const contractSeconds  = 31 * 24 * 60 * 60;
@@ -231,7 +243,6 @@
     const historyBody    = document.getElementById("history");
     const walletHistory  = document.getElementById("walletHistory");
     const convertHistory = document.getElementById("convertHistory");
-    let intervalMining, intervalClaim, intervalCountdown, intervalStop;
 
     function formatTime(sec) {
       const h = String(Math.floor(sec/3600)).padStart(2,'0'),
@@ -240,12 +251,12 @@
       return `${h}:${m}:${s}`;
     }
     function formatNow() {
-      const now = new Date();
+      const d = new Date();
       const days = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
       return {
-        hari: days[now.getDay()],
-        tanggal: now.toLocaleDateString("id-ID"),
-        jam: now.toLocaleTimeString("id-ID")
+        hari: days[d.getDay()],
+        tanggal: d.toLocaleDateString("id-ID"),
+        jam: d.toLocaleTimeString("id-ID")
       };
     }
     function getSecondsToNext6AM() {
@@ -270,10 +281,14 @@
     }
 
     function logTx(jenis, jumlah, container) {
-      const time = new Date().toLocaleString("id-ID");
-      const row  = document.createElement("tr");
+      const now = formatNow();
+      const row = document.createElement("tr");
       row.innerHTML = `
-        <td>${time}</td><td>${jumlah}</td><td>${jenis}</td><td>Aktif</td>
+        <td>${now.hari}</td>
+        <td>${now.tanggal} ${now.jam}</td>
+        <td>${jumlah}</td>
+        <td>${jenis}</td>
+        <td>Aktif</td>
       `;
       container.prepend(row);
     }
@@ -281,8 +296,8 @@
     function updateStopCountdown() {
       if (stopCountdown > 0) {
         stopCountdown--;
-        stopLabel.textContent = 
-          "Stop validasi setiap hari jam 06:00 dalam: "+formatTime(stopCountdown);
+        stopLabel.textContent =
+          "Stop validasi setiap hari jam 06:00 dalam: " + formatTime(stopCountdown);
       } else {
         clearInterval(intervalMining);
         clearInterval(intervalClaim);
@@ -300,7 +315,7 @@
     }
     function updateCountdown() {
       countdown--;
-      countdownLabel.textContent = "Auto-claim dalam: "+countdown+" detik";
+      countdownLabel.textContent = "Auto-claim dalam: " + countdown + " detik";
       if (countdown <= 0) countdown = 60;
     }
     function autoClaim() {
@@ -319,8 +334,8 @@
       onBtn.classList.add("active");
       stopCountdown = getSecondsToNext6AM();
       countdown = 60;
-      stopLabel.textContent = 
-        "Stop validasi setiap hari jam 06:00 dalam: "+formatTime(stopCountdown);
+      stopLabel.textContent =
+        "Stop validasi setiap hari jam 06:00 dalam: " + formatTime(stopCountdown);
       intervalMining    = setInterval(updateMining,    1000);
       intervalClaim     = setInterval(autoClaim,       60000);
       intervalCountdown = setInterval(updateCountdown, 1000);
@@ -336,10 +351,10 @@
       if (hasPackage) {
         return alert("Paket hanya dapat diaktifkan sekali.");
       }
-      logTx("Aktivasi Paket", amt+" BossX", walletHistory);
+      logTx("Aktivasi Paket", amt + " BossX", walletHistory);
       walletBossX += amt;
-      walletLabel.textContent = walletBossX+" BossX";
-      rewardPerSecond = (amt*monthlyYieldRate)/contractSeconds;
+      walletLabel.textContent = walletBossX + " BossX";
+      rewardPerSecond = (amt * monthlyYieldRate) / contractSeconds;
       hasPackage = true;
       buyBtn.disabled = true;
     });
@@ -355,15 +370,20 @@
       const usdt = balance * bossXtoUSDT;
       usdtBalance += usdt;
       updateUSDTDisplay();
-      logTx("Convert Reward", balance.toFixed(9)+" BossX → "+usdt.toFixed(2)+" USDT", convertHistory);
+      logTx(
+        "Convert Reward",
+        balance.toFixed(9) + " BossX → " + usdt.toFixed(2) + " USDT",
+        convertHistory
+      );
       balance = 0;
       balanceLabel.textContent = "0.000000000 BossX";
     });
 
-    // initialize
-    stopLabel.textContent      = "Stop validasi setiap hari jam 06:00 dalam: Belum berjalan";
+    // inisialisasi
+    stopLabel.textContent      =
+      "Stop validasi setiap hari jam 06:00 dalam: Belum berjalan";
     countdownLabel.textContent = "Auto-claim dalam: 60 detik";
-    walletLabel.textContent    = walletBossX+" BossX";
+    walletLabel.textContent    = walletBossX + " BossX";
     updateUSDTDisplay();
   </script>
 </body>
