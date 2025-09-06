@@ -8,66 +8,92 @@
     * { box-sizing: border-box; }
     body {
       margin: 0;
-      font-family: 'Segoe UI',sans-serif;
-      background: linear-gradient(135deg,#6a0dad,#ff69b4);
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #6a0dad, #ff69b4);
       color: #FFD700;
     }
     header {
-      background: rgba(0,0,0,0.3);
+      background-color: rgba(0,0,0,0.3);
       padding: 20px 40px;
       display: flex; justify-content: space-between; align-items: center;
-      border-bottom:2px solid #FFD700;
+      border-bottom: 2px solid #FFD700;
     }
-    .logo-title h1 { margin:0; font-size:1.8em; }
-    .user-info { text-align:right; }
-    .user-info div { margin:2px 0; }
+    .logo-title h1 { margin: 0; font-size: 1.8em; }
+    .user-info { text-align: right; }
+    .user-info div { margin: 2px 0; font-size: 1em; }
 
-    main { padding:30px 20px; max-width:1200px; margin:auto; }
-    .main-container { display:flex; gap:20px; flex-wrap:wrap; }
-    .left-column { flex:1; display:flex; flex-direction:column; gap:20px; }
-    .right-column { flex:2; display:flex; flex-direction:column; gap:20px; }
+    main {
+      padding: 30px 20px; max-width: 1200px; margin: auto;
+    }
+    .main-container {
+      display: flex; gap: 20px; flex-wrap: wrap;
+    }
+    .left-column {
+      flex: 1; display: flex; flex-direction: column; gap: 20px;
+    }
+    .right-column {
+      flex: 2; display: flex; flex-direction: column; gap: 20px;
+    }
 
     .card {
-      background:rgba(0,0,0,0.3);
-      padding:20px; border-radius:12px;
-      border:1px solid #FFD700;
+      background-color: rgba(0,0,0,0.3);
+      padding: 20px; border-radius: 12px;
+      border: 1px solid #FFD700;
     }
-    .card h2 { margin-top:0; font-size:1.4em; color:#FFD700; }
+    .card h2 {
+      margin-top: 0; font-size: 1.4em; color: #FFD700;
+    }
     .saldo-value {
-      margin-top:10px; font-size:1.6em; font-weight:bold; color:#FFD700;
+      margin-top: 10px; font-size: 1.6em; font-weight: bold;
+      color: #FFD700;
     }
-    .timer { margin-top:10px; font-size:1em; color:#FFD700; }
+    .timer {
+      margin-top: 10px; font-size: 1em; color: #FFD700;
+    }
     .btn-container {
-      display:flex; gap:15px; margin-top:20px; flex-wrap:wrap;
+      display: flex; gap: 15px; margin-top: 20px;
+      flex-wrap: wrap;
     }
     .btn {
-      padding:10px 20px; font-size:1em;
-      background:#FFD700; color:#6a0dad;
-      border:none; border-radius:8px; cursor:pointer;
-      transition:0.3s;
+      padding: 10px 20px; font-size: 1em;
+      background-color: #FFD700; color: #6a0dad;
+      border: none; border-radius: 8px; cursor: pointer;
+      transition: background-color 0.3s, box-shadow 0.3s;
     }
-    .btn:hover { background:#ffec8b; }
+    .btn:hover {
+      background-color: #ffec8b; box-shadow: 0 0 10px #FFD700;
+    }
     .btn:disabled {
-      background:#333; color:#888; cursor:not-allowed;
+      background-color: #333; color: #888; cursor: not-allowed;
     }
     input[type="number"] {
-      width:200px; padding:10px; border:none; border-radius:8px;
-      margin-top:10px;
+      margin-top: 10px; padding: 10px; width: 200px;
+      border: none; border-radius: 8px;
     }
     table {
-      width:100%; border-collapse:collapse; margin-top:10px;
+      width: 100%; border-collapse: collapse; margin-top: 10px;
     }
     th, td {
-      border:1px solid #FFD700; padding:10px; text-align:center;
+      border: 1px solid #FFD700; padding: 10px; text-align: center;
     }
-    th { background:#FFD700; color:#6a0dad; }
-    td { background:rgba(255,255,255,0.1); color:#FFD700; }
-    .footer { text-align:center; padding:20px; color:#FFD700; }
+    th {
+      background-color: #FFD700; color: #6a0dad;
+    }
+    td {
+      background-color: rgba(255,255,255,0.1); color: #FFD700;
+      font-size: 0.95em;
+    }
+    .footer {
+      text-align: center; padding: 20px; font-size: 0.9em;
+      color: #FFD700;
+    }
   </style>
 </head>
 <body>
   <header>
-    <div class="logo-title"><h1>Public Dashboard BossX</h1></div>
+    <div class="logo-title">
+      <h1>Public Dashboard BossX</h1>
+    </div>
     <div class="user-info">
       <div>👤 Username: <strong>boss</strong></div>
       <div>🪪 Profil ID: <strong>805</strong></div>
@@ -76,10 +102,11 @@
 
   <main>
     <div class="main-container">
-      <!-- Kiri: Kontrol & Simulasi -->
+      <!-- Kolom Kiri -->
       <div class="left-column">
+        <!-- Validasi Masternode -->
         <div class="card">
-          <h2>Masternodes Running</h2>
+          <h2>Validasi Masternode</h2>
           <div class="saldo-value" id="mining">0,000000000 BossX</div>
           <div class="timer" id="stopCountdown">Belum berjalan</div>
           <div class="btn-container">
@@ -87,22 +114,21 @@
           </div>
         </div>
 
+        <!-- Reward Validasi -->
         <div class="card">
-          <h2>Reward Masternode</h2>
+          <h2>Reward Validasi</h2>
           <div class="saldo-value" id="balance">0,000000000 BossX</div>
           <div class="timer" id="countdown">Auto-claim dalam: 60 detik</div>
           <div class="btn-container">
             <button class="btn" id="convertBtn">Convert to USDT</button>
           </div>
-          <div class="saldo-value">
-            USDT: <span id="usdtBalance">0.00</span>
-          </div>
         </div>
 
+        <!-- Paket Node -->
         <div class="card">
-          <h2>Buy Nodes</h2>
+          <h2>Paket Node</h2>
           <div class="saldo-value">
-            BossX: <span id="walletBossX">0</span>
+            <span id="walletBossX">0</span> BossX
           </div>
           <input type="number" id="amountInput" placeholder="Masukkan jumlah BossX"/>
           <div class="btn-container">
@@ -111,13 +137,16 @@
         </div>
       </div>
 
-      <!-- Kanan: Riwayat -->
+      <!-- Kolom Kanan: Riwayat -->
       <div class="right-column">
         <div class="card">
           <h2>Riwayat Auto-Claim</h2>
           <table>
             <thead>
-              <tr><th>Hari</th><th>Tanggal</th><th>Jam</th><th>Jumlah BossX</th><th>Auto-Claim</th></tr>
+              <tr>
+                <th>Hari</th><th>Tanggal</th><th>Jam</th>
+                <th>Jumlah BossX</th><th>Auto-Claim</th>
+              </tr>
             </thead>
             <tbody id="history"></tbody>
           </table>
@@ -127,7 +156,9 @@
           <h2>Riwayat Transaksi Wallet</h2>
           <table>
             <thead>
-              <tr><th>Waktu</th><th>Jenis</th><th>Jumlah</th><th>Status</th></tr>
+              <tr>
+                <th>Waktu</th><th>Jenis</th><th>Jumlah</th><th>Status</th>
+              </tr>
             </thead>
             <tbody id="walletHistory"></tbody>
           </table>
@@ -137,7 +168,10 @@
           <h2>Riwayat Convert</h2>
           <table>
             <thead>
-              <tr><th>Waktu</th><th>BossX</th><th>USDT</th><th>Status</th></tr>
+              <tr>
+                <th>Waktu</th><th>Jumlah BossX</th>
+                <th>Jumlah USDT</th><th>Status</th>
+              </tr>
             </thead>
             <tbody id="convertHistory"></tbody>
           </table>
@@ -146,29 +180,56 @@
     </div>
   </main>
 
-  <div class="footer">©2025 Public Dashboard BossX • Terbuka untuk umum 💼✨</div>
+  <div class="footer">
+    ©2025 Public Dashboard BossX • Terbuka untuk umum 💼✨
+  </div>
 
   <script>
-    let mining = 0, balance = 0, walletBossX = 0, usdtBalance = 0;
+    // State
+    let mining = 0, balance = 0, walletBossX = 0;
     let isMiningActive = false, stopCountdown = 0, countdown = 60;
+    let hasActivated = false;
     const ratePerDetik = 0.000000001, bossXtoUSDT = 1;
     let intervalMining, intervalClaim, intervalCountdown, intervalStop;
-    let hasActivated = false;
 
+    // Utils
     function getSecondsToNext6AM() {
       const now = new Date(), target = new Date(now);
       target.setHours(6,0,0,0);
       if (now >= target) target.setDate(target.getDate()+1);
       return Math.floor((target - now)/1000);
     }
-
     function formatTime(sec) {
       const h = String(Math.floor(sec/3600)).padStart(2,'0'),
             m = String(Math.floor((sec%3600)/60)).padStart(2,'0'),
             s = String(sec%60).padStart(2,'0');
       return `${h}:${m}:${s}`;
     }
+    function formatNow() {
+      const now = new Date();
+      const days = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
+      return {
+        hari: days[now.getDay()],
+        tanggal: now.toLocaleDateString("id-ID"),
+        jam: now.toLocaleTimeString("id-ID")
+      };
+    }
 
+    // DOM refs
+    const onBtn = document.getElementById("onBtn");
+    const miningLabel = document.getElementById("mining");
+    const stopLabel = document.getElementById("stopCountdown");
+    const countdownLabel = document.getElementById("countdown");
+    const balanceLabel = document.getElementById("balance");
+    const walletLabel = document.getElementById("walletBossX");
+    const amountInput = document.getElementById("amountInput");
+    const historyBody = document.getElementById("history");
+    const walletHistory = document.getElementById("walletHistory");
+    const convertHistory = document.getElementById("convertHistory");
+    const buyBtn = document.getElementById("buyBtn");
+    const convertBtn = document.getElementById("convertBtn");
+
+    // Update functions
     function updateStopCountdown() {
       if (stopCountdown > 0) {
         stopCountdown--;
@@ -183,27 +244,15 @@
         onBtn.disabled = false;
       }
     }
-
     function updateMining() {
       mining += ratePerDetik;
       miningLabel.textContent = mining.toFixed(9) + " BossX";
     }
-
     function updateCountdown() {
       countdown--;
       countdownLabel.textContent = "Auto-claim dalam: " + countdown + " detik";
       if (countdown <= 0) countdown = 60;
     }
-
-    function formatNow() {
-      const now = new Date(), days = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
-      return {
-        hari: days[now.getDay()],
-        tanggal: now.toLocaleDateString("id-ID"),
-        jam: now.toLocaleTimeString("id-ID")
-      };
-    }
-
     function logAutoClaim(amount) {
       if (amount <= 0) return;
       const w = formatNow();
@@ -217,7 +266,6 @@
       `;
       historyBody.prepend(row);
     }
-
     function autoClaim() {
       if (mining <= 0) return;
       balance += mining;
@@ -226,52 +274,14 @@
       miningLabel.textContent = "0,000000000 BossX";
       balanceLabel.textContent = balance.toFixed(9) + " BossX";
     }
-
-    function logTx(type, amt, elm) {
+    function logTx(type, amt, container) {
       const time = new Date().toLocaleString("id-ID");
       const row = document.createElement("tr");
       row.innerHTML = `<td>${time}</td><td>${type}</td><td>${amt}</td><td>✅</td>`;
-      elm.prepend(row);
+      container.prepend(row);
     }
 
-    function convertToUSDT() {
-      if (balance <= 0) { alert("Tidak ada reward untuk dikonversi"); return; }
-      const usdt = balance * bossXtoUSDT;
-      usdtBalance += usdt;
-      logTx("Convert Reward", "+" + usdt.toFixed(2) + " USDT", walletHistory);
-      logTx("Convert", balance.toFixed(9) + " BossX → " + usdt.toFixed(2) + " USDT", convertHistory);
-      balance = 0;
-      balanceLabel.textContent = "0,000000000 BossX";
-      usdtLabel.textContent = usdtBalance.toFixed(2);
-    }
-
-    function activateNode() {
-      if (hasActivated) { alert("Paket sudah diaktivasi sekali."); return; }
-      const amt = parseInt(amountInput.value,10);
-      if (isNaN(amt) || amt<=0) { alert("Masukkan jumlah valid"); return; }
-      walletBossX += amt;
-      walletLabel.textContent = walletBossX;
-      logTx("Aktivasi Masternode", "+"+amt+" BossX", walletHistory);
-      hasActivated = true;
-      buyBtn.disabled = true;
-    }
-
-    // Element refs
-    const onBtn = document.getElementById("onBtn");
-    const miningLabel = document.getElementById("mining");
-    const stopLabel = document.getElementById("stopCountdown");
-    const countdownLabel = document.getElementById("countdown");
-    const balanceLabel = document.getElementById("balance");
-    const usdtLabel = document.getElementById("usdtBalance");
-    const walletLabel = document.getElementById("walletBossX");
-    const amountInput = document.getElementById("amountInput");
-    const historyBody = document.getElementById("history");
-    const walletHistory = document.getElementById("walletHistory");
-    const convertHistory = document.getElementById("convertHistory");
-    const buyBtn = document.getElementById("buyBtn");
-    const convertBtn = document.getElementById("convertBtn");
-
-    // Event Listeners
+    // Handlers
     onBtn.addEventListener("click", () => {
       if (isMiningActive) return;
       isMiningActive = true;
@@ -279,19 +289,44 @@
       countdown = 60;
       stopCountdown = getSecondsToNext6AM();
       stopLabel.textContent = "Berhenti otomatis dalam: " + formatTime(stopCountdown);
-
-      intervalMining = setInterval(updateMining,1000);
-      intervalClaim   = setInterval(autoClaim,60000);
-      intervalCountdown = setInterval(updateCountdown,1000);
-      intervalStop    = setInterval(updateStopCountdown,1000);
+      intervalMining = setInterval(updateMining, 1000);
+      intervalClaim   = setInterval(autoClaim, 60000);
+      intervalCountdown = setInterval(updateCountdown, 1000);
+      intervalStop    = setInterval(updateStopCountdown, 1000);
     });
-    buyBtn.addEventListener("click", activateNode);
-    convertBtn.addEventListener("click", convertToUSDT);
 
-    // Inisialisasi tampilan
+    buyBtn.addEventListener("click", () => {
+      if (hasActivated) {
+        alert("Paket sudah diaktivasi satu kali.");
+        return;
+      }
+      const amt = parseInt(amountInput.value, 10);
+      if (isNaN(amt) || amt <= 0) {
+        alert("Masukkan jumlah investasi BossX yang valid");
+        return;
+      }
+      walletBossX += amt;
+      walletLabel.textContent = walletBossX;
+      logTx("Aktivasi Masternode", "+" + amt + " BossX", walletHistory);
+      hasActivated = true;
+      buyBtn.disabled = true;
+    });
+
+    convertBtn.addEventListener("click", () => {
+      if (balance < 1) {
+        alert("Minimal convert adalah 1 BossX");
+        return;
+      }
+      const usdt = balance * bossXtoUSDT;
+      logTx("Convert Reward", balance.toFixed(9) + " BossX → " + usdt.toFixed(9) + " USDT", convertHistory);
+      balance = 0;
+      balanceLabel.textContent = "0,000000000 BossX";
+    });
+
+    // Init display
     stopLabel.textContent = "Belum berjalan";
     countdownLabel.textContent = "Auto-claim dalam: 60 detik";
-    updateWalletDisplay();
+    walletLabel.textContent = walletBossX;
   </script>
 </body>
 </html>
