@@ -15,7 +15,9 @@
     header {
       background-color: rgba(0,0,0,0.3);
       padding: 20px 40px;
-      display: flex; justify-content: space-between; align-items: center;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       border-bottom: 2px solid #FFD700;
       box-shadow: 0 2px 5px rgba(0,0,0,0.3);
     }
@@ -44,7 +46,8 @@
     }
     .card h2 { margin-top: 0; font-size: 1.4em; color: #FFD700; }
     .saldo-value {
-      margin-top: 10px; font-weight: bold; font-size: 1.6em; color: #FFD700;
+      margin-top: 10px; font-weight: bold;
+      font-size: 1.6em; color: #FFD700;
     }
     .timer {
       margin-top: 10px; font-size: 1em; color: #FFD700;
@@ -62,7 +65,8 @@
       background-color: #ffec8b; box-shadow: 0 0 10px #FFD700;
     }
     .btn:disabled {
-      background-color: #333; color: #888; cursor: not-allowed; box-shadow: none;
+      background-color: #333; color: #888;
+      cursor: not-allowed; box-shadow: none;
     }
     input[type="number"] {
       margin-top: 10px; padding: 10px; width: 200px;
@@ -82,7 +86,8 @@
       color: #FFD700; font-size: 0.95em;
     }
     .footer {
-      text-align: center; padding: 20px; font-size: 0.9em; color: #FFD700;
+      text-align: center; padding: 20px;
+      font-size: 0.9em; color: #FFD700;
     }
   </style>
 </head>
@@ -97,7 +102,7 @@
 
   <main>
     <div class="main-container">
-      <!-- Kiri: Kontrol & Simulasi -->
+      <!-- Kolom Kiri: Kontrol & Simulasi -->
       <div class="left-column">
         <div class="card">
           <h2>Masternodes Running</h2>
@@ -115,9 +120,7 @@
           <div class="btn-container">
             <button class="btn" id="convertBtn">Convert to USDT</button>
           </div>
-          <div class="saldo-value">
-            USDT: <span id="usdtBalance">0.00</span>
-          </div>
+          <div class="saldo-value">USDT: <span id="usdtBalance">0.00</span></div>
         </div>
 
         <div class="card">
@@ -130,7 +133,7 @@
         </div>
       </div>
 
-      <!-- Kanan: Riwayat -->
+      <!-- Kolom Kanan: Riwayat -->
       <div class="right-column">
         <div class="card">
           <h2>Riwayat Auto-Claim</h2>
@@ -180,8 +183,9 @@
     let balance = 0;
     let walletBossX = 0;
     let usdtBalance = 0;
+    let hasActivated = false;
     const ratePerDetik = 0.000000001;
-    const bossXtoUSDT = 1; // 1 BossX = 1 USDT
+    const bossXtoUSDT = 1;
     let countdown = 60;
     let stopCountdown = getSecondsToNext6AM();
     let isMiningActive = false;
@@ -190,15 +194,15 @@
     function getSecondsToNext6AM() {
       const now = new Date();
       let target = new Date(now);
-      target.setHours(6,0,0,0);
+      target.setHours(6, 0, 0, 0);
       if (now >= target) target.setDate(target.getDate() + 1);
       return Math.floor((target - now) / 1000);
     }
 
     function formatTime(sec) {
-      const h = String(Math.floor(sec/3600)).padStart(2,'0');
-      const m = String(Math.floor((sec%3600)/60)).padStart(2,'0');
-      const s = String(sec%60).padStart(2,'0');
+      const h = String(Math.floor(sec / 3600)).padStart(2, '0');
+      const m = String(Math.floor((sec % 3600) / 60)).padStart(2, '0');
+      const s = String(sec % 60).padStart(2, '0');
       return `${h}:${m}:${s}`;
     }
 
@@ -313,6 +317,11 @@
     }
 
     function aktivkanMasternode() {
+      const btnBuy = document.getElementById("buyBtn");
+      if (hasActivated) {
+        alert("Masternode hanya bisa diaktivasi satu kali.");
+        return;
+      }
       const amt = parseInt(document.getElementById("amountInput").value, 10);
       if (isNaN(amt) || amt <= 0) {
         alert("Masukkan jumlah investasi BossX yang valid");
@@ -321,9 +330,11 @@
       walletBossX += amt;
       updateWalletDisplay();
       logWalletTransaction("Aktivasi Masternode", "+" + amt + " BossX", "✅");
+      hasActivated = true;
+      btnBuy.disabled = true;
     }
 
-    // event listeners
+    // Event listeners
     document.getElementById("onBtn").addEventListener("click", () => {
       if (isMiningActive || stopCountdown > 0) return;
       isMiningActive = true;
@@ -333,17 +344,15 @@
       stopCountdown = getSecondsToNext6AM();
       document.getElementById("stopCountdown").textContent =
         "Berhenti otomatis dalam: " + formatTime(stopCountdown);
-
       intervalMining = setInterval(updateMining, 1000);
       intervalClaim = setInterval(autoClaim, 60000);
       intervalCountdown = setInterval(updateCountdown, 1000);
       intervalStop = setInterval(updateStopCountdown, 1000);
     });
-
     document.getElementById("buyBtn").addEventListener("click", aktivkanMasternode);
     document.getElementById("convertBtn").addEventListener("click", convertToUSDT);
 
-    // inisialisasi awal
+    // Inisialisasi
     document.getElementById("stopCountdown").textContent =
       "Berhenti otomatis dalam: " + formatTime(stopCountdown);
     document.getElementById("onBtn").disabled = stopCountdown > 0;
