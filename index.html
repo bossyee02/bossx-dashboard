@@ -39,7 +39,6 @@
       margin: 2px 0;
       font-size: 1em;
     }
-
     main {
       padding: 30px 20px;
       max-width: 1200px;
@@ -57,7 +56,6 @@
     }
     .left-column { flex: 1; }
     .right-column { flex: 2; }
-
     .card {
       background-color: rgba(0,0,0,0.3);
       padding: 20px;
@@ -106,8 +104,6 @@
       cursor: not-allowed;
       box-shadow: none;
     }
-
-    /* power button */
     .power-btn {
       width: 56px;
       height: 56px;
@@ -135,7 +131,6 @@
     .power-btn.active svg {
       stroke: #fff;
     }
-
     input[type="number"] {
       margin-top: 10px;
       padding: 10px;
@@ -198,7 +193,6 @@
             </button>
           </div>
         </div>
-
         <div class="card">
           <h2>Reward Validasi</h2>
           <div class="saldo-value" id="balance">0.000000000 BossX</div>
@@ -207,7 +201,6 @@
             <button class="btn" id="convertBtn">Convert to USDT</button>
           </div>
         </div>
-
         <div class="card">
           <h2>Paket Node</h2>
           <div class="saldo-value"><span id="walletBossX">0</span> BossX</div>
@@ -216,7 +209,6 @@
             <button class="btn" id="buyBtn">Aktivasi Paket</button>
           </div>
         </div>
-
         <div class="card">
           <h2>Balance USDT</h2>
           <div class="saldo-value" id="usdtBalanceCard">0.00 USDT</div>
@@ -225,18 +217,7 @@
 
       <!-- Right Column -->
       <div class="right-column">
-        <div class="card">
-          <h2>History Validasi</h2>
-          <table>
-            <thead>
-              <tr>
-                <th>Hari</th><th>Tanggal</th><th>Jam</th><th>Jumlah BossX</th><th>Auto-Claim</th>
-              </tr>
-            </thead>
-            <tbody id="history"></tbody>
-          </table>
-        </div>
-
+        <!-- History Aktivasi moved to top -->
         <div class="card">
           <h2>History Aktivasi</h2>
           <table>
@@ -249,6 +230,18 @@
               </tr>
             </thead>
             <tbody id="walletHistory"></tbody>
+          </table>
+        </div>
+
+        <div class="card">
+          <h2>History Validasi</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Hari</th><th>Tanggal</th><th>Jam</th><th>Jumlah BossX</th><th>Auto-Claim</th>
+              </tr>
+            </thead>
+            <tbody id="history"></tbody>
           </table>
         </div>
 
@@ -342,7 +335,7 @@
 
     function logTx(jenis, jumlah, container) {
       const time = new Date().toLocaleString("id-ID");
-      const row  = document.createElement("tr");
+      const row = document.createElement("tr");
       row.innerHTML = `
         <td>${time}</td>
         <td>${jumlah}</td>
@@ -432,7 +425,6 @@
       balanceLabel.textContent = "0.000000000 BossX";
     });
 
-    // initialize display
     stopLabel.textContent      =
       "Stop validasi setiap hari jam 06:00 dalam: Belum berjalan";
     countdownLabel.textContent = "Auto-claim dalam: 60 detik";
