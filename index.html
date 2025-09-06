@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Public Dashboard BossX</title>
+  <title>Dashboard BossX</title>
   <style>
     * { box-sizing: border-box; }
     body {
@@ -20,29 +20,47 @@
       align-items: center;
       border-bottom: 2px solid #FFD700;
     }
-    .logo-title { display: flex; align-items: center; }
+    .logo-title {
+      display: flex;
+      align-items: center;
+    }
     .logo-title img {
-      height: 80px;      /* diperbesar lagi dari 60px menjadi 80px */
+      height: 80px;      /* ukuran logo diperbesar */
       margin-right: 20px;
     }
     .logo-title h1 {
       margin: 0;
       font-size: 1.8em;
     }
-    .user-info { text-align: right; }
-    .user-info div { margin: 2px 0; font-size: 1em; }
+    .user-info {
+      text-align: right;
+    }
+    .user-info div {
+      margin: 2px 0;
+      font-size: 1em;
+    }
 
     main {
       padding: 30px 20px;
       max-width: 1200px;
       margin: auto;
     }
-    .main-container { display: flex; gap: 20px; flex-wrap: wrap; }
-    .left-column, .right-column {
-      display: flex; flex-direction: column; gap: 20px;
+    .main-container {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
     }
-    .left-column { flex: 1; }
-    .right-column { flex: 2; }
+    .left-column, .right-column {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .left-column {
+      flex: 1;
+    }
+    .right-column {
+      flex: 2;
+    }
 
     .card {
       background-color: rgba(0,0,0,0.3);
@@ -66,7 +84,12 @@
       font-size: 1em;
       color: #FFD700;
     }
-    .btn-container { display: flex; gap: 15px; margin-top: 20px; flex-wrap: wrap; }
+    .btn-container {
+      display: flex;
+      gap: 15px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
     .btn {
       padding: 10px 20px;
       font-size: 1em;
@@ -77,7 +100,10 @@
       cursor: pointer;
       transition: background-color 0.3s, box-shadow 0.3s;
     }
-    .btn:hover { background-color: #ffec8b; box-shadow: 0 0 10px #FFD700; }
+    .btn:hover {
+      background-color: #ffec8b;
+      box-shadow: 0 0 10px #FFD700;
+    }
     .btn:disabled {
       background-color: #333;
       color: #888;
@@ -87,17 +113,23 @@
 
     /* power button */
     .power-btn {
-      width: 56px; height: 56px;
+      width: 56px;
+      height: 56px;
       border: 2px solid #888;
       border-radius: 50%;
       background-color: #222;
-      display: flex; align-items: center; justify-content: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       cursor: pointer;
       transition: background-color 0.3s, border-color 0.3s;
     }
     .power-btn svg {
-      width: 28px; height: 28px;
-      stroke: #888; stroke-width: 2; fill: none;
+      width: 28px;
+      height: 28px;
+      stroke: #888;
+      stroke-width: 2;
+      fill: none;
       transition: stroke 0.3s;
     }
     .power-btn.active {
@@ -116,7 +148,9 @@
       border-radius: 8px;
     }
     table {
-      width: 100%; border-collapse: collapse; margin-top: 10px;
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
     }
     th, td {
       border: 1px solid #FFD700;
@@ -133,7 +167,10 @@
       font-size: 0.95em;
     }
     .footer {
-      text-align: center; padding: 20px; font-size: 0.9em; color: #FFD700;
+      text-align: center;
+      padding: 20px;
+      font-size: 0.9em;
+      color: #FFD700;
     }
   </style>
 </head>
@@ -141,10 +178,10 @@
   <header>
     <div class="logo-title">
       <img src="https://i.ibb.co/qYBkPDH3/Picsart-25-04-01-16-25-47-054.png" alt="Logo BossX"/>
-      <h1>Public Dashboard BossX</h1>
+      <h1>Dashboard BossX</h1>
     </div>
     <div class="user-info">
-      <div>👤 Username: <strong>boss</strong></div>
+      <div>👤 Username: <strong>Fery M</strong></div>
       <div>🪪 Validator ID: <strong>805</strong></div>
     </div>
   </header>
@@ -156,10 +193,14 @@
         <div class="card">
           <h2>Validasi Masternode</h2>
           <div class="saldo-value" id="mining">0.000000000 BossX</div>
-          <div class="timer" id="stopCountdown">Stop validasi setiap hari jam 06:00 dalam: Belum berjalan</div>
+          <div class="timer" id="stopCountdown">
+            Stop validasi setiap hari jam 06:00 dalam: Belum berjalan
+          </div>
           <div class="btn-container">
             <button class="power-btn" id="onBtn" aria-label="Power">
-              <svg viewBox="0 0 24 24"><path d="M12 2v10M5.636 5.636a8 8 0 1 0 11.314 0"/></svg>
+              <svg viewBox="0 0 24 24">
+                <path d="M12 2v10M5.636 5.636a8 8 0 1 0 11.314 0"/>
+              </svg>
             </button>
           </div>
         </div>
@@ -195,23 +236,43 @@
           <table>
             <thead>
               <tr>
-                <th>Hari</th><th>Tanggal</th><th>Jam</th><th>Jumlah BossX</th><th>Auto-Claim</th>
+                <th>Hari</th>
+                <th>Tanggal</th>
+                <th>Jam</th>
+                <th>Jumlah BossX</th>
+                <th>Auto-Claim</th>
               </tr>
             </thead>
             <tbody id="history"></tbody>
           </table>
         </div>
+
         <div class="card">
           <h2>History Aktivasi</h2>
           <table>
-            <thead><tr><th>Waktu</th><th>Jenis</th><th>Jumlah</th><th>Status</th></tr></thead>
+            <thead>
+              <tr>
+                <th>Waktu</th>
+                <th>Jenis</th>
+                <th>Jumlah</th>
+                <th>Status</th>
+              </tr>
+            </thead>
             <tbody id="walletHistory"></tbody>
           </table>
         </div>
+
         <div class="card">
           <h2>History Convert</h2>
           <table>
-            <thead><tr><th>Waktu</th><th>Jumlah BossX</th><th>Jumlah USDT</th><th>Status</th></tr></thead>
+            <thead>
+              <tr>
+                <th>Waktu</th>
+                <th>Jumlah BossX</th>
+                <th>Jumlah USDT</th>
+                <th>Status</th>
+              </tr>
+            </thead>
             <tbody id="convertHistory"></tbody>
           </table>
         </div>
@@ -219,7 +280,9 @@
     </div>
   </main>
 
-  <div class="footer">©2025 Public Dashboard BossX • Terbuka untuk umum 💼✨</div>
+  <div class="footer">
+    ©2025 Dashboard BossX • Terbuka untuk umum 💼✨
+  </div>
 
   <script>
     let mining = 0,
@@ -260,11 +323,16 @@
     function formatNow() {
       const now = new Date();
       const days = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
-      return { hari: days[now.getDay()], tanggal: now.toLocaleDateString("id-ID"), jam: now.toLocaleTimeString("id-ID") };
+      return {
+        hari: days[now.getDay()],
+        tanggal: now.toLocaleDateString("id-ID"),
+        jam: now.toLocaleTimeString("id-ID")
+      };
     }
 
     function getSecondsToNext6AM() {
-      const now = new Date(), target = new Date(now);
+      const now = new Date();
+      const target = new Date(now);
       target.setHours(6,0,0,0);
       if (now >= target) target.setDate(target.getDate() + 1);
       return Math.floor((target - now) / 1000);
@@ -278,21 +346,28 @@
       if (amount <= 0) return;
       const w = formatNow();
       const row = document.createElement("tr");
-      row.innerHTML = `<td>${w.hari}</td><td>${w.tanggal}</td><td>${w.jam}</td><td>+${amount.toFixed(9)} BossX</td><td>✅</td>`;
+      row.innerHTML = `
+        <td>${w.hari}</td>
+        <td>${w.tanggal}</td>
+        <td>${w.jam}</td>
+        <td>+${amount.toFixed(9)} BossX</td>
+        <td>✅</td>
+      `;
       historyBody.prepend(row);
     }
 
     function logTx(type, amt, container) {
       const time = new Date().toLocaleString("id-ID");
       const row = document.createElement("tr");
-      row.innerHTML = `<td>${time}</td><td>${type}</td><td>${amt}</td><td>✅</td>`;
+      row.innerHTML = `<td>${time}</td><td>${type}</td><td(${amt}</td><td>✅</td>`;
       container.prepend(row);
     }
 
     function updateStopCountdown() {
       if (stopCountdown > 0) {
         stopCountdown--;
-        stopLabel.textContent = "Stop validasi setiap hari jam 06:00 dalam: " + formatTime(stopCountdown);
+        stopLabel.textContent =
+          "Stop validasi setiap hari jam 06:00 dalam: " + formatTime(stopCountdown);
       } else {
         clearInterval(intervalMining);
         clearInterval(intervalClaim);
@@ -332,7 +407,8 @@
       onBtn.classList.add("active");
       stopCountdown = getSecondsToNext6AM();
       countdown = 60;
-      stopLabel.textContent = "Stop validasi setiap hari jam 06:00 dalam: " + formatTime(stopCountdown);
+      stopLabel.textContent =
+        "Stop validasi setiap hari jam 06:00 dalam: " + formatTime(stopCountdown);
       intervalMining    = setInterval(updateMining,    1000);
       intervalClaim     = setInterval(autoClaim,       60000);
       intervalCountdown = setInterval(updateCountdown,  1000);
@@ -356,13 +432,18 @@
       const usdt = balance * bossXtoUSDT;
       usdtBalance += usdt;
       updateUSDTDisplay();
-      logTx("Convert Reward", balance.toFixed(9) + " BossX → " + usdt.toFixed(2) + " USDT", convertHistory);
+      logTx(
+        "Convert Reward",
+        balance.toFixed(9) + " BossX → " + usdt.toFixed(2) + " USDT",
+        convertHistory
+      );
       balance = 0;
       balanceLabel.textContent = "0.000000000 BossX";
     });
 
     // initialize display
-    stopLabel.textContent      = "Stop validasi setiap hari jam 06:00 dalam: Belum berjalan";
+    stopLabel.textContent      =
+      "Stop validasi setiap hari jam 06:00 dalam: Belum berjalan";
     countdownLabel.textContent = "Auto-claim dalam: 60 detik";
     walletLabel.textContent    = walletBossX + " BossX";
     updateUSDTDisplay();
