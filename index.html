@@ -11,7 +11,8 @@
       font-family: 'Segoe UI', sans-serif;
       background: linear-gradient(135deg, #6a0dad, #ff69b4);
       color: #FFD700;
-      display: flex; height: 100vh;
+      display: flex;
+      height: 100vh;
     }
     .container {
       display: grid;
@@ -22,169 +23,254 @@
     .container.collapsed {
       grid-template-columns: 60px 1fr;
     }
+
+    /* Sidebar */
     aside.sidebar {
       background: rgba(0,0,0,0.4);
-      display: flex; flex-direction: column;
+      display: flex;
+      flex-direction: column;
     }
     .sidebar-header {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 16px; border-bottom: 1px solid #FFD700;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px;
+      border-bottom: 1px solid #FFD700;
     }
-    .sidebar-header .logo {
-      color: #FFD700; font-size: 1.2rem; font-weight: bold;
+    .sidebar-logo {
+      height: 80px;
+      margin: 12px auto;
+      display: block;
+      transition: height 0.3s ease;
+    }
+    .container.collapsed .sidebar-logo {
+      height: 60px;
     }
     .collapse-btn {
-      background: none; border: none;
-      color: #FFD700; font-size: 1.4rem; cursor: pointer;
+      background: none;
+      border: none;
+      color: #FFD700;
+      font-size: 1.4rem;
+      cursor: pointer;
     }
     .sidebar-nav {
-      flex: 1; margin-top: 16px;
-      display: flex; flex-direction: column;
+      flex: 1;
+      margin-top: 16px;
+      display: flex;
+      flex-direction: column;
     }
     .nav-item {
-      display: flex; align-items: center;
+      display: flex;
+      align-items: center;
       padding: 12px 16px;
-      color: #FFD700; text-decoration: none;
+      color: #FFD700;
+      text-decoration: none;
       transition: background 0.2s;
     }
     .nav-item:hover { background: rgba(255,215,0,0.1); }
     .nav-item.active { background: rgba(255,215,0,0.2); }
     .nav-item .icon {
-      width: 24px; text-align: center; font-size: 1.2rem;
+      width: 24px;
+      text-align: center;
+      font-size: 1.2rem;
     }
     .nav-item .label {
-      margin-left: 12px; white-space: nowrap;
+      margin-left: 12px;
+      white-space: nowrap;
     }
     .container.collapsed .label {
       display: none;
     }
+
+    /* Content */
     .content {
-      display: flex; flex-direction: column;
+      display: flex;
+      flex-direction: column;
     }
     header {
       background: rgba(0,0,0,0.3);
       padding: 20px 40px;
-      display: flex; justify-content: space-between; align-items: center;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       border-bottom: 2px solid #FFD700;
     }
     .logo-title {
-      display: flex; align-items: center;
+      display: flex;
+      align-items: center;
     }
     .logo-title img {
-      height: 80px; margin-right: 20px;
+      height: 80px;
+      margin-right: 20px;
     }
     .logo-title h1 {
-      font-size: 1.8rem; color: #FFD700;
+      font-size: 1.8rem;
+      color: #FFD700;
     }
     .user-info {
-      display: flex; align-items: center; gap: 16px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
     }
     .user-info img {
-      width: 80px; height: 80px;
-      border-radius: 50%; border: 2px solid #FFD700;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: 2px solid #FFD700;
       object-fit: cover;
     }
     .user-info .info-text {
-      display: flex; flex-direction: column; line-height: 1.2;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.2;
     }
     .user-info .info-text h2 {
-      font-size: 1.4rem; margin-bottom: 4px;
+      font-size: 1.4rem;
+      margin-bottom: 4px;
     }
     .user-info .info-text p {
-      font-size: 1rem; opacity: 0.85;
+      font-size: 1rem;
+      opacity: 0.85;
     }
+
     main {
       flex: 1;
       padding: 30px 20px;
       max-width: 1200px;
       margin: auto;
-      display: flex; gap: 20px; flex-wrap: wrap;
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
     }
     .left-column, .right-column {
-      display: flex; flex-direction: column; gap: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
     }
     .left-column { flex: 1; }
     .right-column { flex: 2; }
+
     .card {
       background: rgba(0,0,0,0.3);
-      padding: 20px; border-radius: 12px;
+      padding: 20px;
+      border-radius: 12px;
       border: 1px solid #FFD700;
     }
     .card h2 {
-      margin-bottom: 10px; font-size: 1.4rem; color: #FFD700;
+      margin-bottom: 10px;
+      font-size: 1.4rem;
+      color: #FFD700;
     }
     .saldo-value {
-      font-size: 1.6rem; font-weight: bold; margin-bottom: 8px;
+      font-size: 1.6rem;
+      font-weight: bold;
+      margin-bottom: 8px;
     }
     .timer {
-      font-size: 1rem; margin-bottom: 12px;
+      font-size: 1rem;
+      margin-bottom: 12px;
     }
     .btn-container {
-      display: flex; gap: 12px; flex-wrap: wrap;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
     }
     .btn, .power-btn {
-      cursor: pointer; transition: all 0.3s;
+      cursor: pointer;
+      transition: all 0.3s;
     }
     .btn {
       padding: 10px 20px;
-      background: #FFD700; color: #6a0dad;
-      border: none; border-radius: 8px; font-size: 1rem;
+      background: #FFD700;
+      color: #6a0dad;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
     }
     .btn:hover { background: #ffec8b; }
     .btn:disabled {
-      background: #333; color: #888; cursor: not-allowed;
+      background: #333;
+      color: #888;
+      cursor: not-allowed;
     }
     .power-btn {
-      width: 56px; height: 56px;
-      border: 2px solid #888; border-radius: 50%;
-      background: #222; display: flex;
-      align-items: center; justify-content: center;
+      width: 56px;
+      height: 56px;
+      border: 2px solid #888;
+      border-radius: 50%;
+      background: #222;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     .power-btn.active {
-      background: #2ecc71; border-color: #27ae60;
+      background: #2ecc71;
+      border-color: #27ae60;
     }
     .power-btn svg {
-      width: 28px; height: 28px;
-      stroke: #888; stroke-width: 2; fill: none;
+      width: 28px;
+      height: 28px;
+      stroke: #888;
+      stroke-width: 2;
+      fill: none;
     }
-    .power-btn.active svg { stroke: #fff; }
+    .power-btn.active svg {
+      stroke: #fff;
+    }
     input[type="number"] {
-      padding: 8px; width: 150px;
-      border-radius: 6px; border: none;
+      padding: 8px;
+      width: 150px;
+      border-radius: 6px;
+      border: none;
       margin-bottom: 12px;
     }
+
     .filter-bar {
-      display: flex; align-items: center; margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      margin-bottom: 8px;
     }
     .filter-bar .icon {
-      margin-right: 6px; font-size: 1.2rem;
+      margin-right: 6px;
+      font-size: 1.2rem;
     }
     .filter-bar input {
-      flex: 1; padding: 6px 10px;
+      flex: 1;
+      padding: 6px 10px;
       border: 1px solid #FFD700;
       border-radius: 6px;
       background: rgba(255,255,255,0.1);
       color: #FFD700;
     }
+
     table {
-      width: 100%; border-collapse: collapse; margin-top: 8px;
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
     }
     th, td {
       border: 1px solid #FFD700;
-      padding: 6px; text-align: center; font-size: 0.9rem;
+      padding: 6px;
+      text-align: center;
+      font-size: 0.9rem;
     }
     th {
-      background: #FFD700; color: #6a0dad;
+      background: #FFD700;
+      color: #6a0dad;
     }
+
     .footer {
-      text-align: center; padding: 20px;
+      text-align: center;
+      padding: 20px;
       background: rgba(0,0,0,0.2);
     }
+
     @media (max-width: 768px) {
       aside.sidebar, header { display: none; }
       .container { grid-template-columns: 1fr; }
       main {
-        padding: 20px; display: block;
+        padding: 20px;
+        display: block;
       }
       .left-column, .right-column { flex: 1 1 100%; }
       .card { margin-bottom: 20px; }
@@ -195,25 +281,41 @@
   <div id="container" class="container">
     <aside class="sidebar">
       <div class="sidebar-header">
-        <div class="logo">BossX</div>
+        <img
+          src="https://i.ibb.co/qYBkPDH3/Picsart-25-04-01-16-25-47-054.png"
+          alt="Logo BossX"
+          class="sidebar-logo"
+        />
         <button class="collapse-btn" id="toggleSidebar">☰</button>
       </div>
       <nav class="sidebar-nav">
-        <a href="#" class="nav-item active"><span class="icon">🏠</span><span class="label">Dashboard</span></a>
-        <a href="#" class="nav-item"><span class="icon">📜</span><span class="label">History</span></a>
-        <a href="#" class="nav-item"><span class="icon">⚙️</span><span class="label">Settings</span></a>
-        <a href="#" class="nav-item"><span class="icon">🔒</span><span class="label">Logout</span></a>
+        <a href="#" class="nav-item active">
+          <span class="icon">🏠</span><span class="label">Dashboard</span>
+        </a>
+        <a href="#" class="nav-item">
+          <span class="icon">📜</span><span class="label">History</span>
+        </a>
+        <a href="#" class="nav-item">
+          <span class="icon">⚙️</span><span class="label">Settings</span>
+        </a>
+        <a href="#" class="nav-item">
+          <span class="icon">🔒</span><span class="label">Logout</span>
+        </a>
       </nav>
     </aside>
 
     <div class="content">
       <header>
         <div class="logo-title">
-          <img src="https://i.ibb.co/qYBkPDH3/Picsart-25-04-01-16-25-47-054.png" alt="Logo BossX"/>
+          <img
+            src="https://i.ibb.co/qYBkPDH3/Picsart-25-04-01-16-25-47-054.png"
+            alt="Logo BossX"/>
           <h1>Dashboard BossX</h1>
         </div>
         <div class="user-info">
-          <img src="https://i.ibb.co/gbVsGLy0/FB-IMG-1617237754232.jpg" alt="Avatar"/>
+          <img
+            src="https://i.ibb.co/gbVsGLy0/FB-IMG-1617237754232.jpg"
+            alt="Avatar"/>
           <div class="info-text">
             <h2>Fery Muliawan</h2>
             <p>Validator ID: 8055</p>
@@ -308,7 +410,6 @@
 
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-      // Elemen HTML
       const amountInput    = document.getElementById("amountInput");
       const buyBtn         = document.getElementById("buyBtn");
       const onBtn          = document.getElementById("onBtn");
@@ -323,7 +424,6 @@
       const convertHistory = document.getElementById("convertHistory");
       const historyBody    = document.getElementById("history");
 
-      // Variabel Global
       let hasPackage      = false;
       let isMiningActive  = false;
       let walletBossX     = 0;
@@ -338,7 +438,6 @@
       const contractSeconds  = 31 * 24 * 60 * 60;
       const bossXtoUSDT      = 1;
 
-      // Fungsi Waktu
       function formatNow() {
         const d = new Date();
         const hari = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
@@ -364,7 +463,6 @@
         usdtLabel.textContent = usdtBalance.toFixed(2) + " USDT";
       }
 
-      // Logging
       function logAutoClaim(amount) {
         if (amount <= 0) return;
         const w = formatNow();
@@ -388,7 +486,6 @@
         convertHistory.prepend(row);
       }
 
-      // Filter Tabel
       function attachTableFilter(inputId, tableBody) {
         const inputEl = document.getElementById(inputId);
         inputEl.addEventListener('input', () => {
@@ -402,12 +499,10 @@
       attachTableFilter('filterConvert', convertHistory);
       attachTableFilter('filterValidasi', historyBody);
 
-      // Sidebar Toggle
       document.getElementById("toggleSidebar").addEventListener("click", () => {
         document.getElementById("container").classList.toggle("collapsed");
       });
 
-      // Aktivasi Paket
       buyBtn.addEventListener("click", () => {
         console.log("▶️ Klik Aktivasi — value:", amountInput.value, "hasPackage:", hasPackage);
         const amt = Number(amountInput.value);
@@ -422,7 +517,6 @@
         console.log("✅ Aktivasi berhasil:", amt);
       });
 
-      // Power ON/OFF
       onBtn.addEventListener("click", () => {
         if (!hasPackage || isMiningActive) return;
         isMiningActive = true;
@@ -470,7 +564,6 @@
         }, 1000);
       });
 
-      // Convert to USDT
       convertBtn.addEventListener("click", () => {
         console.log("▶️ Klik Convert — balance:", balance);
         if (balance < 1) return alert("Minimal convert adalah 1 BossX");
@@ -483,7 +576,6 @@
         console.log("✅ Convert berhasil:", usdt, "USDT");
       });
 
-      // Inisialisasi Tampilan & Chart
       stopLabel.textContent = "Belum berjalan";
       countdownLabel.textContent = "Auto-claim: 60s";
       walletLabel.textContent = walletBossX + " BossX";
