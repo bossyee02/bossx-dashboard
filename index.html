@@ -17,7 +17,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg,var(--color-primary),#ff69b4);
+      background: linear-gradient(135deg, var(--color-primary), #ff69b4);
       color: var(--color-accent);
       display: flex;
       height: 100vh;
@@ -32,16 +32,22 @@
       grid-template-columns: var(--sidebar-collapsed) 1fr;
     }
 
+    /* Sidebar */
     aside.sidebar {
       background: rgba(0,0,0,0.4);
-      display: flex; flex-direction: column;
+      display: flex;
+      flex-direction: column;
     }
     .sidebar-header {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: var(--gap); border-bottom: 1px solid var(--color-accent);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--gap);
+      border-bottom: 1px solid var(--color-accent);
     }
     .logo-container {
-      display: flex; align-items: center;
+      display: flex;
+      align-items: center;
     }
     .sidebar-logo {
       height: 80px;
@@ -61,58 +67,83 @@
       opacity: 0;
     }
     .collapse-btn {
-      background: none; border: none;
-      color: var(--color-accent); font-size: 1.6rem;
+      background: none;
+      border: none;
+      color: var(--color-accent);
+      font-size: 1.6rem;
       cursor: pointer;
     }
     .sidebar-nav {
-      display: flex; flex-direction: column;
+      display: flex;
+      flex-direction: column;
       padding-top: var(--gap);
     }
     .nav-item {
-      display: flex; align-items: center;
+      display: flex;
+      align-items: center;
       padding: 12px var(--gap);
-      color: var(--color-accent); text-decoration: none;
+      color: var(--color-accent);
+      text-decoration: none;
       transition: background 0.2s;
     }
     .nav-item:hover { background: rgba(255,215,0,0.1); }
     .nav-item.active { background: rgba(255,215,0,0.2); }
     .nav-item .icon {
-      width: 24px; text-align: center; font-size: 1.2rem;
+      width: 24px;
+      text-align: center;
+      font-size: 1.2rem;
     }
     .nav-item .label {
-      margin-left: 12px; white-space: nowrap;
+      margin-left: 12px;
+      white-space: nowrap;
     }
 
+    /* Content */
     .content {
-      display: flex; flex-direction: column;
+      display: flex;
+      flex-direction: column;
     }
     header {
       background: rgba(0,0,0,0.3);
       padding: var(--gap) calc(var(--gap)*2);
-      display: flex; justify-content: flex-end; align-items: center;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
       border-bottom: 2px solid var(--color-accent);
     }
     .user-info {
-      display: flex; align-items: center; gap: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
     .user-info img {
-      width: 64px; height: 64px;
-      border-radius: 50%; border: 2px solid var(--color-accent);
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      border: 2px solid var(--color-accent);
       object-fit: cover;
     }
     .user-info .info-text {
-      display: flex; flex-direction: column; text-align: right;
+      display: flex;
+      flex-direction: column;
+      text-align: right;
     }
     .user-info h2 { font-size: 1.2rem; }
     .user-info p { font-size: 0.9rem; opacity: 0.8; }
 
     main {
-      flex: 1; padding: var(--gap); max-width: 1200px;
-      margin: auto; display: flex; gap: var(--gap); flex-wrap: wrap;
+      flex: 1;
+      padding: var(--gap);
+      max-width: 1200px;
+      margin: auto;
+      display: flex;
+      gap: var(--gap);
+      flex-wrap: wrap;
     }
     .left-column, .right-column {
-      display: flex; flex-direction: column; gap: var(--gap);
+      display: flex;
+      flex-direction: column;
+      gap: var(--gap);
     }
     .left-column { flex: 1; }
     .right-column { flex: 2; }
@@ -124,59 +155,91 @@
       border: 1px solid var(--color-accent);
     }
     .card h2 {
-      margin-bottom: 8px; font-size: 1.2rem;
+      margin-bottom: 8px;
+      font-size: 1.2rem;
     }
     .saldo-value {
-      font-size: 1.4rem; font-weight: bold; margin-bottom: 8px;
+      font-size: 1.4rem;
+      font-weight: bold;
+      margin-bottom: 8px;
     }
     .timer { margin-bottom: 12px; }
     .btn-container {
-      display: flex; gap: 8px; flex-wrap: wrap;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
     }
     .btn {
       padding: 8px 16px;
       background: var(--color-accent);
       color: var(--color-primary);
-      border: none; border-radius: 8px;
-      cursor: pointer; transition: background 0.3s;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
     }
     .btn:hover { background: #ffec8b; }
     .btn:disabled {
-      background: #333; color: #888; cursor: not-allowed;
+      background: #333;
+      color: #888;
+      cursor: not-allowed;
     }
     .power-btn {
-      width: 48px; height: 48px;
-      border: 2px solid #888; border-radius: 50%;
-      background: #222; display: flex; align-items: center; justify-content: center;
-      cursor: pointer; transition: all 0.3s;
+      width: 48px;
+      height: 48px;
+      border: 2px solid #888;
+      border-radius: 50%;
+      background: #222;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s;
     }
     .power-btn.active {
-      background: #2ecc71; border-color: #27ae60;
+      background: #2ecc71;
+      border-color: #27ae60;
     }
     .power-btn svg {
-      width: 24px; height: 24px; stroke: #888; fill: none;
+      width: 24px;
+      height: 24px;
+      stroke: #888;
+      fill: none;
     }
     .power-btn.active svg { stroke: #fff; }
     input[type="number"] {
-      padding: 6px; width: 100px; border-radius: 6px; border: none; margin-bottom: 8px;
+      padding: 6px;
+      width: 100px;
+      border-radius: 6px;
+      border: none;
+      margin-bottom: 8px;
     }
 
     .filter-bar {
-      display: flex; align-items: center; margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      margin-bottom: 8px;
     }
     .filter-bar .icon { margin-right: 6px; }
     .filter-bar input {
-      flex: 1; padding: 6px; border: 1px solid var(--color-accent);
-      border-radius: 6px; background: rgba(255,255,255,0.1);
+      flex: 1;
+      padding: 6px;
+      border: 1px solid var(--color-accent);
+      border-radius: 6px;
+      background: rgba(255,255,255,0.1);
       color: var(--color-accent);
     }
 
     table {
-      width: 100%; border-collapse: collapse; margin-top: 8px;
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
     }
     th, td {
       border: 1px solid var(--color-accent);
-      padding: 6px; text-align: center; font-size: 0.9rem;
+      padding: 6px;
+      text-align: center;
+      font-size: 0.9rem;
     }
     th {
       background: var(--color-accent);
@@ -184,7 +247,8 @@
     }
 
     .footer {
-      text-align: center; padding: var(--gap);
+      text-align: center;
+      padding: var(--gap);
       background: rgba(0,0,0,0.2);
     }
 
@@ -199,12 +263,15 @@
 </head>
 <body>
   <div id="container" class="container">
+    <!-- Sidebar -->
     <aside class="sidebar">
       <div class="sidebar-header">
         <div class="logo-container">
-          <img src="https://i.ibb.co/qYBkPDH3/Picsart-25-04-01-16-25-47-054.png"
-               alt="Logo BossX"
-               class="sidebar-logo"/>
+          <img
+            src="https://i.ibb.co/qYBkPDH3/Picsart-25-04-01-16-25-47-054.png"
+            alt="Logo BossX"
+            class="sidebar-logo"
+          />
           <span class="sidebar-logo-text">BossX</span>
         </div>
         <button class="collapse-btn" id="toggleSidebar">☰</button>
@@ -225,10 +292,14 @@
       </nav>
     </aside>
 
+    <!-- Main Content -->
     <div class="content">
       <header>
         <div class="user-info">
-          <img src="https://i.ibb.co/gbVsGLy0/FB-IMG-1617237754232.jpg" alt="Avatar"/>
+          <img
+            src="https://i.ibb.co/gbVsGLy0/FB-IMG-1617237754232.jpg"
+            alt="Avatar"
+          />
           <div class="info-text">
             <h2>Fery Muliawan</h2>
             <p>Validator ID: 8055</p>
@@ -261,11 +332,13 @@
           </div>
 
           <div class="card">
-            <h2>Paket Node</h2>
-            <div class="saldo-value"><span id="walletBossX">0</span> BossX</div>
+            <h2>node amount</h2>
+            <div class="saldo-value">
+              <span id="walletBossX">0</span> BossX
+            </div>
             <input type="number" id="amountInput" placeholder="Minimal 50" min="50"/>
             <div class="btn-container">
-              <button class="btn" id="buyBtn">Aktivasi Paket</button>
+              <button class="btn" id="buyBtn">Aktivkan Masternode</button>
             </div>
           </div>
 
@@ -325,7 +398,7 @@
         </div>
       </main>
 
-      <div class="footer">©2025 Dashboard BossX • Terbuka untuk umum 🌐</div>
+      <div class="<footer">©2025 Dashboard BossX • Terbuka untuk umum 🌐</div>
     </div>
   </div>
 
@@ -367,7 +440,11 @@
       function formatNow() {
         const d = new Date();
         const days = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
-        return { hari: days[d.getDay()], tanggal: d.toLocaleDateString("id-ID"), jam: d.toLocaleTimeString("id-ID") };
+        return {
+          hari: days[d.getDay()],
+          tanggal: d.toLocaleDateString("id-ID"),
+          jam: d.toLocaleTimeString("id-ID")
+        };
       }
       function getSecondsToNext6AM() {
         const now = new Date(), target = new Date(now);
@@ -390,33 +467,40 @@
         container.classList.toggle("collapsed");
       });
 
-      // Log siap
       console.log("▶️ Skrip dashboard siap");
 
-      // Aktivasi Paket
+      // Aktivasi Paket/Node
       buyBtn.addEventListener("click", () => {
         console.log("▶️ Klik Aktivasi — value:", amountInput.value);
         const amt = Number(amountInput.value);
-        if (isNaN(amt) || amt < 50) return alert("Minimal paket adalah 50 BossX.");
-        if (hasPackage) return alert("Paket hanya dapat diaktifkan sekali.");
+        if (isNaN(amt) || amt < 50)
+          return alert("Minimal paket adalah 50 BossX.");
+        if (hasPackage)
+          return alert("Paket hanya dapat diaktifkan sekali.");
         hasPackage = true;
         rewardPerSecond = (amt * monthlyYieldRate) / contractSeconds;
         walletBossX += amt;
         walletLabel.textContent = walletBossX + " BossX";
         const w = formatNow();
         const row = document.createElement("tr");
-        row.innerHTML = `<td>${w.hari}</td><td>${w.tanggal} ${w.jam}</td><td>${amt} BossX</td><td>Aktivasi Paket</td>`;
+        row.innerHTML = `
+          <td>${w.hari}</td>
+          <td>${w.tanggal} ${w.jam}</td>
+          <td>${amt} BossX</td>
+          <td>Aktivkan Masternode</td>
+        `;
         walletHistory.prepend(row);
         buyBtn.disabled = true;
       });
 
-      // Power ON
+      // Power ON/OFF
       onBtn.addEventListener("click", () => {
         if (!hasPackage || isMiningActive) return;
         isMiningActive = true;
         onBtn.disabled = true;
         onBtn.classList.add("active");
-        stopCountdown = getSecondsToNext6AM(); countdown = 60;
+        stopCountdown = getSecondsToNext6AM();
+        countdown = 60;
         stopLabel.textContent = `Stop validasi jam 06:00 dalam: ${formatTime(stopCountdown)}`;
 
         const miningInterval = setInterval(() => {
@@ -429,7 +513,13 @@
             balance += mining;
             const w = formatNow();
             const row = document.createElement("tr");
-            row.innerHTML = `<td>${w.hari}</td><td>${w.tanggal}</td><td>${w.jam}</td><td>+${mining.toFixed(9)} BossX</td><td>✅</td>`;
+            row.innerHTML = `
+              <td>${w.hari}</td>
+              <td>${w.tanggal}</td>
+              <td>${w.jam}</td>
+              <td>+${mining.toFixed(9)} BossX</td>
+              <td>✅</td>
+            `;
             historyBody.prepend(row);
             mining = 0;
             miningLabel.textContent = "0.000000000 BossX";
@@ -469,7 +559,12 @@
         updateUSDTDisplay();
         const w = formatNow();
         const row = document.createElement("tr");
-        row.innerHTML = `<td>${w.hari}</td><td>${w.tanggal} ${w.jam}</td><td>${balance.toFixed(9)}</td><td>${usdt.toFixed(2)}</td>`;
+        row.innerHTML = `
+          <td>${w.hari}</td>
+          <td>${w.tanggal} ${w.jam}</td>
+          <td>${balance.toFixed(9)}</td>
+          <td>${usdt.toFixed(2)}</td>
+        `;
         convertHistory.prepend(row);
         balance = 0;
         balanceLabel.textContent = "0.000000000 BossX";
@@ -481,11 +576,11 @@
       walletLabel.textContent = walletBossX + " BossX";
       updateUSDTDisplay();
 
-      // Ambil CSS variable untuk warna
+      // Ambil CSS variable untuk Chart.js
       const accentColor = getComputedStyle(document.documentElement)
         .getPropertyValue('--color-accent').trim();
 
-      // Chart.js Inisialisasi
+      // Chart.js
       const ctx = document.getElementById("dailyRewardBarChart").getContext("2d");
       const grad = ctx.createLinearGradient(0, 0, 0, 400);
       grad.addColorStop(0, "purple");
@@ -495,14 +590,20 @@
         type: "bar",
         data: {
           labels: ["Senin","Selasa","Rabu","Kamis","Jumat","Sabtu","Minggu"],
-          datasets: [{ label: "Reward BossX", data: [12.5,15.2,14.8,16.0,17.3,18.1,19.0], backgroundColor: grad }]
+          datasets: [{
+            label: "Reward BossX",
+            data: [12.5,15.2,14.8,16.0,17.3,18.1,19.0],
+            backgroundColor: grad
+          }]
         },
         options: {
           scales: {
             x: { ticks: { color: accentColor } },
             y: { ticks: { color: accentColor }, beginAtZero: false }
           },
-          plugins: { legend: { labels: { color: accentColor } } }
+          plugins: {
+            legend: { labels: { color: accentColor } }
+          }
         }
       });
     });
