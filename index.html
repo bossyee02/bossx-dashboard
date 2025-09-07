@@ -6,22 +6,35 @@
   <title>Dashboard BossX</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    /* Design Tokens */
+    :root {
+      --gap: 16px;
+      --radius: 12px;
+      --color-primary: #6a0dad;
+      --color-accent: #FFD700;
+      --sidebar-width: 250px;
+      --sidebar-collapsed: 60px;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
     body {
       font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, #6a0dad, #ff69b4);
-      color: #FFD700;
+      background: linear-gradient(135deg, var(--color-primary), #ff69b4);
+      color: var(--color-accent);
       display: flex;
       height: 100vh;
     }
     .container {
       display: grid;
-      grid-template-columns: 250px 1fr;
+      grid-template-columns: var(--sidebar-width) 1fr;
       transition: grid-template-columns 0.3s ease;
       width: 100%;
     }
     .container.collapsed {
-      grid-template-columns: 60px 1fr;
+      grid-template-columns: var(--sidebar-collapsed) 1fr;
     }
 
     /* Sidebar */
@@ -34,41 +47,56 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 16px;
-      border-bottom: 1px solid #FFD700;
+      padding: var(--gap);
+      border-bottom: 1px solid var(--color-accent);
+    }
+    .logo-container {
+      display: flex;
+      align-items: center;
     }
     .sidebar-logo {
       height: 80px;
-      margin: 12px auto;
-      display: block;
       transition: height 0.3s ease;
+    }
+    .sidebar-logo-text {
+      margin-left: 8px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: var(--color-accent);
+      transition: opacity 0.3s ease;
     }
     .container.collapsed .sidebar-logo {
       height: 60px;
     }
+    .container.collapsed .sidebar-logo-text {
+      opacity: 0;
+    }
     .collapse-btn {
       background: none;
       border: none;
-      color: #FFD700;
-      font-size: 1.4rem;
+      color: var(--color-accent);
+      font-size: 1.6rem;
       cursor: pointer;
     }
     .sidebar-nav {
-      flex: 1;
-      margin-top: 16px;
       display: flex;
       flex-direction: column;
+      padding-top: var(--gap);
     }
     .nav-item {
       display: flex;
       align-items: center;
-      padding: 12px 16px;
-      color: #FFD700;
+      padding: 12px var(--gap);
+      color: var(--color-accent);
       text-decoration: none;
       transition: background 0.2s;
     }
-    .nav-item:hover { background: rgba(255,215,0,0.1); }
-    .nav-item.active { background: rgba(255,215,0,0.2); }
+    .nav-item:hover {
+      background: rgba(255,215,0,0.1);
+    }
+    .nav-item.active {
+      background: rgba(255,215,0,0.2);
+    }
     .nav-item .icon {
       width: 24px;
       text-align: center;
@@ -78,9 +106,6 @@
       margin-left: 12px;
       white-space: nowrap;
     }
-    .container.collapsed .label {
-      display: none;
-    }
 
     /* Content */
     .content {
@@ -89,140 +114,129 @@
     }
     header {
       background: rgba(0,0,0,0.3);
-      padding: 20px 40px;
+      padding: var(--gap) calc(var(--gap)*2);
       display: flex;
-      justify-content: space-between;
+      justify-content: flex-end;
       align-items: center;
-      border-bottom: 2px solid #FFD700;
-    }
-    .logo-title {
-      display: flex;
-      align-items: center;
-    }
-    .logo-title img {
-      height: 80px;
-      margin-right: 20px;
-    }
-    .logo-title h1 {
-      font-size: 1.8rem;
-      color: #FFD700;
+      border-bottom: 2px solid var(--color-accent);
     }
     .user-info {
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 12px;
     }
     .user-info img {
-      width: 80px;
-      height: 80px;
+      width: 64px;
+      height: 64px;
       border-radius: 50%;
-      border: 2px solid #FFD700;
+      border: 2px solid var(--color-accent);
       object-fit: cover;
     }
     .user-info .info-text {
       display: flex;
       flex-direction: column;
-      line-height: 1.2;
+      text-align: right;
     }
-    .user-info .info-text h2 {
-      font-size: 1.4rem;
-      margin-bottom: 4px;
+    .user-info h2 {
+      font-size: 1.2rem;
     }
-    .user-info .info-text p {
-      font-size: 1rem;
-      opacity: 0.85;
+    .user-info p {
+      font-size: 0.9rem;
+      opacity: 0.8;
     }
 
     main {
       flex: 1;
-      padding: 30px 20px;
+      padding: var(--gap);
       max-width: 1200px;
       margin: auto;
       display: flex;
-      gap: 20px;
+      gap: var(--gap);
       flex-wrap: wrap;
     }
-    .left-column, .right-column {
+    .left-column,
+    .right-column {
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: var(--gap);
     }
-    .left-column { flex: 1; }
-    .right-column { flex: 2; }
-
+    .left-column {
+      flex: 1;
+    }
+    .right-column {
+      flex: 2;
+    }
     .card {
       background: rgba(0,0,0,0.3);
-      padding: 20px;
-      border-radius: 12px;
-      border: 1px solid #FFD700;
+      padding: var(--gap);
+      border-radius: var(--radius);
+      border: 1px solid var(--color-accent);
     }
     .card h2 {
-      margin-bottom: 10px;
-      font-size: 1.4rem;
-      color: #FFD700;
+      margin-bottom: 8px;
+      font-size: 1.2rem;
     }
     .saldo-value {
-      font-size: 1.6rem;
+      font-size: 1.4rem;
       font-weight: bold;
       margin-bottom: 8px;
     }
     .timer {
-      font-size: 1rem;
       margin-bottom: 12px;
     }
     .btn-container {
       display: flex;
-      gap: 12px;
+      gap: 8px;
       flex-wrap: wrap;
     }
-    .btn, .power-btn {
-      cursor: pointer;
-      transition: all 0.3s;
-    }
     .btn {
-      padding: 10px 20px;
-      background: #FFD700;
-      color: #6a0dad;
+      padding: 8px 16px;
+      background: var(--color-accent);
+      color: var(--color-primary);
       border: none;
       border-radius: 8px;
-      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s;
     }
-    .btn:hover { background: #ffec8b; }
+    .btn:hover {
+      background: #ffec8b;
+    }
     .btn:disabled {
       background: #333;
       color: #888;
       cursor: not-allowed;
     }
     .power-btn {
-      width: 56px;
-      height: 56px;
+      width: 48px;
+      height: 48px;
       border: 2px solid #888;
       border-radius: 50%;
       background: #222;
       display: flex;
       align-items: center;
       justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s;
     }
     .power-btn.active {
       background: #2ecc71;
       border-color: #27ae60;
     }
     .power-btn svg {
-      width: 28px;
-      height: 28px;
+      width: 24px;
+      height: 24px;
       stroke: #888;
-      stroke-width: 2;
       fill: none;
     }
     .power-btn.active svg {
       stroke: #fff;
     }
     input[type="number"] {
-      padding: 8px;
-      width: 150px;
+      padding: 6px;
+      width: 100px;
       border-radius: 6px;
       border: none;
-      margin-bottom: 12px;
+      margin-bottom: 8px;
     }
 
     .filter-bar {
@@ -232,15 +246,14 @@
     }
     .filter-bar .icon {
       margin-right: 6px;
-      font-size: 1.2rem;
     }
     .filter-bar input {
       flex: 1;
-      padding: 6px 10px;
-      border: 1px solid #FFD700;
+      padding: 6px;
+      border: 1px solid var(--color-accent);
       border-radius: 6px;
       background: rgba(255,255,255,0.1);
-      color: #FFD700;
+      color: var(--color-accent);
     }
 
     table {
@@ -248,44 +261,59 @@
       border-collapse: collapse;
       margin-top: 8px;
     }
-    th, td {
-      border: 1px solid #FFD700;
+    th,
+    td {
+      border: 1px solid var(--color-accent);
       padding: 6px;
       text-align: center;
       font-size: 0.9rem;
     }
     th {
-      background: #FFD700;
-      color: #6a0dad;
+      background: var(--color-accent);
+      color: var(--color-primary);
     }
 
     .footer {
       text-align: center;
-      padding: 20px;
+      padding: var(--gap);
       background: rgba(0,0,0,0.2);
     }
 
     @media (max-width: 768px) {
-      aside.sidebar, header { display: none; }
-      .container { grid-template-columns: 1fr; }
+      aside.sidebar,
+      header {
+        display: none;
+      }
+      .container {
+        grid-template-columns: 1fr;
+      }
       main {
-        padding: 20px;
+        padding: var(--gap);
         display: block;
       }
-      .left-column, .right-column { flex: 1 1 100%; }
-      .card { margin-bottom: 20px; }
+      .left-column,
+      .right-column {
+        flex: 1 1 100%;
+      }
+      .card {
+        margin-bottom: var(--gap);
+      }
     }
   </style>
 </head>
 <body>
   <div id="container" class="container">
+    <!-- Sidebar -->
     <aside class="sidebar">
       <div class="sidebar-header">
-        <img
-          src="https://i.ibb.co/qYBkPDH3/Picsart-25-04-01-16-25-47-054.png"
-          alt="Logo BossX"
-          class="sidebar-logo"
-        />
+        <div class="logo-container">
+          <img
+            src="https://i.ibb.co/qYBkPDH3/Picsart-25-04-01-16-25-47-054.png"
+            alt="Logo BossX"
+            class="sidebar-logo"
+          />
+          <span class="sidebar-logo-text">BossX</span>
+        </div>
         <button class="collapse-btn" id="toggleSidebar">☰</button>
       </div>
       <nav class="sidebar-nav">
@@ -304,18 +332,14 @@
       </nav>
     </aside>
 
+    <!-- Main Content -->
     <div class="content">
       <header>
-        <div class="logo-title">
-          <img
-            src="https://i.ibb.co/qYBkPDH3/Picsart-25-04-01-16-25-47-054.png"
-            alt="Logo BossX"/>
-          <h1>Dashboard BossX</h1>
-        </div>
         <div class="user-info">
           <img
             src="https://i.ibb.co/gbVsGLy0/FB-IMG-1617237754232.jpg"
-            alt="Avatar"/>
+            alt="Avatar"
+          />
           <div class="info-text">
             <h2>Fery Muliawan</h2>
             <p>Validator ID: 8055</p>
@@ -331,7 +355,9 @@
             <div class="timer" id="stopCountdown">Belum berjalan</div>
             <div class="btn-container">
               <button class="power-btn" id="onBtn">
-                <svg viewBox="0 0 24 24"><path d="M12 2v10M5.6 5.6a8 8 0 1 0 11.3 0"/></svg>
+                <svg viewBox="0 0 24 24">
+                  <path d="M12 2v10M5.6 5.6a8 8 0 1 0 11.3 0"/>
+                </svg>
               </button>
             </div>
           </div>
@@ -371,6 +397,7 @@
               <tbody id="walletHistory"></tbody>
             </table>
           </div>
+
           <div class="card">
             <h2>History Convert</h2>
             <div class="filter-bar">
@@ -384,6 +411,7 @@
               <tbody id="convertHistory"></tbody>
             </table>
           </div>
+
           <div class="card">
             <h2>History Validasi</h2>
             <div class="filter-bar">
@@ -397,6 +425,7 @@
               <tbody id="history"></tbody>
             </table>
           </div>
+
           <div class="card">
             <h2>Tren Reward Harian</h2>
             <canvas id="dailyRewardBarChart"></canvas>
@@ -409,7 +438,7 @@
   </div>
 
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
+    window.addEventListener("DOMContentLoaded", () => {
       const amountInput    = document.getElementById("amountInput");
       const buyBtn         = document.getElementById("buyBtn");
       const onBtn          = document.getElementById("onBtn");
@@ -423,6 +452,8 @@
       const walletHistory  = document.getElementById("walletHistory");
       const convertHistory = document.getElementById("convertHistory");
       const historyBody    = document.getElementById("history");
+      const toggleSidebar  = document.getElementById("toggleSidebar");
+      const container      = document.getElementById("container");
 
       let hasPackage      = false;
       let isMiningActive  = false;
@@ -440,9 +471,9 @@
 
       function formatNow() {
         const d = new Date();
-        const hari = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
+        const days = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
         return {
-          hari: hari[d.getDay()],
+          hari: days[d.getDay()],
           tanggal: d.toLocaleDateString("id-ID"),
           jam: d.toLocaleTimeString("id-ID")
         };
@@ -467,31 +498,36 @@
         if (amount <= 0) return;
         const w = formatNow();
         const row = document.createElement("tr");
-        row.innerHTML = `<td>${w.hari}</td><td>${w.tanggal}</td><td>${w.jam}</td>
-                         <td>+${amount.toFixed(9)} BossX</td><td>✅</td>`;
+        row.innerHTML = `
+          <td>${w.hari}</td><td>${w.tanggal}</td><td>${w.jam}</td>
+          <td>+${amount.toFixed(9)} BossX</td><td>✅</td>
+        `;
         historyBody.prepend(row);
       }
       function logTx(type, amt, container) {
         const w = formatNow();
         const row = document.createElement("tr");
-        row.innerHTML = `<td>${w.hari}</td><td>${w.tanggal} ${w.jam}</td>
-                         <td>${amt}</td><td>${type}</td>`;
+        row.innerHTML = `
+          <td>${w.hari}</td><td>${w.tanggal} ${w.jam}</td>
+          <td>${amt}</td><td>${type}</td>
+        `;
         container.prepend(row);
       }
       function logConvert(bxAmt, usdtAmt) {
         const w = formatNow();
         const row = document.createElement("tr");
-        row.innerHTML = `<td>${w.hari}</td><td>${w.tanggal} ${w.jam}</td>
-                         <td>${bxAmt.toFixed(9)}</td><td>${usdtAmt.toFixed(2)}</td>`;
+        row.innerHTML = `
+          <td>${w.hari}</td><td>${w.tanggal} ${w.jam}</td>
+          <td>${bxAmt.toFixed(9)}</td><td>${usdtAmt.toFixed(2)}</td><td>✅</td>
+        `;
         convertHistory.prepend(row);
       }
 
       function attachTableFilter(inputId, tableBody) {
-        const inputEl = document.getElementById(inputId);
-        inputEl.addEventListener('input', () => {
-          const term = inputEl.value.toLowerCase();
-          Array.from(tableBody.rows).forEach(row => {
-            row.style.display = row.textContent.toLowerCase().includes(term) ? '' : 'none';
+        document.getElementById(inputId).addEventListener('input', e => {
+          const term = e.target.value.toLowerCase();
+          Array.from(tableBody.rows).forEach(r => {
+            r.style.display = r.textContent.toLowerCase().includes(term) ? '' : 'none';
           });
         });
       }
@@ -499,22 +535,25 @@
       attachTableFilter('filterConvert', convertHistory);
       attachTableFilter('filterValidasi', historyBody);
 
-      document.getElementById("toggleSidebar").addEventListener("click", () => {
-        document.getElementById("container").classList.toggle("collapsed");
+      toggleSidebar.addEventListener('click', () => {
+        container.classList.toggle('collapsed');
       });
 
       buyBtn.addEventListener("click", () => {
-        console.log("▶️ Klik Aktivasi — value:", amountInput.value, "hasPackage:", hasPackage);
+        console.log("▶️ Klik Aktivasi — value:", amountInput.value);
         const amt = Number(amountInput.value);
-        if (isNaN(amt) || amt < 50) return alert("Minimal paket adalah 50 BossX.");
-        if (hasPackage) return alert("Paket hanya dapat diaktifkan sekali.");
+        if (isNaN(amt) || amt < 50) {
+          return alert("Minimal paket adalah 50 BossX.");
+        }
+        if (hasPackage) {
+          return alert("Paket hanya dapat diaktifkan sekali.");
+        }
         hasPackage = true;
         rewardPerSecond = (amt * monthlyYieldRate) / contractSeconds;
         walletBossX += amt;
         walletLabel.textContent = walletBossX + " BossX";
         logTx("Aktivasi Paket", amt + " BossX", walletHistory);
         buyBtn.disabled = true;
-        console.log("✅ Aktivasi berhasil:", amt);
       });
 
       onBtn.addEventListener("click", () => {
@@ -573,14 +612,15 @@
         logConvert(balance, usdt);
         balance = 0;
         balanceLabel.textContent = "0.000000000 BossX";
-        console.log("✅ Convert berhasil:", usdt, "USDT");
       });
 
+      // Inisialisasi
       stopLabel.textContent = "Belum berjalan";
       countdownLabel.textContent = "Auto-claim: 60s";
       walletLabel.textContent = walletBossX + " BossX";
       updateUSDTDisplay();
 
+      // Chart.js
       const ctx = document.getElementById("dailyRewardBarChart").getContext("2d");
       const grad = ctx.createLinearGradient(0, 0, 0, 400);
       grad.addColorStop(0, "purple");
@@ -597,11 +637,11 @@
         },
         options: {
           scales: {
-            x: { ticks: { color: "#FFD700" } },
-            y: { ticks: { color: "#FFD700" }, beginAtZero: false }
+            x: { ticks: { color: var(--color-accent) } },
+            y: { ticks: { color: var(--color-accent) }, beginAtZero: false }
           },
           plugins: {
-            legend: { labels: { color: "#FFD700" } }
+            legend: { labels: { color: var(--color-accent) } }
           }
         }
       });
