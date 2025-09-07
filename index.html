@@ -3,341 +3,594 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Public Dashboard BossX</title>
+  <title>Dashboard BossX</title>
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    * { box-sizing: border-box; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      margin: 0;
       font-family: 'Segoe UI', sans-serif;
       background: linear-gradient(135deg, #6a0dad, #ff69b4);
       color: #FFD700;
+      display: flex;
+      height: 100vh;
+    }
+    /* Container Grid */
+    .container {
+      display: grid;
+      grid-template-columns: 250px 1fr;
+      transition: grid-template-columns 0.3s ease;
+      width: 100%;
+    }
+    .container.collapsed {
+      grid-template-columns: 60px 1fr;
+    }
+    /* Sidebar */
+    .sidebar {
+      background: rgba(0,0,0,0.4);
+      display: flex;
+      flex-direction: column;
+    }
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px;
+      border-bottom: 1px solid #FFD700;
+    }
+    .sidebar-header .logo {
+      color: #FFD700;
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+    .collapse-btn {
+      background: none;
+      border: none;
+      color: #FFD700;
+      font-size: 1.4rem;
+      cursor: pointer;
+    }
+    .sidebar-nav {
+      flex: 1;
+      margin-top: 16px;
+      display: flex;
+      flex-direction: column;
+    }
+    .nav-item {
+      display: flex;
+      align-items: center;
+      padding: 12px 16px;
+      color: #FFD700;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .nav-item:hover { background: rgba(255,215,0,0.1); }
+    .nav-item.active { background: rgba(255,215,0,0.2); }
+    .nav-item .icon {
+      width: 24px;
+      text-align: center;
+      font-size: 1.2rem;
+    }
+    .nav-item .label {
+      margin-left: 12px;
+      white-space: nowrap;
+    }
+    .container.collapsed .label {
+      display: none;
+    }
+    /* Content */
+    .content {
+      display: flex;
+      flex-direction: column;
     }
     header {
       background-color: rgba(0,0,0,0.3);
       padding: 20px 40px;
-      display: flex; justify-content: space-between; align-items: center;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       border-bottom: 2px solid #FFD700;
     }
     .logo-title {
-      display: flex; align-items: center;
+      display: flex;
+      align-items: center;
     }
     .logo-title img {
-      height: 40px; margin-right: 12px;
+      height: 80px;
+      margin-right: 20px;
     }
     .logo-title h1 {
-      margin: 0; font-size: 1.8em;
+      font-size: 1.8rem;
+      color: #FFD700;
     }
-    .user-info { text-align: right; }
-    .user-info div { margin: 2px 0; font-size: 1em; }
-
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .user-info img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: 2px solid #FFD700;
+      object-fit: cover;
+    }
+    .user-info .info-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.2;
+    }
+    .user-info .info-text h2 {
+      font-size: 1.4rem;
+      margin-bottom: 4px;
+    }
+    .user-info .info-text p {
+      font-size: 1rem;
+      opacity: 0.85;
+    }
     main {
-      padding: 30px 20px; max-width: 1200px; margin: auto;
+      flex: 1;
+      padding: 30px 20px;
+      max-width: 1200px;
+      margin: auto;
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
     }
-    .main-container {
-      display: flex; gap: 20px; flex-wrap: wrap;
+    .left-column, .right-column {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
     }
-    .left-column {
-      flex: 1; display: flex; flex-direction: column; gap: 20px;
-    }
-    .right-column {
-      flex: 2; display: flex; flex-direction: column; gap: 20px;
-    }
-
+    .left-column { flex: 1; }
+    .right-column { flex: 2; }
     .card {
       background-color: rgba(0,0,0,0.3);
-      padding: 20px; border-radius: 12px;
+      padding: 20px;
+      border-radius: 12px;
       border: 1px solid #FFD700;
     }
     .card h2 {
-      margin-top: 0; font-size: 1.4em; color: #FFD700;
-    }
-    .saldo-value {
-      margin-top: 10px; font-size: 1.6em; font-weight: bold;
+      margin-bottom: 10px;
+      font-size: 1.4rem;
       color: #FFD700;
     }
+    .saldo-value {
+      font-size: 1.6rem;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
     .timer {
-      margin-top: 10px; font-size: 1em; color: #FFD700;
+      font-size: 1rem;
+      margin-bottom: 12px;
     }
     .btn-container {
-      display: flex; gap: 15px; margin-top: 20px; flex-wrap: wrap;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .btn, .power-btn {
+      cursor: pointer;
+      transition: all 0.3s;
     }
     .btn {
-      padding: 10px 20px; font-size: 1em;
-      background-color: #FFD700; color: #6a0dad;
-      border: none; border-radius: 8px; cursor: pointer;
-      transition: background-color 0.3s, box-shadow 0.3s;
+      padding: 10px 20px;
+      background-color: #FFD700;
+      color: #6a0dad;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
     }
-    .btn:hover {
-      background-color: #ffec8b; box-shadow: 0 0 10px #FFD700;
-    }
+    .btn:hover { background-color: #ffec8b; }
     .btn:disabled {
-      background-color: #333; color: #888; cursor: not-allowed;
-      box-shadow: none;
+      background-color: #333;
+      color: #888;
+      cursor: not-allowed;
+    }
+    .power-btn {
+      width: 56px;
+      height: 56px;
+      border: 2px solid #888;
+      border-radius: 50%;
+      background-color: #222;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .power-btn.active {
+      background-color: #2ecc71;
+      border-color: #27ae60;
+    }
+    .power-btn svg {
+      width: 28px;
+      height: 28px;
+      stroke: #888;
+      stroke-width: 2;
+      fill: none;
+    }
+    .power-btn.active svg {
+      stroke: #fff;
     }
     input[type="number"] {
-      margin-top: 10px; padding: 10px; width: 200px;
-      border: none; border-radius: 8px;
+      padding: 8px;
+      width: 150px;
+      border-radius: 6px;
+      border: none;
+      margin-bottom: 12px;
     }
+    /* Filter */
+    .filter-bar {
+      display: flex;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .filter-bar .icon {
+      margin-right: 6px;
+      font-size: 1.2rem;
+    }
+    .filter-bar input {
+      flex: 1;
+      padding: 6px 10px;
+      border: 1px solid #FFD700;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.1);
+      color: #FFD700;
+    }
+    /* Table */
     table {
-      width: 100%; border-collapse: collapse; margin-top: 10px;
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
     }
     th, td {
-      border: 1px solid #FFD700; padding: 10px; text-align: center;
+      border: 1px solid #FFD700;
+      padding: 8px;
+      text-align: center;
     }
     th {
-      background-color: #FFD700; color: #6a0dad;
+      background-color: #FFD700;
+      color: #6a0dad;
     }
     td {
       background-color: rgba(255,255,255,0.1);
-      color: #FFD700; font-size: 0.95em;
+      font-size: 0.95rem;
     }
     .footer {
-      text-align: center; padding: 20px; font-size: 0.9em;
+      text-align: center;
+      padding: 16px;
+      font-size: 0.9rem;
+      background: rgba(0,0,0,0.2);
       color: #FFD700;
     }
   </style>
 </head>
 <body>
-  <header>
-    <div class="logo-title">
-      <img src="https://i.ibb.co/qYBkPDH3/Picsart-25-04-01-16-25-47-054.png" alt="Logo BossX"/>
-      <h1>Public Dashboard BossX</h1>
-    </div>
-    <div class="user-info">
-      <div>👤 Username: <strong>boss</strong></div>
-      <div>🪪 Profil ID: <strong>805</strong></div>
-    </div>
-  </header>
-
-  <main>
-    <div class="main-container">
-      <!-- Kolom Kiri -->
-      <div class="left-column">
-        <!-- Validasi Masternode -->
-        <div class="card">
-          <h2>Validasi Masternode</h2>
-          <div class="saldo-value" id="mining">0.000000000 BossX</div>
-          <div class="timer" id="stopCountdown">Belum berjalan</div>
-          <div class="btn-container">
-            <button class="btn" id="onBtn">ON</button>
-          </div>
-        </div>
-
-        <!-- Reward Validasi -->
-        <div class="card">
-          <h2>Reward Validasi</h2>
-          <div class="saldo-value" id="balance">0.000000000 BossX</div>
-          <div class="timer" id="countdown">Auto-claim dalam: 60 detik</div>
-          <div class="btn-container">
-            <button class="btn" id="convertBtn">Convert to USDT</button>
-          </div>
-        </div>
-
-        <!-- Paket Node -->
-        <div class="card">
-          <h2>Paket Node</h2>
-          <div class="saldo-value">
-            <span id="walletBossX">0</span> BossX
-          </div>
-          <input type="number" id="amountInput" placeholder="Minimal 50 BossX"/>
-          <div class="btn-container">
-            <button class="btn" id="buyBtn">Aktivasi Paket</button>
-          </div>
-        </div>
+  <div id="container" class="container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <span class="logo">BossX</span>
+        <button class="collapse-btn" id="toggleSidebar">☰</button>
       </div>
-
-      <!-- Kolom Kanan: Riwayat -->
-      <div class="right-column">
-        <div class="card">
-          <h2>Riwayat Auto-Claim</h2>
-          <table>
-            <thead>
-              <tr><th>Hari</th><th>Tanggal</th><th>Jam</th><th>Jumlah BossX</th><th>Auto-Claim</th></tr>
-            </thead>
-            <tbody id="history"></tbody>
-          </table>
+      <nav class="sidebar-nav">
+        <a href="#" class="nav-item active">
+          <span class="icon">🏠</span><span class="label">Dashboard</span>
+        </a>
+        <a href="#" class="nav-item">
+          <span class="icon">⚙️</span><span class="label">Settings</span>
+        </a>
+        <a href="#" class="nav-item">
+          <span class="icon">📜</span><span class="label">History</span>
+        </a>
+        <a href="#" class="nav-item">
+          <span class="icon">🔒</span><span class="label">Logout</span>
+        </a>
+      </nav>
+    </aside>
+    <!-- Main Content -->
+    <div class="content">
+      <header>
+        <div class="logo-title">
+          <img src="https://i.ibb.co/qYBkPDH3/Picsart-25-04-01-16-25-47-054.png" alt="Logo BossX"/>
+          <h1>Dashboard BossX</h1>
         </div>
-
-        <div class="card">
-          <h2>Riwayat Transaksi Wallet</h2>
-          <table>
-            <thead>
-              <tr><th>Waktu</th><th>Jenis</th><th>Jumlah</th><th>Status</th></tr>
-            </thead>
-            <tbody id="walletHistory"></tbody>
-          </table>
+        <div class="user-info">
+          <img src="https://i.ibb.co/gbVsGLy0/FB-IMG-1617237754232.jpg" alt="Avatar"/>
+          <div class="info-text">
+            <h2>Fery Muliawan</h2>
+            <p>Validator ID: 8055</p>
+          </div>
         </div>
-
-        <div class="card">
-          <h2>Riwayat Convert</h2>
-          <table>
-            <thead>
-              <tr><th>Waktu</th><th>Jumlah BossX</th><th>Jumlah USDT</th><th>Status</th></tr>
-            </thead>
-            <tbody id="convertHistory"></tbody>
-          </table>
+      </header>
+      <main>
+        <!-- Left Column -->
+        <div class="left-column">
+          <div class="card">
+            <h2>Validasi Masternode</h2>
+            <div class="saldo-value" id="mining">0.000000000 BossX</div>
+            <div class="timer" id="stopCountdown">Belum berjalan</div>
+            <div class="btn-container">
+              <button class="power-btn" id="onBtn">
+                <svg viewBox="0 0 24 24"><path d="M12 2v10M5.6 5.6a8 8 0 1 0 11.3 0"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="card">
+            <h2>Reward Validasi</h2>
+            <div class="saldo-value" id="balance">0.000000000 BossX</div>
+            <div class="timer" id="countdown">Auto-claim: 60s</div>
+            <div class="btn-container">
+              <button class="btn" id="convertBtn">Convert to USDT</button>
+            </div>
+          </div>
+          <div class="card">
+            <h2>Paket Node</h2>
+            <div class="saldo-value"><span id="walletBossX">0</span> BossX</div>
+            <input type="number" id="amountInput" placeholder="Minimal 50" min="50"/>
+            <div class="btn-container">
+              <button class="btn" id="buyBtn">Aktivasi Paket</button>
+            </div>
+          </div>
+          <div class="card">
+            <h2>Balance USDT</h2>
+            <div class="saldo-value" id="usdtBalanceCard">0.00 USDT</div>
+          </div>
         </div>
-      </div>
+        <!-- Right Column -->
+        <div class="right-column">
+          <div class="card">
+            <h2>History Aktivasi</h2>
+            <div class="filter-bar">
+              <span class="icon">🔍</span>
+              <input type="search" id="filterAktivasi" placeholder="Cari History Aktivasi…"/>
+            </div>
+            <table>
+              <thead>
+                <tr><th>Hari</th><th>Waktu</th><th>Jumlah</th><th>Jenis</th></tr>
+              </thead>
+              <tbody id="walletHistory"></tbody>
+            </table>
+          </div>
+          <div class="card">
+            <h2>History Convert</h2>
+            <div class="filter-bar">
+              <span class="icon">🔍</span>
+              <input type="search" id="filterConvert" placeholder="Cari History Convert…"/>
+            </div>
+            <table>
+              <thead>
+                <tr><th>Hari</th><th>Waktu</th><th>BossX</th><th>USDT</th></tr>
+              </thead>
+              <tbody id="convertHistory"></tbody>
+            </table>
+          </div>
+          <div class="card">
+            <h2>History Validasi</h2>
+            <div class="filter-bar">
+              <span class="icon">🔍</span>
+              <input type="search" id="filterValidasi" placeholder="Cari History Validasi…"/>
+            </div>
+            <table>
+              <thead>
+                <tr><th>Hari</th><th>Tanggal</th><th>Jam</th><th>BossX</th><th>Auto-Claim</th></tr>
+              </thead>
+              <tbody id="history"></tbody>
+            </table>
+          </div>
+          <div class="card">
+            <h2>Tren Reward Harian (Bar Chart)</h2>
+            <canvas id="dailyRewardBarChart"></canvas>
+          </div>
+        </div>
+      </main>
+      <div class="footer">©2025 Dashboard BossX • Terbuka untuk umum 🌐</div>
     </div>
-  </main>
-
-  <div class="footer">©2025 Public Dashboard BossX • Terbuka untuk umum 💼✨</div>
+  </div>
 
   <script>
-    // State & Konstanta
-    let mining = 0,
-        balance = 0,
-        walletBossX = 0,
-        isMiningActive = false,
-        hasPackage = false,
-        rewardPerSecond = 0,
-        stopCountdown = 0,
+    window.addEventListener('DOMContentLoaded', () => {
+      // Element references
+      const container = document.getElementById('container');
+      const toggleBtn = document.getElementById('toggleSidebar');
+      const amountInput = document.getElementById('amountInput');
+      const buyBtn = document.getElementById('buyBtn');
+      const onBtn = document.getElementById('onBtn');
+      const convertBtn = document.getElementById('convertBtn');
+      const walletHistory = document.getElementById('walletHistory');
+      const convertHistory = document.getElementById('convertHistory');
+      const historyBody = document.getElementById('history');
+      const miningLabel = document.getElementById('mining');
+      const stopLabel = document.getElementById('stopCountdown');
+      const countdownLabel = document.getElementById('countdown');
+      const balanceLabel = document.getElementById('balance');
+      const walletLabel = document.getElementById('walletBossX');
+      const usdtLabel = document.getElementById('usdtBalanceCard');
+
+      // State & constants
+      let mining = 0, balance = 0, walletBossX = 0, usdtBalance = 0;
+      let isMiningActive = false, hasPackage = false;
+      let rewardPerSecond = 0, stopCountdown = 0, countdown = 60;
+      const monthlyYieldRate = 0.10;
+      const contractSeconds = 31 * 24 * 60 * 60;
+      const bossXtoUSDT = 1;
+
+      // Helpers
+      function formatTime(sec) {
+        const h = String(Math.floor(sec/3600)).padStart(2,'0'),
+              m = String(Math.floor((sec%3600)/60)).padStart(2,'0'),
+              s = String(sec%60).padStart(2,'0');
+        return `${h}:${m}:${s}`;
+      }
+      function formatNow() {
+        const d = new Date();
+        const days = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
+        return {
+          hari: days[d.getDay()],
+          tanggal: d.toLocaleDateString("id-ID"),
+          jam: d.toLocaleTimeString("id-ID")
+        };
+      }
+      function getSecondsToNext6AM() {
+        const now = new Date(), target = new Date(now);
+        target.setHours(6,0,0,0);
+        if (now >= target) target.setDate(target.getDate()+1);
+        return Math.floor((target - now)/1000);
+      }
+      function updateUSDTDisplay() {
+        usdtLabel.textContent = usdtBalance.toFixed(2) + " USDT";
+      }
+      // Logging functions
+      function logAutoClaim(amount) {
+        if (amount <= 0) return;
+        const w = formatNow();
+        const row = document.createElement("tr");
+        row.innerHTML = `<td>${w.hari}</td><td>${w.tanggal}</td><td>${w.jam}</td>
+                         <td>+${amount.toFixed(9)} BossX</td><td>✅</td>`;
+        historyBody.prepend(row);
+      }
+      function logTx(type, amt, container) {
+        const w = formatNow();
+        const row = document.createElement("tr");
+        row.innerHTML = `<td>${w.hari}</td><td>${w.tanggal} ${w.jam}</td>
+                         <td>${amt}</td><td>${type}</td>`;
+        container.prepend(row);
+      }
+      function logConvert(bxAmt, usdtAmt) {
+        const w = formatNow();
+        const row = document.createElement("tr");
+        row.innerHTML = `<td>${w.hari}</td><td>${w.tanggal} ${w.jam}</td>
+                         <td>${bxAmt.toFixed(9)}</td><td>${usdtAmt.toFixed(2)}</td>`;
+        convertHistory.prepend(row);
+      }
+
+      // Attach filters
+      function attachTableFilter(inputId, tableBody) {
+        const inputEl = document.getElementById(inputId);
+        const tbody = tableBody;
+        inputEl.addEventListener('input', () => {
+          const term = inputEl.value.toLowerCase();
+          Array.from(tbody.rows).forEach(row => {
+            row.style.display = row.textContent.toLowerCase().includes(term) ? '' : 'none';
+          });
+        });
+      }
+      attachTableFilter('filterAktivasi', walletHistory);
+      attachTableFilter('filterConvert', convertHistory);
+      attachTableFilter('filterValidasi', historyBody);
+
+      // Sidebar toggle
+      toggleBtn.addEventListener('click', () => {
+        container.classList.toggle('collapsed');
+      });
+
+      // Aktivasi Paket logic
+      buyBtn.addEventListener("click", () => {
+        console.log("▶️ Klik Aktivasi — value:", amountInput.value, "hasPackage:", hasPackage);
+        const amt = Number(amountInput.value);
+        if (isNaN(amt) || amt < 50) return alert("Minimal paket adalah 50 BossX.");
+        if (hasPackage) return alert("Paket hanya dapat diaktifkan sekali.");
+        hasPackage = true;
+        rewardPerSecond = (amt * monthlyYieldRate) / contractSeconds;
+        walletBossX += amt;
+        walletLabel.textContent = walletBossX + " BossX";
+        logTx("Aktivasi Paket", amt + " BossX", walletHistory);
+        buyBtn.disabled = true;
+        console.log("✅ Aktivasi berhasil:", amt);
+      });
+
+      // Power ON/OFF logic
+      onBtn.addEventListener("click", () => {
+        if (!hasPackage || isMiningActive) return;
+        isMiningActive = true;
+        onBtn.disabled = true;
+        onBtn.classList.add("active");
+        stopCountdown = getSecondsToNext6AM();
         countdown = 60;
+        stopLabel.textContent = `Stop validasi jam 06:00 dalam: ${formatTime(stopCountdown)}`;
+        // Mining increment
+        const miningInterval = setInterval(() => {
+          mining += rewardPerSecond;
+          miningLabel.textContent = mining.toFixed(9) + " BossX";
+        }, 1000);
+        // Auto-claim each minute
+        const claimInterval = setInterval(() => {
+          if (mining > 0) {
+            balance += mining;
+            logAutoClaim(mining);
+            mining = 0;
+            miningLabel.textContent = "0.000000000 BossX";
+            balanceLabel.textContent = balance.toFixed(9) + " BossX";
+          }
+        }, 60000);
+        // Countdown timer
+        const countdownInterval = setInterval(() => {
+          countdown--;
+          countdownLabel.textContent = `Auto-claim: ${countdown}s`;
+          if (countdown <= 0) countdown = 60;
+        }, 1000);
+        // Stop at 06:00
+        const stopInterval = setInterval(() => {
+          stopCountdown--;
+          if (stopCountdown > 0) {
+            stopLabel.textContent = `Stop validasi jam 06:00 dalam: ${formatTime(stopCountdown)}`;
+          } else {
+            clearInterval(miningInterval);
+            clearInterval(claimInterval);
+            clearInterval(countdownInterval);
+            clearInterval(stopInterval);
+            isMiningActive = false;
+            onBtn.disabled = false;
+            onBtn.classList.remove("active");
+            stopLabel.textContent = "06:00 tercapai, klik ON untuk mulai lagi";
+          }
+        }, 1000);
+      });
 
-    const monthlyYieldRate = 0.10;        // 10%
-    const contractSeconds  = 31 * 24 * 60 * 60; // 2 678 400 detik
-    const bossXtoUSDT      = 1;           // 1 BossX = 1 USDT
+      // Convert to USDT logic
+      convertBtn.addEventListener("click", () => {
+        console.log("▶️ Klik Convert — balance:", balance);
+        if (balance < 1) return alert("Minimal convert adalah 1 BossX");
+        const usdt = balance * bossXtoUSDT;
+        usdtBalance += usdt;
+        updateUSDTDisplay();
+        logConvert(balance, usdt);
+        balance = 0;
+        balanceLabel.textContent = "0.000000000 BossX";
+        console.log("✅ Convert berhasil:", usdt, "USDT");
+      });
 
-    // DOM references
-    const onBtn       = document.getElementById("onBtn");
-    const miningLabel = document.getElementById("mining");
-    const stopLabel   = document.getElementById("stopCountdown");
-    const countdownLabel  = document.getElementById("countdown");
-    const balanceLabel    = document.getElementById("balance");
-    const walletLabel     = document.getElementById("walletBossX");
-    const amountInput     = document.getElementById("amountInput");
-    const historyBody     = document.getElementById("history");
-    const walletHistory   = document.getElementById("walletHistory");
-    const convertHistory  = document.getElementById("convertHistory");
-    const buyBtn          = document.getElementById("buyBtn");
-    const convertBtn      = document.getElementById("convertBtn");
-
-    // Helpers
-    function formatTime(sec) {
-      const h = String(Math.floor(sec/3600)).padStart(2,'0'),
-            m = String(Math.floor((sec%3600)/60)).padStart(2,'0'),
-            s = String(sec%60).padStart(2,'0');
-      return `${h}:${m}:${s}`;
-    }
-
-    function formatNow() {
-      const now = new Date();
-      const days = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
-      return {
-        hari: days[now.getDay()],
-        tanggal: now.toLocaleDateString("id-ID"),
-        jam: now.toLocaleTimeString("id-ID")
-      };
-    }
-
-    // Logging
-    function logAutoClaim(amount) {
-      if (amount <= 0) return;
-      const w = formatNow();
-      const row = document.createElement("tr");
-      row.innerHTML = `
-        <td>${w.hari}</td>
-        <td>${w.tanggal}</td>
-        <td>${w.jam}</td>
-        <td>+${amount.toFixed(9)} BossX</td>
-        <td>✅</td>
-      `;
-      historyBody.prepend(row);
-    }
-
-    function logTx(type, amt, container) {
-      const time = new Date().toLocaleString("id-ID");
-      const row = document.createElement("tr");
-      row.innerHTML = `<td>${time}</td><td>${type}</td><td>${amt}</td><td>✅</td>`;
-      container.prepend(row);
-    }
-
-    // Core updates
-    function updateStopCountdown() {
-      if (stopCountdown > 0) {
-        stopCountdown--;
-        stopLabel.textContent = "Berhenti otomatis dalam: " + formatTime(stopCountdown);
-      } else {
-        clearInterval(intervalStop);
-        clearInterval(intervalMining);
-        clearInterval(intervalClaim);
-        clearInterval(intervalCountdown);
-        isMiningActive = false;
-        stopLabel.textContent = "Kontrak selesai, klik ON untuk mulai lagi";
-        onBtn.disabled = false;
-      }
-    }
-
-    function updateMining() {
-      mining += rewardPerSecond;
-      miningLabel.textContent = mining.toFixed(9) + " BossX";
-    }
-
-    function updateCountdown() {
-      countdown--;
-      countdownLabel.textContent = "Auto-claim dalam: " + countdown + " detik";
-      if (countdown <= 0) countdown = 60;
-    }
-
-    function autoClaim() {
-      if (mining <= 0) return;
-      balance += mining;
-      logAutoClaim(mining);
-      mining = 0;
-      miningLabel.textContent = "0.000000000 BossX";
-      balanceLabel.textContent = balance.toFixed(9) + " BossX";
-    }
-
-    // Event Listeners
-    onBtn.addEventListener("click", () => {
-      if (!hasPackage || isMiningActive) return;
-      isMiningActive = true;
-      onBtn.disabled = true;
-      stopCountdown = contractSeconds;
-      countdown     = 60;
-      stopLabel.textContent = "Berhenti otomatis dalam: " + formatTime(stopCountdown);
-
-      intervalMining    = setInterval(updateMining,    1000);
-      intervalClaim     = setInterval(autoClaim,      60000);
-      intervalCountdown = setInterval(updateCountdown, 1000);
-      intervalStop      = setInterval(updateStopCountdown, 1000);
-    });
-
-    buyBtn.addEventListener("click", () => {
-      if (hasPackage) {
-        alert("Paket hanya dapat diaktifkan sekali.");
-        return;
-      }
-      const amt = parseInt(amountInput.value, 10);
-      if (isNaN(amt) || amt < 50) {
-        alert("Minimal paket adalah 50 BossX.");
-        return;
-      }
-      walletBossX += amt;
+      // Initialize displays
+      stopLabel.textContent = "Belum berjalan";
+      countdownLabel.textContent = "Auto-claim: 60s";
       walletLabel.textContent = walletBossX + " BossX";
-      logTx("Aktivasi Paket", "+" + amt + " BossX", walletHistory);
+      updateUSDTDisplay();
 
-      // hitung reward per detik
-      rewardPerSecond = (amt * monthlyYieldRate) / contractSeconds;
-      hasPackage     = true;
-      buyBtn.disabled = true;
+      // Chart.js Bar Chart
+      const ctx = document.getElementById('dailyRewardBarChart').getContext('2d');
+      const grad = ctx.createLinearGradient(0, 0, 0, 400);
+      grad.addColorStop(0, 'purple');
+      grad.addColorStop(1, 'gold');
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['Senin','Selasa','Rabu','Kamis','Jumat','Sabtu','Minggu'],
+          datasets: [{
+            label: 'Reward BossX',
+            data: [12.5,15.2,14.8,16.0,17.3,18.1,19.0],
+            backgroundColor: grad
+          }]
+        },
+        options: {
+          scales: {
+            x: { ticks: { color: '#FFD700' } },
+            y: { ticks: { color: '#FFD700' }, beginAtZero: false }
+          },
+          plugins: {
+            legend: { labels: { color: '#FFD700' } }
+          }
+        }
+      });
     });
-
-    convertBtn.addEventListener("click", () => {
-      if (balance < 1) {
-        alert("Minimal convert adalah 1 BossX");
-        return;
-      }
-      const usdt = balance * bossXtoUSDT;
-      logTx("Convert Reward", balance.toFixed(9) + " BossX → " + usdt.toFixed(9) + " USDT", convertHistory);
-      balance = 0;
-      balanceLabel.textContent = "0.000000000 BossX";
-    });
-
-    // Inisialisasi tampilan
-    stopLabel.textContent      = "Belum berjalan";
-    countdownLabel.textContent = "Auto-claim dalam: 60 detik";
-    walletLabel.textContent    = walletBossX + " BossX";
   </script>
 </body>
 </html>
