@@ -1,90 +1,109 @@
-<!-- ===== Running Text Harga (Binance API) ===== -->
-<style>
-  .ticker-bar {
-    position: relative;
-    overflow: hidden;
-    background: #0f1115;
-    border-top: 1px solid rgba(245, 197, 66, 0.25);
-    border-bottom: 1px solid rgba(245, 197, 66, 0.25);
-    padding: 8px 0;
-  }
-  .ticker-inner { position: relative; width: 100%; }
-  .ticker-track {
-    display: inline-block;
-    white-space: nowrap;
-    will-change: transform;
-    animation: ticker-scroll 28s linear infinite;
-  }
-  .ticker-item {
-    display: inline-flex;
-    align-items: baseline;
-    gap: 8px;
-    margin-right: 32px;
-    color: #eaeaea;
-    font-size: 14px;
-  }
-  .ticker-label { color: #f5c542; font-weight: 700; letter-spacing: .3px; }
-  .ticker-sep { opacity: .35; }
-  @keyframes ticker-scroll {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
-  }
-  @media (max-width: 480px) {
-    .ticker-item { margin-right: 24px; font-size: 13px; }
-  }
-</style>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Head asli kamu -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BossX Dashboard</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-theme="light">
 
-<div class="ticker-bar">
-  <div class="ticker-inner">
-    <div class="ticker-track" id="tickerTrack"></div>
+  <!-- ===== Running Text Harga (Binance API) ===== -->
+  <style>
+    .ticker-bar {
+      position: relative;
+      overflow: hidden;
+      background: #0f1115;
+      border-top: 1px solid rgba(245, 197, 66, 0.25);
+      border-bottom: 1px solid rgba(245, 197, 66, 0.25);
+      padding: 8px 0;
+    }
+    .ticker-inner { position: relative; width: 100%; }
+    .ticker-track {
+      display: inline-block;
+      white-space: nowrap;
+      will-change: transform;
+      animation: ticker-scroll 28s linear infinite;
+    }
+    .ticker-item {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-right: 32px;
+      color: #eaeaea;
+      font-size: 14px;
+    }
+    .ticker-label { color: #f5c542; font-weight: 700; letter-spacing: .3px; }
+    .ticker-sep { opacity: .35; }
+    @keyframes ticker-scroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    @media (max-width: 480px) {
+      .ticker-item { margin-right: 24px; font-size: 13px; }
+    }
+  </style>
+
+  <div class="ticker-bar">
+    <div class="ticker-inner">
+      <div class="ticker-track" id="tickerTrack"></div>
+    </div>
   </div>
-</div>
 
-<script>
-const REFRESH_MS = 10000; // refresh tiap 10 detik
-const BOSSX_PRICE = 1; // fixed
-const SYMBOLS = ['BTCUSDT','ETHUSDT','SOLUSDT','TRXUSDT','TRUMPUSDT'];
+  <script>
+    const REFRESH_MS = 10000; // refresh tiap 10 detik
+    const BOSSX_PRICE = 1; // fixed
+    const SYMBOLS = ['BTCUSDT','ETHUSDT','SOLUSDT','TRXUSDT','TRUMPUSDT'];
 
-async function fetchBinancePrices() {
-  const url = 'https://api.binance.com/api/v3/ticker/price';
-  const res = await fetch(url);
-  const data = await res.json();
-  const out = {};
-  SYMBOLS.forEach(sym => {
-    const found = data.find(item => item.symbol === sym);
-    out[sym] = found ? parseFloat(found.price) : null;
-  });
-  return out;
-}
+    async function fetchBinancePrices() {
+      const url = 'https://api.binance.com/api/v3/ticker/price';
+      const res = await fetch(url);
+      const data = await res.json();
+      const out = {};
+      SYMBOLS.forEach(sym => {
+        const found = data.find(item => item.symbol === sym);
+        out[sym] = found ? parseFloat(found.price) : null;
+      });
+      return out;
+    }
 
-function fmtUSDT(n) {
-  if (n == null) return 'N/A';
-  return n >= 1000
-    ? n.toLocaleString('en-US', { maximumFractionDigits: 2 }) + ' USDT'
-    : n.toLocaleString('en-US', { minimumFractionDigits: 4, maximumFractionDigits: 6 }) + ' USDT';
-}
+    function fmtUSDT(n) {
+      if (n == null) return 'N/A';
+      return n >= 1000
+        ? n.toLocaleString('en-US', { maximumFractionDigits: 2 }) + ' USDT'
+        : n.toLocaleString('en-US', { minimumFractionDigits: 4, maximumFractionDigits: 6 }) + ' USDT';
+    }
 
-function buildTicker(prices) {
-  return `
-    <span class="ticker-item"><span class="ticker-label">BOSSX/USDT</span> <span class="ticker-sep">•</span> ${fmtUSDT(BOSSX_PRICE)}</span>
-    <span class="ticker-item"><span class="ticker-label">BTC/USDT</span> <span class="ticker-sep">•</span> ${fmtUSDT(prices.BTCUSDT)}</span>
-    <span class="ticker-item"><span class="ticker-label">BOSSX/USDT</span> <span class="ticker-sep">•</span> ${fmtUSDT(BOSSX_PRICE)}</span>
-    <span class="ticker-item"><span class="ticker-label">ETH/USDT</span> <span class="ticker-sep">•</span> ${fmtUSDT(prices.ETHUSDT)}</span>
-    <span class="ticker-item"><span class="ticker-label">BOSSX/USDT</span> <span class="ticker-sep">•</span> ${fmtUSDT(BOSSX_PRICE)}</span>
-    <span class="ticker-item"><span class="ticker-label">SOL/USDT</span> <span class="ticker-sep">•</span> ${fmtUSDT(prices.SOLUSDT)}</span>
-    <span class="ticker-item"><span class="ticker-label">BOSSX/USDT</span> <span class="ticker-sep">•</span> ${fmtUSDT(BOSSX_PRICE)}</span>
-    <span class="ticker-item"><span class="ticker-label">TRX/USDT</span> <span class="ticker-sep">•</span> ${fmtUSDT(prices.TRXUSDT)}</span>
-    <span class="ticker-item"><span class="ticker-label">BOSSX/USDT</span> <span class="ticker-sep">•</span> ${fmtUSDT(BOSSX_PRICE)}</span>
-    <span class="ticker-item"><span class="ticker-label">TRUMP/USDT</span> <span class="ticker-sep">•</span> ${fmtUSDT(prices.TRUMPUSDT)}</span>
-  `;
-}
+    function buildTicker(prices) {
+      return `
+        <span class="ticker-item"><span class="ticker-label">BOSSX/USDT</span> <span class="ticker-sep">•</span> ${fmtUSDT(BOSSX_PRICE)}</span>
+        <span class="ticker-item"><span class="ticker-label">BTC/USDT</span> <span class="ticker-sep">•</span> ${fmtUSDT(prices.BTCUSDT)}</span>
+        <span class="ticker-item"><span class="ticker-label">BOSSX/USDT</span> <span class="ticker-sep">•</span> ${fmtUSDT(BOSSX_PRICE)}</span>
+        <span class="ticker-item"><span class="ticker-label">ETH/USDT</span> <span class="ticker-sep">•</span> ${fmtUSDT(prices.ETHUSDT)}</span>
+        <span class="ticker-item"><span class="ticker-label">BOSSX/USDT</span> <span class="ticker-sep">•</span> ${fmtUSDT(BOSSX_PRICE)}</span>
+        <span class="ticker-item"><span class="ticker-label">SOL/USDT</span> <span class="ticker-sep">•</span> ${fmtUSDT(prices.SOLUSDT)}</span>
+        <span class="ticker-item"><span class="ticker-label">BOSSX/USDT</span> <span class="ticker-sep">•</span> ${fmtUSDT(BOSSX_PRICE)}</span>
+        <span class="ticker-item"><span class="ticker-label">TRX/USDT</span> <span class="ticker-sep">•</span> ${fmtUSDT(prices.TRXUSDT)}</span>
+        <span class="ticker-item"><span class="ticker-label">BOSSX/USDT</span> <span class="ticker-sep">•</span> ${fmtUSDT(BOSSX_PRICE)}</span>
+        <span class="ticker-item"><span class="ticker-label">TRUMP/USDT</span> <span class="ticker-sep">•</span> ${fmtUSDT(prices.TRUMPUSDT)}</span>
+      `;
+    }
 
-async function refreshTicker() {
-  const prices = await fetchBinancePrices();
-  document.getElementById('tickerTrack').innerHTML = buildTicker(prices) + buildTicker(prices);
-}
+    async function refreshTicker() {
+      const prices = await fetchBinancePrices();
+      document.getElementById('tickerTrack').innerHTML = buildTicker(prices) + buildTicker(prices);
+    }
 
-refreshTicker();
-setInterval(refreshTicker, REFRESH_MS);
-</script>
-<!-- ===== End Running Text Harga ===== -->
+    refreshTicker();
+    setInterval(refreshTicker, REFRESH_MS);
+  </script>
+  <!-- ===== End Running Text Harga ===== -->
+
+  <div class="container" id="container">
+    <!-- Seluruh konten dashboard asli kamu tetap di sini -->
+    <!-- ... -->
+  </div>
+
+</body>
+</html>
