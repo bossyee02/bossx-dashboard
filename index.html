@@ -1,199 +1,148 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>BossX Dashboard</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<body data-theme="light">
 
-<!-- CSS Dashboard Lama -->
-<link rel="stylesheet" href="assets/css/style.css">
+  <!-- ===== Running Text Harga ===== -->
+  <style>
+    .ticker-bar {
+      position: relative;
+      overflow: hidden;
+      background: #0f1115;
+      border-top: 1px solid rgba(245, 197, 66, 0.25);
+      border-bottom: 1px solid rgba(245, 197, 66, 0.25);
+      padding: 8px 0;
+    }
+    .ticker-inner {
+      position: relative;
+      width: 100%;
+    }
+    .ticker-track {
+      display: inline-block;
+      white-space: nowrap;
+      will-change: transform;
+      animation: ticker-scroll 28s linear infinite;
+    }
+    .ticker-item {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-right: 32px;
+      color: #eaeaea;
+      font-size: 14px;
+    }
+    .ticker-label { color: #f5c542; font-weight: 700; letter-spacing: .3px; }
+    .ticker-sep { opacity: .35; }
+    .chg-up { color: #39d98a; }
+    .chg-down { color: #ff6b6b; }
+    @keyframes ticker-scroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    @media (max-width: 480px) {
+      .ticker-item { margin-right: 24px; font-size: 13px; }
+    }
+  </style>
 
-<style>
-/* ====== ANIMASI GEAR BOSSX ====== */
-:root {
-  --bossx-gold: #f5c542;
-  --bossx-bg: #0f1115;
-  --bossx-text: #eaeaea;
-}
-
-.masternode-card {
-  text-align: center;
-  background: var(--bossx-bg);
-  padding: 10px;
-  border-radius: 12px;
-  color: var(--bossx-gold);
-  border: 1px solid rgba(245, 197, 66, 0.3);
-  width: 100%;
-  margin: 10px auto;
-}
-
-.gear-wrapper {
-  position: relative;
-  display: inline-block;
-}
-
-.gear {
-  position: relative;
-  filter: drop-shadow(0 0 8px rgba(245, 197, 66, 0.8));
-}
-
-.gear-main {
-  width: 120px;
-  height: 120px;
-  animation: spin 4s linear infinite;
-  z-index: 2;
-}
-
-.gear-small {
-  width: 50px;
-  height: 50px;
-  animation: spin-reverse 4s linear infinite;
-  z-index: 1;
-}
-
-.gear-top {
-  position: absolute;
-  top: -15px;
-  left: 95px;
-}
-
-.gear-bottom {
-  position: absolute;
-  bottom: -15px;
-  left: 95px;
-}
-
-/* Efek kilau */
-.gear-container {
-  position: relative;
-  display: inline-block;
-}
-
-.shine {
-  position: absolute;
-  top: 0;
-  left: -150%;
-  width: 50%;
-  height: 100%;
-  background: linear-gradient(
-    120deg,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0.6) 50%,
-    rgba(255, 255, 255, 0) 100%
-  );
-  transform: skewX(-20deg);
-  animation: shine-move 5s ease-in-out infinite;
-}
-
-.delay1 { animation-delay: 1.5s; }
-.delay2 { animation-delay: 3s; }
-
-@keyframes shine-move {
-  0% { left: -150%; }
-  30% { left: 150%; }
-  100% { left: 150%; }
-}
-
-/* Animasi rotasi */
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-@keyframes spin-reverse {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(-360deg); }
-}
-
-.status-text {
-  margin-top: 140px;
-  font-weight: bold;
-  letter-spacing: 0.5px;
-  color: var(--bossx-text);
-}
-
-/* Tombol suara */
-.sound-toggle {
-  margin-top: 10px;
-  padding: 6px 12px;
-  background: var(--bossx-gold);
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: bold;
-  color: #000;
-}
-</style>
-</head>
-<body>
-
-<div class="container">
-
-  <!-- Card Validasi Masternode -->
-  <div class="card">
-    <h2>Validasi Masternode</h2>
-
-    <!-- Animasi Gear BossX -->
-    <div class="masternode-card">
-      <div class="gear-wrapper">
-        <!-- Gear utama -->
-        <div class="gear-container">
-          <img src="assets/img/gear-bitcoin.png" class="gear gear-main" alt="Gear utama BossX">
-          <div class="shine"></div>
-        </div>
-
-        <!-- Gear kecil atas -->
-        <div class="gear-container gear-top">
-          <img src="assets/img/gear-small.png" class="gear gear-small" alt="Gear kecil atas">
-          <div class="shine delay1"></div>
-        </div>
-
-        <!-- Gear kecil bawah -->
-        <div class="gear-container gear-bottom">
-          <img src="assets/img/gear-small.png" class="gear gear-small" alt="Gear kecil bawah">
-          <div class="shine delay2"></div>
-        </div>
+  <div class="ticker-bar">
+    <div class="ticker-inner">
+      <div class="ticker-track" id="tickerTrack">
+        <!-- Konten diisi JS -->
       </div>
-
-      <p class="status-text">Validating Node…</p>
-
-      <!-- Audio mekanik -->
-      <audio id="gear-sound" loop>
-        <source src="assets/audio/gear-sound.mp3" type="audio/mpeg">
-      </audio>
-
-      <!-- Tombol kontrol suara -->
-      <button class="sound-toggle" onclick="toggleSound()">🔊 Sound On/Off</button>
-    </div>
-
-    <!-- Data lama -->
-    <div class="saldo-value" id="mining">0.000000000 BossX</div>
-    <div class="timer" id="stopCountdown">Belum berjalan</div>
-    <div class="btn-container">
-      <button class="power-btn" id="onBtn">
-        <svg viewBox="0 0 24 24">
-          <path d="M12 2v10M5.6 5.6a8 8 0 1 0 11.3 0"/>
-        </svg>
-      </button>
     </div>
   </div>
 
-</div>
+  <script>
+    const CMC_API_KEY = 'PASTE_API_KEY_KAMU_DI_SINI'; // API key CMC
+    const REFRESH_MS = 30000;
+    const QUOTE = 'USDT';
+    const SYMBOLS = ['BTC','ETH','SOL'];
+    const BOSSX_PRICE = 1;
+    const BOSSX_CHANGE_24H = 0;
 
-<!-- JS Dashboard Lama -->
-<script src="assets/js/main.js"></script>
+    const fmtUSDT = (n) => {
+      if (n == null) return 'N/A';
+      if (n >= 1000) return n.toLocaleString('en-US', { maximumFractionDigits: 2 }) + ' USDT';
+      return n.toLocaleString('en-US', { minimumFractionDigits: 4, maximumFractionDigits: 6 }) + ' USDT';
+    };
+    const fmtPct = (n) => {
+      if (n == null || isNaN(n)) return '';
+      const sign = n >= 0 ? '+' : '';
+      return `${sign}${n.toFixed(2)}%`;
+    };
 
-<!-- JS Animasi Gear -->
-<script>
-function toggleSound() {
-  const audio = document.getElementById('gear-sound');
-  if (audio.paused) {
-    audio.play();
-  } else {
-    audio.pause();
-  }
-}
-</script>
+    async function fetchCmcQuotes(symbols) {
+      const url = `https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?symbol=${encodeURIComponent(symbols.join(','))}&convert=${encodeURIComponent(QUOTE)}`;
+      const headers = { 'X-CMC_PRO_API_KEY': CMC_API_KEY, 'Accept': 'application/json' };
+      const out = {};
+      try {
+        const res = await fetch(url, { headers });
+        if (!res.ok) throw new Error('CMC error ' + res.status);
+        const json = await res.json();
+        symbols.forEach(sym => {
+          const row = json?.data?.[sym];
+          const q = row?.quote?.[QUOTE];
+          out[sym] = {
+            price: q?.price ?? null,
+            chg24: q?.percent_change_24h ?? null
+          };
+        });
+      } catch (e) {}
+      return out;
+    }
 
-</body>
-</html>
+    function buildItems({ btc, eth, sol, bossx }) {
+      const items = [];
+      items.push(`
+        <span class="ticker-item">
+          <span class="ticker-label">BOSSX/USDT</span>
+          <span class="ticker-sep">•</span>
+          <span>${fmtUSDT(bossx.price)}</span>
+          <span class="${bossx.chg24 >= 0 ? 'chg-up' : 'chg-down'}">${fmtPct(bossx.chg24)}</span>
+        </span>
+      `);
+      items.push(`
+        <span class="ticker-item">
+          <span class="ticker-label">BTC/USDT</span>
+          <span class="ticker-sep">•</span>
+          <span>${fmtUSDT(btc.price)}</span>
+          <span class="${(btc.chg24 ?? 0) >= 0 ? 'chg-up' : 'chg-down'}">${fmtPct(btc.chg24)}</span>
+        </span>
+      `);
+      items.push(`
+        <span class="ticker-item">
+          <span class="ticker-label">ETH/USDT</span>
+          <span class="ticker-sep">•</span>
+          <span>${fmtUSDT(eth.price)}</span>
+          <span class="${(eth.chg24 ?? 0) >= 0 ? 'chg-up' : 'chg-down'}">${fmtPct(eth.chg24)}</span>
+        </span>
+      `);
+      items.push(`
+        <span class="ticker-item">
+          <span class="ticker-label">SOL/USDT</span>
+          <span class="ticker-sep">•</span>
+          <span>${fmtUSDT(sol.price)}</span>
+          <span class="${(sol.chg24 ?? 0) >= 0 ? 'chg-up' : 'chg-down'}">${fmtPct(sol.chg24)}</span>
+        </span>
+      `);
+      return items.join('');
+    }
+
+    function mountTrack(html) {
+      const track = document.getElementById('tickerTrack');
+      track.innerHTML = html + html;
+    }
+
+    async function refreshTicker() {
+      const bossx = { price: BOSSX_PRICE, chg24: BOSSX_CHANGE_24H };
+      const quotes = await fetchCmcQuotes(SYMBOLS);
+      const btc = quotes.BTC ?? { price: null, chg24: null };
+      const eth = quotes.ETH ?? { price: null, chg24: null };
+      const sol = quotes.SOL ?? { price: null, chg24: null };
+      const html = buildItems({ btc, eth, sol, bossx });
+      mountTrack(html);
+    }
+
+    refreshTicker();
+    setInterval(refreshTicker, REFRESH_MS);
+  </script>
+  <!-- ===== End Running Text Harga ===== -->
+
+  <div class="container" id="container">
