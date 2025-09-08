@@ -257,9 +257,9 @@
 </head>
 <body data-theme="light">
 
-  <!-- ===== RUNNING TEXT REAL-TIME (PAKAI PROXY) ===== -->
+  <!-- ===== RUNNING TEXT DUMMY REAL-TIME ===== -->
   <div class="crypto-ticker">
-    <div class="ticker-track" id="cryptoTicker">Loading real-time prices...</div>
+    <div class="ticker-track" id="cryptoTicker">Loading crypto prices...</div>
   </div>
 
   <div class="container" id="container">
@@ -445,48 +445,17 @@
   </div>
 
   <script>
-    // ===== RUNNING TEXT SCRIPT REAL-TIME (PAKAI PROXY CORS) =====
+    // ===== RUNNING TEXT SCRIPT DUMMY REAL-TIME =====
     (function() {
-      const REFRESH_INTERVAL = 10000; // 10 detik
-      const SYMBOLS = ['BTCUSDT', 'ETHUSDT', 'SOLUSDT', 'TRXUSDT', 'TRUMPUSDT'];
-      const BOSSX_PRICE = 1.00;
-
-      // Gunakan proxy untuk bypass CORS
-      async function fetchPrices() {
-        try {
-          const proxyUrl = 'https://corsproxy.io/?';
-          const targetUrl = 'https://api.binance.com/api/v3/ticker/24hr';
-          const response = await fetch(proxyUrl + encodeURIComponent(targetUrl), {
-            timeout: 5000
-          });
-          if (!response.ok) throw new Error(`HTTP ${response.status}`);
-          const data = await response.json();
-          const prices = {};
-
-          SYMBOLS.forEach(symbol => {
-            const item = data.find(d => d.symbol === symbol);
-            if (item) {
-              prices[symbol] = {
-                price: parseFloat(item.lastPrice),
-                change: parseFloat(item.priceChangePercent)
-              };
-            } else {
-              prices[symbol] = { price: 0, change: 0 };
-            }
-          });
-          return prices;
-        } catch (error) {
-          console.warn('⚠️ Gagal ambil data harga:', error.message);
-          // Fallback ke data dummy jika error
-          return {
-            BTCUSDT: { price: 62000.00, change: 1.20 },
-            ETHUSDT: { price: 4295.88, change: 0.02 },
-            SOLUSDT: { price: 207.16, change: 2.10 },
-            TRXUSDT: { price: 0.3316, change: 0.91 },
-            TRUMPUSDT: { price: 8.51, change: 0.35 }
-          };
-        }
-      }
+      // Data awal
+      const coins = {
+        'BOSSX/USDT': { price: 1.00, change: 0.00 },
+        'BTC/USDT': { price: 62000.00, change: 1.20 },
+        'ETH/USDT': { price: 4295.88, change: 0.02 },
+        'SOL/USDT': { price: 207.16, change: 2.10 },
+        'TRX/USDT': { price: 0.3316, change: 0.91 },
+        'TRUMP/USDT': { price: 8.51, change: 0.35 }
+      };
 
       function formatPrice(price) {
         if (price >= 1000) return price.toLocaleString('en-US', { maximumFractionDigits: 2 });
@@ -494,46 +463,55 @@
         return price.toFixed(4);
       }
 
-      function createTickerItem(label, price, change, isBossX = false) {
-        const priceClass = isBossX ? '' : (change >= 0 ? 'price-up' : 'price-down');
-        const formattedPrice = isBossX ? price.toFixed(2) : formatPrice(price);
-        const formattedChange = isBossX ? '' : ` <span class="${priceClass}">${change >= 0 ? '+' : ''}${change.toFixed(2)}%</span>`;
-
+      function createTickerItem(label, price, change) {
+        const isUp = change >= 0;
+        const cls = isUp ? 'price-up' : 'price-down';
+        const sign = isUp ? '+' : '';
         return `
           <span class="ticker-item">
             <span class="ticker-label">${label}</span>
             <span class="ticker-sep">•</span>
-            <span class="${priceClass}">${formattedPrice} USDT</span>
-            ${formattedChange}
+            <span class="${cls}">${formatPrice(price)} USDT</span>
+            <span class="${cls}">${sign}${change.toFixed(2)}%</span>
           </span>
         `;
       }
 
-      function buildTicker(prices) {
-        let content = createTickerItem('BOSSX/USDT', BOSSX_PRICE, 0, true);
-        
-        SYMBOLS.forEach(symbol => {
-          const pair = symbol.replace('USDT', '/USDT');
-          const data = prices[symbol] || { price: 0, change: 0 };
-          content += createTickerItem(pair, data.price, data.change);
-        });
-
-        return content + content; // Duplicate for smooth infinite scroll
+      function updatePrices() {
+        // Update harga secara acak
+        for (let symbol in coins) {
+          const coin = coins[symbol];
+          // Simulasi perubahan kecil (-0.5% hingga +0.5%)
+          const delta = (Math.random() - 0.5) * 1.0; // -0.5% to +0.5%
+          coin.change = delta;
+          coin.price = coin.price * (1 + delta / 100);
+          // Batasi harga agar tidak terlalu ekstrem
+          if (coin.price < 0.0001) coin.price = 0.0001;
+        }
       }
 
-      async function updateTicker() {
-        const prices = await fetchPrices();
+      function buildTicker() {
+        let content = '';
+        for (let symbol in coins) {
+          const coin = coins[symbol];
+          content += createTickerItem(symbol, coin.price, coin.change);
+        }
+        return content + content; // Duplicate for smooth scroll
+      }
+
+      function updateTicker() {
+        updatePrices();
         const tickerElement = document.getElementById('cryptoTicker');
         if (tickerElement) {
-          tickerElement.innerHTML = buildTicker(prices);
+          tickerElement.innerHTML = buildTicker();
         }
       }
 
       // Jalankan pertama kali
       updateTicker();
-      
-      // Update otomatis
-      setInterval(updateTicker, REFRESH_INTERVAL);
+
+      // Update otomatis setiap 10 detik
+      setInterval(updateTicker, 10000);
     })();
 
     // ===== DASHBOARD SCRIPT ASLI =====
