@@ -257,11 +257,6 @@
 </head>
 <body data-theme="light">
 
-  <!-- ===== RUNNING TEXT DUMMY REAL-TIME ===== -->
-  <div class="crypto-ticker">
-    <div class="ticker-track" id="cryptoTicker">Loading crypto prices...</div>
-  </div>
-
   <div class="container" id="container">
     <aside class="sidebar">
       <div class="sidebar-header">
@@ -329,6 +324,11 @@
       </header>
 
       <main>
+        <!-- ===== RUNNING TEXT DI ATAS CARD VALIDASI ===== -->
+        <div class="crypto-ticker">
+          <div class="ticker-track" id="cryptoTicker">Loading prices...</div>
+        </div>
+
         <div class="left-column">
           <div class="card">
             <h2>Validasi Masternode</h2>
@@ -447,7 +447,6 @@
   <script>
     // ===== RUNNING TEXT SCRIPT DUMMY REAL-TIME =====
     (function() {
-      // Data awal
       const coins = {
         'BOSSX/USDT': { price: 1.00, change: 0.00 },
         'BTC/USDT': { price: 62000.00, change: 1.20 },
@@ -478,14 +477,11 @@
       }
 
       function updatePrices() {
-        // Update harga secara acak
         for (let symbol in coins) {
           const coin = coins[symbol];
-          // Simulasi perubahan kecil (-0.5% hingga +0.5%)
           const delta = (Math.random() - 0.5) * 1.0; // -0.5% to +0.5%
           coin.change = delta;
           coin.price = coin.price * (1 + delta / 100);
-          // Batasi harga agar tidak terlalu ekstrem
           if (coin.price < 0.0001) coin.price = 0.0001;
         }
       }
@@ -496,7 +492,7 @@
           const coin = coins[symbol];
           content += createTickerItem(symbol, coin.price, coin.change);
         }
-        return content + content; // Duplicate for smooth scroll
+        return content + content;
       }
 
       function updateTicker() {
