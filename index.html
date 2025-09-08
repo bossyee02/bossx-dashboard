@@ -1,266 +1,130 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard BossX</title>
-    <style>
-        /* Reset & Base Styles */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background-color: #0f0f0f;
-            color: white;
-            padding: 0;
-        }
-
-        /* Header - Running Text (Ticker) */
-        .ticker {
-            height: 30px;
-            background: #000;
-            overflow: hidden;
-            position: relative;
-            border-bottom: 2px solid #FFD700;
-            z-index: 1000;
-        }
-        .ticker-content {
-            display: inline-block;
-            white-space: nowrap;
-            animation: scrollText 15s linear infinite;
-            color: #FFD700;
-            font-size: 12px;
-            padding: 5px 0;
-            margin-left: 100%;
-        }
-        @keyframes scrollText {
-            0% { transform: translateX(100%); }
-            100% { transform: translateX(-100%); }
-        }
-
-        /* Main Layout */
-        .container {
-            display: flex;
-            min-height: 100vh;
-        }
-
-        /* Sidebar */
-        .sidebar {
-            width: 200px;
-            background: #111;
-            color: #FFD700;
-            padding: 20px 0;
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 100%;
-            box-shadow: 2px 0 5px rgba(0,0,0,0.5);
-        }
-        .sidebar ul {
-            list-style: none;
-        }
-        .sidebar li {
-            margin: 10px 0;
-        }
-        .sidebar a {
-            color: #FFD700;
-            text-decoration: none;
-            padding: 10px 15px;
-            display: block;
-            transition: background 0.3s;
-        }
-        .sidebar a:hover {
-            background: #222;
-        }
-
-        /* Main Content */
-        .main {
-            flex: 1;
-            margin-left: 200px;
-            padding: 20px;
-            max-width: 1200px;
-            margin: auto;
-        }
-
-        /* Cards */
-        .card {
-            background: #1a1a1a;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 15px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.5);
-            border: 1px solid #333;
-        }
-        .card h3 {
-            color: #FFD700;
-            margin-bottom: 10px;
-            font-size: 16px;
-        }
-        .btn {
-            background: #FFD700;
-            color: black;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-            margin-top: 10px;
-        }
-        .btn:hover {
-            background: #FFB300;
-        }
-
-        /* Chart Styling */
-        .chart-container {
-            width: 100%;
-            height: 200px;
-            margin-top: 10px;
-        }
-
-        /* Header Top Bar */
-        .top-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 20px;
-            background: #111;
-            color: #FFD700;
-            font-size: 14px;
-            border-bottom: 2px solid #FFD700;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BossX Dashboard</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
 </head>
-<body>
+<body data-theme="light">
 
-    <!-- Ticker / Running Text -->
-    <div class="ticker">
-        <div class="ticker-content">
-            BOSSX/USDT - 1 USDT | ETH/USDT - 4,295.88 USDT +0.02% | BOSSX/USDT - 1 USDT | SOL/USDT - 207.1600 USDT +2.10% | 
-            TRX/USDT - 0.3316 USDT +0.91% | TRUMP/USDT - 8.5100 USDT +0.35% | BTC/USDT - 62,000.00 USDT +1.20%
-        </div>
+  <!-- ===== Running Text Harga (Binance API) ===== -->
+  <style>
+    .ticker-bar {
+      position: relative;
+      overflow: hidden;
+      background: #0f1115;
+      border-top: 1px solid rgba(245, 197, 66, 0.25);
+      border-bottom: 1px solid rgba(245, 197, 66, 0.25);
+      padding: 8px 0;
+    }
+    .ticker-inner { position: relative; width: 100%; }
+    .ticker-track {
+      display: inline-block;
+      white-space: nowrap;
+      will-change: transform;
+      animation: ticker-scroll 28s linear infinite;
+    }
+    .ticker-item {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-right: 32px;
+      color: #eaeaea;
+      font-size: 14px;
+    }
+    .ticker-label { color: #f5c542; font-weight: 700; letter-spacing: .3px; }
+    .ticker-sep { opacity: .35; }
+    .chg-up { color: #39d98a; }
+    .chg-down { color: #ff6b6b; }
+    @keyframes ticker-scroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    @media (max-width: 480px) {
+      .ticker-item { margin-right: 24px; font-size: 13px; }
+    }
+  </style>
+
+  <div class="ticker-bar">
+    <div class="ticker-inner">
+      <div class="ticker-track" id="tickerTrack"></div>
     </div>
+  </div>
 
-    <!-- Top Bar -->
-    <div class="top-bar">
-        <span>Senin, 8 September 2025 — 12:53:52</span>
-        <div>
-            <img src="https://via.placeholder.com/40" alt="User" style="border-radius: 50%; margin-right: 10px;">
-            <span>Fery Mulia</span>
-            <span style="color: #ccc;">Validator ID: 8055</span>
-        </div>
-    </div>
+  <script>
+    const REFRESH_MS = 10000;
+    const BOSSX_PRICE = 1;
+    const SYMBOLS = ['BTCUSDT','ETHUSDT','SOLUSDT','TRXUSDT','TRUMPUSDT'];
 
-    <!-- Main Layout -->
-    <div class="container">
-        <!-- Sidebar -->
-        <aside class="sidebar">
-            <ul>
-                <li><a href="#"><i>🏠</i> Beranda</a></li>
-                <li><a href="#"><i>💰</i> Deposit</a></li>
-                <li><a href="#"><i>📤</i> Withdrawal</a></li>
-                <li><a href="#"><i>🔗</i> Peer to Peer</a></li>
-                <li><a href="#"><i>🎁</i> Referral</a></li>
-                <li><a href="#"><i>🚀</i> Masternode</a></li>
-                <li><a href="#"><i>❓</i> FAQ</a></li>
-                <li><a href="#"><i>📞</i> Support</a></li>
-                <li><a href="#"><i>👤</i> Profil</a></li>
-            </ul>
-        </aside>
-
-        <!-- Main Content -->
-        <main class="main">
-            <h1>🎯 Dashboard BossX</h1>
-
-            <!-- Validasi Masternode -->
-            <div class="card">
-                <h3>Validasi Masternode</h3>
-                <p><strong>0.00000000 BossX</strong></p>
-                <p>Status: Belum berjalan</p>
-                <button class="btn">Aktifkan</button>
-            </div>
-
-            <!-- Reward Validasi -->
-            <div class="card">
-                <h3>Reward Validasi</h3>
-                <p><strong>0.00000000 BossX</strong></p>
-                <p>Auto-claim: 60s</p>
-                <button class="btn">Convert to USDT</button>
-            </div>
-
-            <!-- Node Amount -->
-            <div class="card">
-                <h3>Node Amount</h3>
-                <input type="number" placeholder="Minimal 50 BossX" style="width: 200px; padding: 8px;">
-                <button class="btn">Aktivkan Masternode</button>
-            </div>
-
-            <!-- Balance USDT -->
-            <div class="card">
-                <h3>Balance USDT</h3>
-                <p><strong>0.00 USDT</strong></p>
-            </div>
-
-            <!-- History Aktivasi -->
-            <div class="card">
-                <h3>History Aktivasi</h3>
-                <input type="text" placeholder="Cari..." style="width: 100%; padding: 8px; margin-bottom: 10px;">
-                <table style="width: 100%; border-collapse: collapse;">
-                    <tr>
-                        <th style="background: #FFD700; color: black; padding: 8px;">Hari</th>
-                        <th style="background: #FFD700; color: black; padding: 8px;">Waktu</th>
-                        <th style="background: #FFD700; color: black; padding: 8px;">Jumlah</th>
-                        <th style="background: #FFD700; color: black; padding: 8px;">Jenis</th>
-                        <th style="background: #FFD700; color: black; padding: 8px;">Masa Akhir Kontrak</th>
-                    </tr>
-                    <tr>
-                        <td>Senin</td>
-                        <td>12:00</td>
-                        <td>50 BossX</td>
-                        <td>Masternode</td>
-                        <td>30 hari</td>
-                    </tr>
-                </table>
-            </div>
-
-            <!-- Tren Reward Harian -->
-            <div class="card">
-                <h3>Tren Reward Harian</h3>
-                <div class="chart-container">
-                    <canvas id="rewardChart"></canvas>
-                </div>
-            </div>
-        </main>
-    </div>
-
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        // Chart untuk tren reward harian
-        const ctx = document.getElementById('rewardChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'],
-                datasets: [{
-                    label: 'Reward BossX',
-                    data: [12, 15, 14, 16, 17, 18, 19],
-                    backgroundColor: '#A500C7'
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
+    async function fetchBinance24h() {
+      const url = 'https://api.binance.com/api/v3/ticker/24hr';
+      const res = await fetch(url);
+      const data = await res.json();
+      const out = {};
+      SYMBOLS.forEach(sym => {
+        const found = data.find(item => item.symbol === sym);
+        out[sym] = found
+          ? {
+              price: parseFloat(found.lastPrice),
+              change: parseFloat(found.priceChangePercent)
             }
-        });
-    </script>
+          : { price: null, change: null };
+      });
+      return out;
+    }
+
+    function fmtUSDT(n) {
+      if (n == null) return 'N/A';
+      return n >= 1000
+        ? n.toLocaleString('en-US', { maximumFractionDigits: 2 }) + ' USDT'
+        : n.toLocaleString('en-US', { minimumFractionDigits: 4, maximumFractionDigits: 6 }) + ' USDT';
+    }
+
+    function fmtPct(n) {
+      if (n == null || isNaN(n)) return '';
+      const sign = n >= 0 ? '+' : '';
+      return `${sign}${n.toFixed(2)}%`;
+    }
+
+    function bossxItem() {
+      return `<span class="ticker-item"><span class="ticker-label">BOSSX/USDT</span> <span class="ticker-sep">•</span> 1 USDT</span>`;
+    }
+
+    function coinItem(label, data) {
+      const cls = data.change >= 0 ? 'chg-up' : 'chg-down';
+      return `<span class="ticker-item"><span class="ticker-label">${label}</span> <span class="ticker-sep">•</span> <span class="${cls}">${fmtUSDT(data.price)}</span> <span class="${cls}">${fmtPct(data.change)}</span></span>`;
+    }
+
+    function buildTicker(prices) {
+      return `
+        ${bossxItem()}
+        ${coinItem('BTC/USDT', prices.BTCUSDT)}
+        ${bossxItem()}
+        ${coinItem('ETH/USDT', prices.ETHUSDT)}
+        ${bossxItem()}
+        ${coinItem('SOL/USDT', prices.SOLUSDT)}
+        ${bossxItem()}
+        ${coinItem('TRX/USDT', prices.TRXUSDT)}
+        ${bossxItem()}
+        ${coinItem('TRUMP/USDT', prices.TRUMPUSDT)}
+      `;
+    }
+
+    async function refreshTicker() {
+      const prices = await fetchBinance24h();
+      document.getElementById('tickerTrack').innerHTML = buildTicker(prices) + buildTicker(prices);
+    }
+
+    refreshTicker();
+    setInterval(refreshTicker, REFRESH_MS);
+  </script>
+  <!-- ===== End Running Text Harga ===== -->
+
+  <div class="container" id="container">
+    <!-- Seluruh konten dashboard asli kamu tetap di sini -->
+    <!-- ... -->
+  </div>
 
 </body>
 </html>
