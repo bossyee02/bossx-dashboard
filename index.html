@@ -1,215 +1,52 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Dashboard BossX</title>
-  <style>
-    :root {
-      --gap: 16px;
-      --radius: 12px;
-      --color-accent: #FFD700;
-      --bg-from: #6a0dad;
-      --bg-to: #ff69b4;
-    }
-
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, var(--bg-from), var(--bg-to));
-      color: var(--color-accent);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-    }
-
-    .card {
-      width: 350px;
-      padding: var(--gap);
-      border-radius: var(--radius);
-      border: 1px solid var(--color-accent);
-      background: rgba(0, 0, 0, 0.3);
-      position: relative;
-    }
-
-    .saldo-value {
-      font-size: 1.2rem;
-      font-weight: bold;
-      margin-bottom: 8px;
-    }
-
-    .timer {
-      margin-bottom: 10px;
-    }
-
-    .btn-container {
-      margin-top: 10px;
-      text-align: center;
-    }
-
-    .power-btn {
-      padding: 8px 16px;
-      border: none;
-      border-radius: 8px;
-      background: #007bff;
-      color: #fff;
-      cursor: pointer;
-    }
-
-    .power-btn:hover {
-      background: #0056b3;
-    }
-
-    /* ===== GEAR ANIMASI ===== */
-    @keyframes spin {
-      from { transform: rotate(0deg); }
-      to   { transform: rotate(360deg); }
-    }
-
-    @keyframes pulse {
-      0%, 100% { transform: scale(1) rotate(0deg); }
-      50%      { transform: scale(1.1) rotate(180deg); }
-    }
-
-    .gear-container {
-      position: absolute;
-      bottom: 10px;
-      right: 10px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .gear {
-      width: 40px;
-      height: 40px;
-      fill: #111;
-      opacity: 0.8;
-      transition: fill 0.3s, opacity 0.3s;
-    }
-
-    .gear.small {
-      width: 28px;
-      height: 28px;
-    }
-
-    .gear.running {
-      fill: #3498db;
-      opacity: 1;
-      animation: spin 3s linear infinite, pulse 2s ease-in-out infinite;
-    }
-
-    .gear.running:nth-child(1) { animation-delay: 0s; }
-    .gear.running:nth-child(2) { animation-delay: 0.3s; }
-    .gear.running:nth-child(3) { animation-delay: 0.6s; }
-  </style>
-</head>
-<body>
-  <div class="card">
-    <h2>Validasi Running</h2>
-
-    <div class="saldo-value">
-      Mining: <span id="mining">0.000000000</span> BossX
-    </div>
-
-    <div class="saldo-value">
-      Balance: <span id="balance">0.000000000</span> BossX
-    </div>
-
-    <div class="timer" id="stopCountdown">Belum berjalan</div>
-
-    <div class="btn-container">
-      <button class="power-btn" id="onBtn">ON</button>
-    </div>
-
-    <!-- GEAR ANIMASI -->
-    <div class="gear-container">
-      <svg class="gear small" viewBox="0 0 24 24">
-        <path d="M19.4 13a7.4 7.4 0 0 0 0-2l2-1.6-2-3.5-2.4 1a7.4 7.4 0 0 0-1.7-1L15 2h-6l-.3 2.9a7.4 7.4 0 0 0-1.7 1l-2.4-1-2 3.5 2 1.6a7.4 7.4 0 0 0 0 2l-2 1.6 2 3.5 2.4-1a7.4 7.4 0 0 0 1.7 1L9 22h6l.3-2.9a7.4 7.4 0 0 0 1.7-1l2.4 1 2-3.5-2-1.6zM12 15.6A3.6 3.6 0 1 1 12 8.4a3.6 3.6 0 0 1 0 7.2z"/>
+<div class="card">
+  <h2>Validasi Running</h2>
+  <div class="saldo-value" id="mining">0.000000000 BossX</div>
+  <div class="timer" id="stopCountdown">Belum berjalan</div>
+  <div class="btn-container">
+    <button class="power-btn" id="onBtn">
+      <svg viewBox="0 0 24 24">
+        <path d="M12 2v10M5.6 5.6a8 8 0 1 0 11.3 0"/>
       </svg>
-
-      <svg class="gear" viewBox="0 0 24 24">
-        <path d="M19.4 13a7.4 7.4 0 0 0 0-2l2-1.6-2-3.5-2.4 1a7.4 7.4 0 0 0-1.7-1L15 2h-6l-.3 2.9a7.4 7.4 0 0 0-1.7 1l-2.4-1-2 3.5 2 1.6a7.4 7.4 0 0 0 0 2l-2 1.6 2 3.5 2.4-1a7.4 7.4 0 0 0 1.7 1L9 22h6l.3-2.9a7.4 7.4 0 0 0 1.7-1l2.4 1 2-3.5-2-1.6zM12 15.6A3.6 3.6 0 1 1 12 8.4a3.6 3.6 0 0 1 0 7.2z"/>
-      </svg>
-
-      <svg class="gear small" viewBox="0 0 24 24">
-        <path d="M19.4 13a7.4 7.4 0 0 0 0-2l2-1.6-2-3.5-2.4 1a7.4 7.4 0 0 0-1.7-1L15 2h-6l-.3 2.9a7.4 7.4 0 0 0-1.7 1l-2.4-1-2 3.5 2 1.6a7.4 7.4 0 0 0 0 2l-2 1.6 2 3.5 2.4-1a7.4 7.4 0 0 0 1.7 1L9 22h6l.3-2.9a7.4 7.4 0 0 0 1.7-1l2.4 1 2-3.5-2-1.6zM12 15.6A3.6 3.6 0 1 1 12 8.4a3.6 3.6 0 0 1 0 7.2z"/>
-      </svg>
-    </div>
+    </button>
   </div>
+  <!-- Tambahan chart line -->
+  <canvas id="liveChart" height="100"></canvas>
+</div>
 
-  <script>
-    const onBtn = document.getElementById("onBtn");
-    const gears = document.querySelectorAll(".gear");
-    const miningEl = document.getElementById("mining");
-    const balanceEl = document.getElementById("balance");
-    const stopCountdown = document.getElementById("stopCountdown");
-
-    let isRunning = false;
-    let miningValue = 0;
-    let balanceValue = 0;
-    let miningInterval;
-    let countdownInterval;
-
-    const miningRate = 0.00000005; // reward per detik
-    const miningDuration = 30;     // durasi auto-claim (detik)
-
-    onBtn.addEventListener("click", () => {
-      if (isRunning) {
-        stopMining();
-      } else {
-        startMining();
-      }
-    });
-
-    function startMining() {
-      isRunning = true;
-      onBtn.textContent = "OFF";
-      gears.forEach(g => g.classList.add("running"));
-
-      let countdown = miningDuration;
-      stopCountdown.textContent = `Auto-claim dalam: ${countdown}s`;
-
-      miningInterval = setInterval(() => {
-        miningValue += miningRate;
-        miningEl.textContent = miningValue.toFixed(9);
-      }, 1000);
-
-      countdownInterval = setInterval(() => {
-        countdown--;
-        stopCountdown.textContent = `Auto-claim dalam: ${countdown}s`;
-
-        if (countdown <= 0) {
-          autoClaim();
-        }
-      }, 1000);
+<script>
+  const ctxLive = document.getElementById('liveChart').getContext('2d');
+  const liveData = {
+    labels: Array.from({length: 30}, (_, i) => i),
+    datasets: [{
+      data: Array.from({length: 30}, () => Math.random() * 5 + 5),
+      borderColor: '#FFD700',
+      borderWidth: 2,
+      fill: false,
+      tension: 0.4, // bikin smooth curve
+      pointRadius: 0 // titik hilang biar mulus
+    }]
+  };
+  const liveChart = new Chart(ctxLive, {
+    type: 'line',
+    data: liveData,
+    options: {
+      animation: false,
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: { display: false },
+        y: { display: false }
+      },
+      plugins: { legend: { display: false } }
     }
+  });
 
-    function stopMining() {
-      isRunning = false;
-      onBtn.textContent = "ON";
-      gears.forEach(g => g.classList.remove("running"));
-
-      clearInterval(miningInterval);
-      clearInterval(countdownInterval);
-
-      stopCountdown.textContent = "Berhenti";
-    }
-
-    function autoClaim() {
-      clearInterval(miningInterval);
-      clearInterval(countdownInterval);
-
-      balanceValue += miningValue;
-      balanceEl.textContent = balanceValue.toFixed(9);
-
-      miningValue = 0;
-      miningEl.textContent = "0.000000000";
-
-      stopCountdown.textContent = "Auto-claim selesai ✅";
-
-      stopMining();
-    }
-  </script>
-</body>
-</html>
+  // Update grafik tiap 500ms
+  setInterval(() => {
+    liveData.labels.push(liveData.labels.length);
+    liveData.labels.shift();
+    liveData.datasets[0].data.push(Math.random() * 5 + 5); // random naik turun
+    liveData.datasets[0].data.shift();
+    liveChart.update();
+  }, 500);
+</script>
