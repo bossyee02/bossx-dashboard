@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard BossX</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@1.4.0"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -90,27 +89,17 @@
       }
     });
 
-    // === Trading Style Chart ===
+    // === Chart setup ===
     const ctx = document.getElementById('liveChart').getContext('2d');
-    const upperLimit = 8;
-    const lowerLimit = 3;
-
     const liveData = {
       labels: Array.from({length: 50}, (_, i) => i),
       datasets: [{
         data: Array.from({length: 50}, () => 5),
         borderWidth: 2,
+        borderColor: 'lime',
         fill: false,
         tension: 0.4,
-        pointRadius: 0,
-        segment: {
-          borderColor: ctx => {
-            const value = ctx.p1.parsed.y;
-            if (value >= upperLimit) return 'blue';
-            if (value <= lowerLimit) return 'red';
-            return 'lime';
-          }
-        }
+        pointRadius: 0
       }]
     };
 
@@ -126,28 +115,9 @@
           y: { min: 0, max: 10, display: false }
         },
         plugins: {
-          legend: { display: false },
-          annotation: {
-            annotations: {
-              upper: {
-                type: 'line',
-                yMin: upperLimit,
-                yMax: upperLimit,
-                borderColor: 'blue',
-                borderWidth: 1
-              },
-              lower: {
-                type: 'line',
-                yMin: lowerLimit,
-                yMax: lowerLimit,
-                borderColor: 'red',
-                borderWidth: 1
-              }
-            }
-          }
+          legend: { display: false }
         }
-      },
-      plugins: [ChartAnnotation]
+      }
     });
 
     function startLiveChart() {
