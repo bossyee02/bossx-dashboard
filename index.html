@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard BossX</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@1.4.0"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -73,15 +73,19 @@
   </div>
 
   <script>
-    // Mining status
     let isMiningActive = false;
+    let liveChartInterval = null;
+    let trend = 0.05;
+    let trendCounter = 0;
 
     const onBtn = document.getElementById("onBtn");
     onBtn.addEventListener("click", () => {
       isMiningActive = !isMiningActive;
       if (isMiningActive) {
+        console.log("Mining ON");
         startLiveChart();
       } else {
+        console.log("Mining OFF");
         stopLiveChart();
       }
     });
@@ -125,18 +129,26 @@
           legend: { display: false },
           annotation: {
             annotations: {
-              upper: { type: 'line', yMin: upperLimit, yMax: upperLimit, borderColor: 'blue', borderWidth: 1 },
-              lower: { type: 'line', yMin: lowerLimit, yMax: lowerLimit, borderColor: 'red', borderWidth: 1 }
+              upper: {
+                type: 'line',
+                yMin: upperLimit,
+                yMax: upperLimit,
+                borderColor: 'blue',
+                borderWidth: 1
+              },
+              lower: {
+                type: 'line',
+                yMin: lowerLimit,
+                yMax: lowerLimit,
+                borderColor: 'red',
+                borderWidth: 1
+              }
             }
           }
         }
       },
-      plugins: [Chart.registry.getPlugin('annotation')]
+      plugins: [ChartAnnotation]
     });
-
-    let liveChartInterval = null;
-    let trend = 0.05; // arah awal naik
-    let trendCounter = 0;
 
     function startLiveChart() {
       if (liveChartInterval) clearInterval(liveChartInterval);
@@ -152,7 +164,6 @@
           trendCounter = 0;
         }
 
-        // nilai baru
         let newVal = lastVal + trend + (Math.random() - 0.5) * 0.3;
         if (newVal > 10) newVal = 10;
         if (newVal < 0) newVal = 0;
