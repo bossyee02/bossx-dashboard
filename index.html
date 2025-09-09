@@ -9,7 +9,6 @@
       --gap: 16px;
       --radius: 12px;
       --color-accent: #FFD700;
-      --color-primary: #6a0dad;
       --bg-from: #6a0dad;
       --bg-to: #ff69b4;
     }
@@ -19,36 +18,58 @@
       background: linear-gradient(135deg, var(--bg-from), var(--bg-to));
       color: var(--color-accent);
       display: flex;
-      min-height: 100vh;
       justify-content: center;
       align-items: center;
+      min-height: 100vh;
     }
 
     .card {
-      background: rgba(0,0,0,0.3);
+      width: 350px;
       padding: var(--gap);
       border-radius: var(--radius);
       border: 1px solid var(--color-accent);
-      width: 350px;
+      background: rgba(0, 0, 0, 0.3);
       position: relative;
     }
 
-    .saldo-value { font-size: 1.2rem; font-weight: bold; margin-bottom: 8px; }
-    .timer { margin-bottom: 10px; }
-    .btn-container { text-align: center; margin-top: 10px; }
+    .saldo-value {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .timer {
+      margin-bottom: 10px;
+    }
+
+    .btn-container {
+      margin-top: 10px;
+      text-align: center;
+    }
+
     .power-btn {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 8px;
       background: #007bff;
       color: #fff;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 8px;
       cursor: pointer;
     }
-    .power-btn:hover { background: #0056b3; }
+
+    .power-btn:hover {
+      background: #0056b3;
+    }
 
     /* ===== GEAR ANIMASI ===== */
-    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-    @keyframes pulse { 0%,100% { transform: scale(1) rotate(0deg); } 50% { transform: scale(1.1) rotate(180deg); } }
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1) rotate(0deg); }
+      50%      { transform: scale(1.1) rotate(180deg); }
+    }
 
     .gear-container {
       position: absolute;
@@ -58,15 +79,26 @@
       align-items: center;
       gap: 6px;
     }
+
     .gear {
-      width: 40px; height: 40px; fill: #111; opacity: 0.8; transition: fill 0.3s, opacity 0.3s;
+      width: 40px;
+      height: 40px;
+      fill: #111;
+      opacity: 0.8;
+      transition: fill 0.3s, opacity 0.3s;
     }
-    .gear.small { width: 28px; height: 28px; }
+
+    .gear.small {
+      width: 28px;
+      height: 28px;
+    }
+
     .gear.running {
       fill: #3498db;
       opacity: 1;
       animation: spin 3s linear infinite, pulse 2s ease-in-out infinite;
     }
+
     .gear.running:nth-child(1) { animation-delay: 0s; }
     .gear.running:nth-child(2) { animation-delay: 0.3s; }
     .gear.running:nth-child(3) { animation-delay: 0.6s; }
@@ -75,18 +107,34 @@
 <body>
   <div class="card">
     <h2>Validasi Running</h2>
-    <div class="saldo-value">Mining: <span id="mining">0.000000000</span> BossX</div>
-    <div class="saldo-value">Balance: <span id="balance">0.000000000</span> BossX</div>
+
+    <div class="saldo-value">
+      Mining: <span id="mining">0.000000000</span> BossX
+    </div>
+
+    <div class="saldo-value">
+      Balance: <span id="balance">0.000000000</span> BossX
+    </div>
+
     <div class="timer" id="stopCountdown">Belum berjalan</div>
+
     <div class="btn-container">
       <button class="power-btn" id="onBtn">ON</button>
     </div>
 
-    <!-- GEAR CONTAINER -->
+    <!-- GEAR ANIMASI -->
     <div class="gear-container">
-      <svg class="gear small" viewBox="0 0 24 24"><path d="M19.4 13a7.4 7.4 0 0 0 0-2l2-1.6-2-3.5-2.4 1a7.4 7.4 0 0 0-1.7-1L15 2h-6l-.3 2.9a7.4 7.4 0 0 0-1.7 1l-2.4-1-2 3.5 2 1.6a7.4 7.4 0 0 0 0 2l-2 1.6 2 3.5 2.4-1a7.4 7.4 0 0 0 1.7 1L9 22h6l.3-2.9a7.4 7.4 0 0 0 1.7-1l2.4 1 2-3.5-2-1.6zM12 15.6A3.6 3.6 0 1 1 12 8.4a3.6 3.6 0 0 1 0 7.2z"/></svg>
-      <svg class="gear" viewBox="0 0 24 24"><path d="M19.4 13a7.4 7.4 0 0 0 0-2l2-1.6-2-3.5-2.4 1a7.4 7.4 0 0 0-1.7-1L15 2h-6l-.3 2.9a7.4 7.4 0 0 0-1.7 1l-2.4-1-2 3.5 2 1.6a7.4 7.4 0 0 0 0 2l-2 1.6 2 3.5 2.4-1a7.4 7.4 0 0 0 1.7 1L9 22h6l.3-2.9a7.4 7.4 0 0 0 1.7-1l2.4 1 2-3.5-2-1.6zM12 15.6A3.6 3.6 0 1 1 12 8.4a3.6 3.6 0 0 1 0 7.2z"/></svg>
-      <svg class="gear small" viewBox="0 0 24 24"><path d="M19.4 13a7.4 7.4 0 0 0 0-2l2-1.6-2-3.5-2.4 1a7.4 7.4 0 0 0-1.7-1L15 2h-6l-.3 2.9a7.4 7.4 0 0 0-1.7 1l-2.4-1-2 3.5 2 1.6a7.4 7.4 0 0 0 0 2l-2 1.6 2 3.5 2.4-1a7.4 7.4 0 0 0 1.7 1L9 22h6l.3-2.9a7.4 7.4 0 0 0 1.7-1l2.4 1 2-3.5-2-1.6zM12 15.6A3.6 3.6 0 1 1 12 8.4a3.6 3.6 0 0 1 0 7.2z"/></svg>
+      <svg class="gear small" viewBox="0 0 24 24">
+        <path d="M19.4 13a7.4 7.4 0 0 0 0-2l2-1.6-2-3.5-2.4 1a7.4 7.4 0 0 0-1.7-1L15 2h-6l-.3 2.9a7.4 7.4 0 0 0-1.7 1l-2.4-1-2 3.5 2 1.6a7.4 7.4 0 0 0 0 2l-2 1.6 2 3.5 2.4-1a7.4 7.4 0 0 0 1.7 1L9 22h6l.3-2.9a7.4 7.4 0 0 0 1.7-1l2.4 1 2-3.5-2-1.6zM12 15.6A3.6 3.6 0 1 1 12 8.4a3.6 3.6 0 0 1 0 7.2z"/>
+      </svg>
+
+      <svg class="gear" viewBox="0 0 24 24">
+        <path d="M19.4 13a7.4 7.4 0 0 0 0-2l2-1.6-2-3.5-2.4 1a7.4 7.4 0 0 0-1.7-1L15 2h-6l-.3 2.9a7.4 7.4 0 0 0-1.7 1l-2.4-1-2 3.5 2 1.6a7.4 7.4 0 0 0 0 2l-2 1.6 2 3.5 2.4-1a7.4 7.4 0 0 0 1.7 1L9 22h6l.3-2.9a7.4 7.4 0 0 0 1.7-1l2.4 1 2-3.5-2-1.6zM12 15.6A3.6 3.6 0 1 1 12 8.4a3.6 3.6 0 0 1 0 7.2z"/>
+      </svg>
+
+      <svg class="gear small" viewBox="0 0 24 24">
+        <path d="M19.4 13a7.4 7.4 0 0 0 0-2l2-1.6-2-3.5-2.4 1a7.4 7.4 0 0 0-1.7-1L15 2h-6l-.3 2.9a7.4 7.4 0 0 0-1.7 1l-2.4-1-2 3.5 2 1.6a7.4 7.4 0 0 0 0 2l-2 1.6 2 3.5 2.4-1a7.4 7.4 0 0 0 1.7 1L9 22h6l.3-2.9a7.4 7.4 0 0 0 1.7-1l2.4 1 2-3.5-2-1.6zM12 15.6A3.6 3.6 0 1 1 12 8.4a3.6 3.6 0 0 1 0 7.2z"/>
+      </svg>
     </div>
   </div>
 
@@ -102,8 +150,9 @@
     let balanceValue = 0;
     let miningInterval;
     let countdownInterval;
-    const miningRate = 0.00000005; // reward per tick
-    const miningDuration = 30; // detik sebelum auto-claim
+
+    const miningRate = 0.00000005; // reward per detik
+    const miningDuration = 30;     // durasi auto-claim (detik)
 
     onBtn.addEventListener("click", () => {
       if (isRunning) {
@@ -129,6 +178,7 @@
       countdownInterval = setInterval(() => {
         countdown--;
         stopCountdown.textContent = `Auto-claim dalam: ${countdown}s`;
+
         if (countdown <= 0) {
           autoClaim();
         }
@@ -139,19 +189,25 @@
       isRunning = false;
       onBtn.textContent = "ON";
       gears.forEach(g => g.classList.remove("running"));
+
       clearInterval(miningInterval);
       clearInterval(countdownInterval);
+
       stopCountdown.textContent = "Berhenti";
     }
 
     function autoClaim() {
       clearInterval(miningInterval);
       clearInterval(countdownInterval);
+
       balanceValue += miningValue;
       balanceEl.textContent = balanceValue.toFixed(9);
+
       miningValue = 0;
       miningEl.textContent = "0.000000000";
+
       stopCountdown.textContent = "Auto-claim selesai ✅";
+
       stopMining();
     }
   </script>
