@@ -1,231 +1,527 @@
+ini yang erorr
+
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <title>BossX Validator</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard BossX</title>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; background: #f4f6f9; }
-    .card { background: #fff; border-radius: 10px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
-    .card h2 { margin-top: 0; }
-    button { padding: 8px 15px; border: none; border-radius: 6px; cursor: pointer; }
-    #btn-validasi { background: #007bff; color: #fff; }
-    #btn-validasi:disabled { background: #6c757d; }
-    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-    th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
-    th { background: #007bff; color: #fff; }
+    :root {
+      --gap: 16px;
+      --color-accent: #FFD700;
+      --color-primary: #6a0dad;
+      --sidebar-width: 250px;
+      --sidebar-collapsed: 60px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, var(--color-primary), #ff69b4);
+      color: var(--color-accent);
+      display: flex; height: 100vh;
+    }
+    .container {
+      display: grid;
+      grid-template-columns: var(--sidebar-width) 1fr;
+      transition: grid-template-columns .3s ease;
+      width: 100%;
+    }
+    .container.collapsed {
+      grid-template-columns: var(--sidebar-collapsed) 1fr;
+    }
+    /* Sidebar */
+    aside.sidebar {
+      background: rgba(0,0,0,0.4);
+      overflow: hidden;
+      transition: width .3s ease;
+    }
+    .sidebar-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: var(--gap); border-bottom: 1px solid var(--color-accent);
+    }
+    .sidebar-logo {
+      height: 48px; transition: height .3s ease;
+    }
+    .sidebar-logo-text {
+      margin-left: 8px;
+      font-size: 1.4rem;
+      font-weight: bold;
+      color: var(--color-accent);
+      transition: opacity .3s ease;
+    }
+    .container.collapsed .sidebar-logo { height: 32px; }
+    .container.collapsed .sidebar-logo-text { opacity: 0; }
+    .collapse-btn {
+      background: none; border: none;
+      color: var(--color-accent); font-size: 1.6rem;
+      cursor: pointer;
+    }
+    .sidebar-nav {
+      display: flex; flex-direction: column; padding-top: var(--gap);
+    }
+    .nav-item {
+      display: flex; align-items: center;
+      padding: 12px var(--gap);
+      color: var(--color-accent); text-decoration: none;
+      transition: background .2s;
+    }
+    .nav-item:hover { background: rgba(255,215,0,.1); }
+    .nav-item.active { background: rgba(255,215,0,.2); }
+    .nav-item .icon { width: 24px; text-align: center; }
+    .nav-item .label { margin-left: 12px; white-space: nowrap; }
+    /* Main content */
+    .content {
+      display: flex; flex-direction: column;
+    }
+    header {
+      background: rgba(0,0,0,0.3);
+      padding: var(--gap) calc(var(--gap)*2);
+      display: flex; justify-content: flex-end; align-items: center;
+      border-bottom: 2px solid var(--color-accent);
+    }
+    .user-info {
+      display: flex; align-items: center; gap: 12px;
+    }
+    .user-info img {
+      width: 64px; height: 64px;
+      border-radius: 50%; border: 2px solid var(--color-accent);
+      object-fit: cover;
+    }
+    .info-text h2 { font-size: 1.2rem; }
+    .info-text p  { font-size: .9rem; opacity: .8; }
+    main {
+      flex: 1; padding: var(--gap);
+      max-width: 1200px; margin: auto;
+      display: flex; gap: var(--gap); flex-wrap: wrap;
+    }
+    .left-column, .right-column {
+      display: flex; flex-direction: column; gap: var(--gap);
+    }
+    .left-column { flex: 1; }
+    .right-column{ flex: 2; }
+    .card {
+      background: rgba(0,0,0,0.3);
+      padding: var(--gap); border-radius: 12px;
+      border: 1px solid var(--color-accent);
+    }
+    .card h2 { margin-bottom: 8px; font-size: 1.2rem; }
+    .saldo-value { font-size: 1.4rem; font-weight: bold; margin-bottom: 8px; }
+    .timer { margin-bottom: 12px; }
+    .btn-container { display: flex; gap: 8px; flex-wrap: wrap; }
+    .btn {
+      padding: 8px 16px; background: var(--color-accent);
+      color: var(--color-primary); border: none;
+      border-radius: 8px; cursor: pointer;
+      transition: background .3s;
+    }
+    .btn:hover { background: #ffec8b; }
+    .btn:disabled { background: #333; color: #888; cursor: not-allowed; }
+    .power-btn {
+      width: 48px; height: 48px; border: 2px solid #888;
+      border-radius: 50%; background: #222;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: all .3s;
+    }
+    .power-btn.active {
+      background: #2ecc71; border-color: #27ae60;
+    }
+    .power-btn svg { width: 24px; height: 24px; stroke: #888; fill: none; }
+    .power-btn.active svg { stroke: #fff; }
+    input[type="number"] {
+      padding: 6px; width: 100px;
+      border-radius: 6px; border: none; margin-bottom: 8px;
+    }
+    .filter-bar {
+      display: flex; align-items: center; margin-bottom: 8px;
+    }
+    .filter-bar .icon { margin-right: 6px; }
+    .filter-bar input {
+      flex: 1; padding: 6px;
+      border: 1px solid var(--color-accent);
+      border-radius: 6px; background: rgba(255,255,255,.1);
+      color: var(--color-accent);
+    }
+    table {
+      width: 100%; border-collapse: collapse; margin-top: 8px;
+    }
+    th, td {
+      border: 1px solid var(--color-accent);
+      padding: 6px; text-align: center; font-size: .9rem;
+    }
+    th { background: var(--color-accent); color: var(--color-primary); }
+    .footer {
+      text-align: center; padding: var(--gap);
+      background: rgba(0,0,0,.2);
+    }
+    @media (max-width: 768px) {
+      aside.sidebar, header { display: none; }
+      .container { grid-template-columns: 1fr; }
+      main {
+        padding: var(--gap); display: block;
+      }
+      .left-column, .right-column { flex: 1 1 100%; }
+      .card { margin-bottom: var(--gap); }
+    }
   </style>
 </head>
 <body>
+  <div id="container" class="container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div style="display:flex; align-items:center;">
+          <img
+            src="https://i.ibb.co/qYBkPDH3/Picsart-25-04-01-16-25-47-054.png"
+            alt="Logo BossX"
+            class="sidebar-logo"
+          />
+          <span class="sidebar-logo-text">BossX</span>
+        </div>
+        <button class="collapse-btn" id="toggleSidebar">☰</button>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="#" class="nav-item active">
+          <span class="icon">🏠</span>
+          <span class="label">Dashboard</span>
+        </a>
+        <a href="#" class="nav-item">
+          <span class="icon">⚙️</span>
+          <span class="label">Settings</span>
+        </a>
+        <a href="#" class="nav-item">
+          <span class="icon">📜</span>
+          <span class="label">History</span>
+        </a>
+        <a href="#" class="nav-item">
+          <span class="icon">🔒</span>
+          <span class="label">Logout</span>
+        </a>
+      </nav>
+    </aside>
 
-  <!-- Node Amount -->
-  <div class="card">
-    <h2>Node Amount</h2>
-    <input type="number" id="input-bossx" placeholder="Input BossX (min 50)">
-    <button onclick="aktivasi()">Aktivasi</button>
-    <p id="info-node"></p>
+    <!-- Main Content -->
+    <div class="content">
+      <header>
+        <div class="user-info">
+          <img
+            src="https://i.ibb.co/gbVsGLy0/FB-IMG-1617237754232.jpg"
+            alt="Avatar"
+          />
+          <div class="info-text">
+            <h2>Fery Muliawan</h2>
+            <p>Validator ID: 8055</p>
+          </div>
+        </div>
+      </header>
+
+      <main>
+        <!-- Left Column -->
+        <div class="left-column">
+          <div class="card">
+            <h2>Validasi Masternode</h2>
+            <div class="saldo-value" id="mining">0.000000000 BossX</div>
+            <div class="timer" id="stopCountdown">Belum berjalan</div>
+            <div class="btn-container">
+              <button class="power-btn" id="onBtn">
+                <svg viewBox="0 0 24 24">
+                  <path d="M12 2v10M5.6 5.6a8 8 0 1 0 11.3 0"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div class="card">
+            <h2>Reward Validasi</h2>
+            <div class="saldo-value" id="balance">0.000000000 BossX</div>
+            <div class="timer" id="countdown">Auto-claim: 60s</div>
+            <div class="btn-container">
+              <button class="btn" id="convertBtn">Convert to USDT</button>
+            </div>
+          </div>
+          <div class="card">
+            <h2>Paket Node</h2>
+            <div class="saldo-value"><span id="walletBossX">0</span> BossX</div>
+            <input type="number" id="amountInput" placeholder="Minimal 50" min="50"/>
+            <div class="btn-container">
+              <button class="btn" id="buyBtn">Aktivasi Paket</button>
+            </div>
+          </div>
+          <div class="card">
+            <h2>Balance USDT</h2>
+            <div class="saldo-value" id="usdtBalanceCard">0.00 USDT</div>
+          </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="right-column">
+          <div class="card">
+            <h2>History Aktivasi</h2>
+            <div class="filter-bar">
+              <span class="icon">🔍</span>
+              <input type="search" id="filterAktivasi" placeholder="Cari…"/>
+            </div>
+            <table>
+              <thead>
+                <tr><th>Hari</th><th>Waktu</th><th>Jumlah</th><th>Jenis</th><th>Status</th></tr>
+              </thead>
+              <tbody id="walletHistory"></tbody>
+            </table>
+          </div>
+          <div class="card">
+            <h2>History Convert</h2>
+            <div class="filter-bar">
+              <span class="icon">🔍</span>
+              <input type="search" id="filterConvert" placeholder="Cari…"/>
+            </div>
+            <table>
+              <thead>
+                <tr><th>Hari</th><th>Waktu</th><th>BossX</th><th>USDT</th><th>Status</th></tr>
+              </thead>
+              <tbody id="convertHistory"></tbody>
+            </table>
+          </div>
+          <div class="card">
+            <h2>History Validasi</h2>
+            <div class="filter-bar">
+              <span class="icon">🔍</span>
+              <input type="search" id="filterValidasi" placeholder="Cari…"/>
+            </div>
+            <table>
+              <thead>
+                <tr><th>Hari</th><th>Tanggal</th><th>Jam</th><th>BossX</th><th>Auto-Claim</th></tr>
+              </thead>
+              <tbody id="history"></tbody>
+            </table>
+          </div>
+          <div class="card">
+            <h2>Tren Reward Harian (Bar Chart)</h2>
+            <canvas id="dailyRewardBarChart"></canvas>
+          </div>
+        </div>
+      </main>
+
+      <div class="footer">©2025 Dashboard BossX • Terbuka untuk umum 🌐</div>
+    </div>
   </div>
 
-  <!-- Validasi Running -->
-  <div class="card">
-    <h2>Validasi Running</h2>
-    <button id="btn-validasi" onclick="startValidasi()">ON</button>
-    <p>Reward sementara: <span id="running-reward">0.000000000</span> BossX</p>
-  </div>
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      // Debug: pastikan elemen ada
+      const amountInput = document.getElementById('amountInput');
+      const buyBtn      = document.getElementById('buyBtn');
+      console.log('DEBUG ▶️ amountInput, buyBtn:', amountInput, buyBtn);
 
-  <!-- Reward Validasi -->
-  <div class="card">
-    <h2>Reward Validasi</h2>
-    <p>Total Reward: <span id="reward-validasi">0.000000000</span> BossX</p>
-    <button onclick="convertToUSDT()">Convert to USDT</button>
-  </div>
+      const onBtn       = document.getElementById('onBtn');
+      const convertBtn  = document.getElementById('convertBtn');
+      const walletHistory   = document.getElementById('walletHistory');
+      const convertHistory  = document.getElementById('convertHistory');
+      const historyBody     = document.getElementById('history');
+      const miningLabel     = document.getElementById('mining');
+      const stopLabel       = document.getElementById('stopCountdown');
+      const countdownLabel  = document.getElementById('countdown');
+      const balanceLabel    = document.getElementById('balance');
+      const walletLabel     = document.getElementById('walletBossX');
+      const usdtLabel       = document.getElementById('usdtBalanceCard');
 
-  <!-- Balance USDT -->
-  <div class="card">
-    <h2>Balance USDT</h2>
-    <p><span id="balance-usdt">0.00</span> USDT</p>
-  </div>
+      let mining = 0,
+          balance = 0,
+          walletBossX = 0,
+          usdtBalance = 0;
+      let isMining = false,
+          hasPackage = false;
+      let rewardPerSecond = 0,
+          stopSec = 0,
+          countdown = 60;
+      const monthlyRate = 0.10,
+            secInContract = 31*24*60*60,
+            bxToUsdt = 1;
 
-  <!-- History Aktivasi -->
-  <div class="card">
-    <h2>History Aktivasi</h2>
-    <table id="history-aktivasi">
-      <tr><th>Hari</th><th>Waktu</th><th>Jumlah</th><th>Jenis</th><th>Masa Akhir Kontrak</th></tr>
-    </table>
-  </div>
-
-  <!-- History Validasi -->
-  <div class="card">
-    <h2>History Validasi</h2>
-    <table id="history-validasi">
-      <tr><th>Tanggal</th><th>Jam</th><th>BossX</th></tr>
-    </table>
-  </div>
-
-  <!-- History Convert -->
-  <div class="card">
-    <h2>History Convert</h2>
-    <table id="history-convert">
-      <tr><th>Tanggal</th><th>Jam</th><th>BossX</th><th>USDT</th></tr>
-    </table>
-  </div>
-
-<script>
-let paketBossx = 0;
-let isRunning = false;
-let rewardBalance = 0;
-let runningReward = 0;
-let usdtBalance = 0;
-
-const contractSeconds = 31 * 24 * 60 * 60; // 2,678,400 detik
-const monthlyYieldRate = 0.10; // 10% per 31 hari
-const claimInterval = 60; // 60 detik (1 menit)
-
-// --- Simpan / ambil data dari localStorage ---
-function saveState() {
-  localStorage.setItem("bossxState", JSON.stringify({
-    paketBossx, isRunning, rewardBalance, runningReward, usdtBalance,
-    lastClaim: Date.now()
-  }));
-}
-
-function loadState() {
-  let data = localStorage.getItem("bossxState");
-  if (data) {
-    let s = JSON.parse(data);
-    paketBossx = s.paketBossx || 0;
-    isRunning = s.isRunning || false;
-    rewardBalance = s.rewardBalance || 0;
-    runningReward = s.runningReward || 0;
-    usdtBalance = s.usdtBalance || 0;
-    if (isRunning) {
-      let now = Date.now();
-      let diffSec = Math.floor((now - s.lastClaim) / 1000);
-      let rewardPerSecond = getRewardPerSecond();
-      let addReward = Math.floor(diffSec / claimInterval) * rewardPerSecond * claimInterval;
-      if (addReward > 0) {
-        rewardBalance += addReward;
-        runningReward += addReward;
-        addHistoryValidasi(addReward);
+      function formatTime(sec) {
+        const h = String(Math.floor(sec/3600)).padStart(2,'0'),
+              m = String(Math.floor((sec%3600)/60)).padStart(2,'0'),
+              s = String(sec%60).padStart(2,'0');
+        return `${h}:${m}:${s}`;
       }
-    }
-    updateUI();
-    if (isRunning) {
-      document.getElementById("btn-validasi").innerText = "Running...";
-      document.getElementById("btn-validasi").disabled = true;
-    }
-  }
-}
+      function now() {
+        const d = new Date(),
+              days = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
+        return {
+          hari: days[d.getDay()],
+          tanggal: d.toLocaleDateString("id-ID"),
+          jam:     d.toLocaleTimeString("id-ID")
+        };
+      }
+      function next6AM() {
+        const n = new Date(), t = new Date(n);
+        t.setHours(6,0,0,0);
+        if (n >= t) t.setDate(t.getDate()+1);
+        return Math.floor((t - n)/1000);
+      }
+      function updateUsdt() {
+        usdtLabel.textContent = usdtBalance.toFixed(2) + " USDT";
+      }
+      function logAuto(a) {
+        if (a <= 0) return;
+        const w = now(),
+              row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${w.hari}</td><td>${w.tanggal}</td><td>${w.jam}</td>
+          <td>+${a.toFixed(9)} BossX</td><td>✅</td>
+        `;
+        historyBody.prepend(row);
+      }
+      function logTx(type, amt, cont) {
+        const w = now(),
+              r = document.createElement("tr");
+        r.innerHTML = `
+          <td>${w.hari}</td><td>${w.tanggal} ${w.jam}</td>
+          <td>${amt}</td><td>${type}</td><td>Aktif</td>
+        `;
+        cont.prepend(r);
+      }
+      function logCv(bx, usdt) {
+        const w = now(),
+              r = document.createElement("tr");
+        r.innerHTML = `
+          <td>${w.hari}</td><td>${w.tanggal} ${w.jam}</td>
+          <td>${bx.toFixed(9)}</td><td>${usdt.toFixed(2)}</td><td>✅</td>
+        `;
+        convertHistory.prepend(r);
+      }
 
-// Hitung reward per detik
-function getRewardPerSecond() {
-  return (paketBossx * monthlyYieldRate) / contractSeconds;
-}
+      // Attach filter
+      function attachFilter(id, tbody) {
+        document.getElementById(id).addEventListener('input', e => {
+          const term = e.target.value.toLowerCase();
+          Array.from(tbody.rows).forEach(row => {
+            row.style.display = row.textContent.toLowerCase().includes(term) ? '' : 'none';
+          });
+        });
+      }
+      attachFilter('filterAktivasi', walletHistory);
+      attachFilter('filterConvert', convertHistory);
+      attachFilter('filterValidasi', historyBody);
 
-// Aktivasi Node
-function aktivasi() {
-  let val = parseInt(document.getElementById("input-bossx").value);
-  if (isNaN(val) || val < 50) {
-    alert("Minimal aktivasi 50 BossX!");
-    return;
-  }
-  paketBossx = val;
-  document.getElementById("info-node").innerText = "Aktivasi berhasil: " + paketBossx + " BossX";
-  addHistoryAktivasi(val);
-  saveState();
-}
+      // Sidebar collapse
+      document.getElementById('toggleSidebar').addEventListener('click', () => {
+        document.getElementById('container').classList.toggle('collapsed');
+      });
 
-// History Aktivasi
-function addHistoryAktivasi(amount) {
-  let table = document.getElementById("history-aktivasi");
-  let row = table.insertRow(1);
-  let now = new Date();
-  row.insertCell(0).innerText = now.toLocaleDateString();
-  row.insertCell(1).innerText = now.toLocaleTimeString();
-  row.insertCell(2).innerText = amount;
-  row.insertCell(3).innerText = "Aktivasi";
-  row.insertCell(4).innerText = "31 hari";
-}
+      // Aktivasi Paket
+      buyBtn.addEventListener('click', () => {
+        console.log('▶️ buyBtn clicked, raw input =', amountInput.value);
+        const raw = amountInput.value,
+              amt = Number(raw);
+        console.log('▶️ parsed amt =', amt, ', hasPackage before =', hasPackage);
+        if (isNaN(amt)) {
+          return alert('Input bukan angka valid: "' + raw + '"');
+        }
+        if (amt < 50) {
+          return alert('Minimal paket adalah 50 BossX. Anda memasukkan: ' + amt);
+        }
+        if (hasPackage) {
+          return alert('Paket hanya dapat diaktifkan sekali.');
+        }
+        hasPackage = true;
+        rewardPerSecond = (amt * monthlyRate) / secInContract;
+        walletBossX += amt;
+        walletLabel.textContent = walletBossX + " BossX";
+        logTx("Aktivasi Paket", amt + " BossX", walletHistory);
+        buyBtn.disabled = true;
+      });
 
-// Tombol ON Validasi
-function startValidasi() {
-  if (isRunning) return;
-  if (paketBossx < 50) {
-    alert("Aktivasi minimal 50 BossX dulu!");
-    return;
-  }
-  isRunning = true;
-  document.getElementById("btn-validasi").innerText = "Running...";
-  document.getElementById("btn-validasi").disabled = true;
-  saveState();
-}
+      // Power ON
+      onBtn.addEventListener('click', () => {
+        console.log('▶️ onBtn clicked, hasPackage =', hasPackage, ', isMining =', isMining);
+        if (!hasPackage || isMining) return;
+        isMining = true;
+        onBtn.disabled = true;
+        onBtn.classList.add('active');
+        stopSec = next6AM();
+        countdown = 60;
+        stopLabel.textContent = `Stop validasi jam 06:00 dalam: ${formatTime(stopSec)}`;
 
-// Auto-claim tiap 60 detik
-function autoClaimCheck() {
-  if (!isRunning) return;
-  let state = JSON.parse(localStorage.getItem("bossxState"));
-  let lastClaim = state?.lastClaim || Date.now();
-  let now = Date.now();
-  let diffSec = Math.floor((now - lastClaim) / 1000);
+        const mi = setInterval(() => {
+          mining += rewardPerSecond;
+          miningLabel.textContent = mining.toFixed(9) + " BossX";
+        }, 1000);
 
-  if (diffSec >= claimInterval) {
-    let rewardPerSecond = getRewardPerSecond();
-    let totalReward = rewardPerSecond * diffSec;
-    runningReward += totalReward;
-    rewardBalance += totalReward;
-    addHistoryValidasi(totalReward);
-    saveState();
-    updateUI();
-  }
-}
+        const ci = setInterval(() => {
+          if (mining > 0) {
+            balance += mining;
+            logAuto(mining);
+            mining = 0;
+            miningLabel.textContent = "0.000000000 BossX";
+            balanceLabel.textContent = balance.toFixed(9) + " BossX";
+          }
+        }, 60000);
 
-// Update UI
-function updateUI() {
-  document.getElementById("running-reward").innerText = runningReward.toFixed(9);
-  document.getElementById("reward-validasi").innerText = rewardBalance.toFixed(9);
-  document.getElementById("balance-usdt").innerText = usdtBalance.toFixed(2);
-}
+        const cd = setInterval(() => {
+          countdown--;
+          countdownLabel.textContent = `Auto-claim: ${countdown}s`;
+          if (countdown <= 0) countdown = 60;
+        }, 1000);
 
-// History Validasi
-function addHistoryValidasi(amount) {
-  let table = document.getElementById("history-validasi");
-  let row = table.insertRow(1);
-  let now = new Date();
-  row.insertCell(0).innerText = now.toLocaleDateString();
-  row.insertCell(1).innerText = now.toLocaleTimeString();
-  row.insertCell(2).innerText = "+" + amount.toFixed(9);
-}
+        const si = setInterval(() => {
+          stopSec--;
+          if (stopSec > 0) {
+            stopLabel.textContent = `Stop validasi jam 06:00 dalam: ${formatTime(stopSec)}`;
+          } else {
+            clearInterval(mi); clearInterval(ci); clearInterval(cd); clearInterval(si);
+            isMining = false;
+            onBtn.disabled = false;
+            onBtn.classList.remove('active');
+            stopLabel.textContent = "06:00 tercapai, klik ON untuk mulai lagi";
+          }
+        }, 1000);
+      });
 
-// Convert Reward ke USDT
-function convertToUSDT() {
-  if (rewardBalance < 1) {
-    alert("Minimal 1 BossX untuk convert!");
-    return;
-  }
-  let converted = rewardBalance;
-  rewardBalance = 0;
-  usdtBalance += converted * 1; // flat 1 BossX = 1 USDT
-  addHistoryConvert(converted, converted);
-  saveState();
-  updateUI();
-}
+      // Convert to USDT
+      convertBtn.addEventListener('click', () => {
+        console.log('▶️ convertBtn clicked, balance =', balance);
+        if (balance < 1) return alert("Minimal convert adalah 1 BossX");
+        const usdt = balance * bxToUsdt;
+        usdtBalance += usdt;
+        updateUsdt();
+        logCv(balance, usdt);
+        balance = 0;
+        balanceLabel.textContent = "0.000000000 BossX";
+      });
 
-// History Convert
-function addHistoryConvert(bossx, usdt) {
-  let table = document.getElementById("history-convert");
-  let row = table.insertRow(1);
-  let now = new Date();
-  row.insertCell(0).innerText = now.toLocaleDateString();
-  row.insertCell(1).innerText = now.toLocaleTimeString();
-  row.insertCell(2).innerText = bossx.toFixed(9);
-  row.insertCell(3).innerText = usdt.toFixed(2);
-}
+      // Init displays & Chart.js
+      stopLabel.textContent = "Belum berjalan";
+      countdownLabel.textContent = "Auto-claim: 60s";
+      walletLabel.textContent = walletBossX + " BossX";
+      updateUsdt();
 
-// Cek tiap detik
-setInterval(autoClaimCheck, 1000);
-
-// Load state saat halaman dibuka
-loadState();
-</script>
-
+      const ctx = document.getElementById('dailyRewardBarChart').getContext('2d');
+      const grad = ctx.createLinearGradient(0, 0, 0, 400);
+      grad.addColorStop(0, 'purple');
+      grad.addColorStop(1, 'gold');
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['Senin','Selasa','Rabu','Kamis','Jumat','Sabtu','Minggu'],
+          datasets: [{
+            label: 'Reward BossX',
+            data: [12.5,15.2,14.8,16.0,17.3,18.1,19.0],
+            backgroundColor: grad
+          }]
+        },
+        options: {
+          scales: {
+            x: { ticks: { color: var(--color-accent) } },
+            y: { ticks: { color: var(--color-accent) }, beginAtZero: false }
+          },
+          plugins: {
+            legend: { labels: { color: var(--color-accent) } }
+          }
+        }
+      });
+    });
+  </script>
 </body>
 </html>
