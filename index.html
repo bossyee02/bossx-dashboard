@@ -2,159 +2,189 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard BossX</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <title>BossX Validator</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: linear-gradient(to right, #4b0082, #8a2be2);
-      margin: 0;
-      padding: 0;
-      color: white;
-    }
-    .card {
-      background: rgba(0,0,0,0.3);
-      border-radius: 12px;
-      padding: 20px;
-      margin: 20px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-    }
-    .saldo-value {
-      font-size: 18px;
-      margin: 10px 0;
-    }
-    .timer {
-      font-size: 14px;
-      margin-bottom: 10px;
-    }
-    .power-btn {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      border: none;
-      background: #111;
-      color: white;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .power-btn svg {
-      width: 24px;
-      height: 24px;
-      fill: currentColor;
-    }
-    .chart-container {
-      height: 120px;
-      margin-top: 15px;
-    }
+    body { font-family: Arial, sans-serif; margin: 20px; background: #f4f6f9; }
+    .card { background: #fff; border-radius: 10px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+    .card h2 { margin-top: 0; }
+    button { padding: 8px 15px; border: none; border-radius: 6px; cursor: pointer; }
+    #btn-validasi { background: #007bff; color: #fff; }
+    #btn-validasi:disabled { background: #6c757d; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+    th { background: #007bff; color: #fff; }
   </style>
 </head>
 <body>
 
-  <!-- Card Validasi Running -->
+  <!-- Node Amount -->
   <div class="card">
-    <h2>Validasi Running</h2>
-    <div class="saldo-value" id="mining">0.000000000 BossX</div>
-    <div class="timer" id="stopCountdown">Belum berjalan</div>
-    <div class="btn-container">
-      <button class="power-btn" id="onBtn">
-        <svg viewBox="0 0 24 24">
-          <path d="M12 2v10M5.6 5.6a8 8 0 1 0 11.3 0"/>
-        </svg>
-      </button>
-    </div>
-    <!-- Chart trading style -->
-    <div class="chart-container">
-      <canvas id="liveChart"></canvas>
-    </div>
+    <h2>Node Amount</h2>
+    <input type="number" id="input-bossx" placeholder="Input BossX (min 50)">
+    <button onclick="aktivasi()">Aktivasi</button>
+    <p id="info-node"></p>
   </div>
 
-  <script>
-    let isMiningActive = false;
-    let liveChartInterval = null;
-    let trend = 0.05;
-    let trendCounter = 0;
+  <!-- Validasi Running -->
+  <div class="card">
+    <h2>Validasi Running</h2>
+    <button id="btn-validasi" onclick="startValidasi()">ON</button>
+    <p>Reward sementara: <span id="running-reward">0.000000000</span> BossX</p>
+  </div>
 
-    const onBtn = document.getElementById("onBtn");
-    onBtn.addEventListener("click", () => {
-      isMiningActive = !isMiningActive;
-      if (isMiningActive) {
-        console.log("Mining ON");
-        startLiveChart();
-      } else {
-        console.log("Mining OFF");
-        stopLiveChart();
-      }
-    });
+  <!-- Reward Validasi -->
+  <div class="card">
+    <h2>Reward Validasi</h2>
+    <p>Total Reward: <span id="reward-validasi">0.000000000</span> BossX</p>
+    <button onclick="convertToUSDT()">Convert to USDT</button>
+  </div>
 
-    // === Chart setup ===
-    const ctx = document.getElementById('liveChart').getContext('2d');
-    const liveData = {
-      labels: Array.from({length: 50}, (_, i) => i),
-      datasets: [{
-        data: Array.from({length: 50}, () => 5),
-        borderWidth: 2,
-        borderColor: 'lime',
-        fill: false,
-        tension: 0.4,
-        pointRadius: 0
-      }]
-    };
+  <!-- Balance USDT -->
+  <div class="card">
+    <h2>Balance USDT</h2>
+    <p><span id="balance-usdt">0.00</span> USDT</p>
+  </div>
 
-    const chart = new Chart(ctx, {
-      type: 'line',
-      data: liveData,
-      options: {
-        animation: false,
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-          x: { display: false },
-          y: { min: 0, max: 10, display: false }
-        },
-        plugins: {
-          legend: { display: false }
-        }
-      }
-    });
+  <!-- History Aktivasi -->
+  <div class="card">
+    <h2>History Aktivasi</h2>
+    <table id="history-aktivasi">
+      <tr><th>Hari</th><th>Waktu</th><th>Jumlah</th><th>Jenis</th><th>Masa Akhir Kontrak</th></tr>
+    </table>
+  </div>
 
-    function startLiveChart() {
-      if (liveChartInterval) clearInterval(liveChartInterval);
-      liveChartInterval = setInterval(() => {
-        if (!isMiningActive) return;
+  <!-- History Validasi -->
+  <div class="card">
+    <h2>History Validasi</h2>
+    <table id="history-validasi">
+      <tr><th>Tanggal</th><th>Jam</th><th>BossX</th></tr>
+    </table>
+  </div>
 
-        const lastVal = liveData.datasets[0].data.at(-1) || 5;
+  <!-- History Convert -->
+  <div class="card">
+    <h2>History Convert</h2>
+    <table id="history-convert">
+      <tr><th>Tanggal</th><th>Jam</th><th>BossX</th><th>USDT</th></tr>
+    </table>
+  </div>
 
-        // ubah tren sesekali biar realistis
-        trendCounter++;
-        if (trendCounter > 30) {
-          trend = (Math.random() - 0.5) * 0.2;
-          trendCounter = 0;
-        }
+<script>
+let paketBossx = 0;
+let isRunning = false;
+let startTime = null;
+let lastClaim = null;
+let rewardBalance = 0;
+let runningReward = 0;
+let usdtBalance = 0;
 
-        let newVal = lastVal + trend + (Math.random() - 0.5) * 0.3;
-        if (newVal > 10) newVal = 10;
-        if (newVal < 0) newVal = 0;
+const contractSeconds = 31 * 24 * 60 * 60; // 2,678,400 detik
+const monthlyYieldRate = 0.10; // 10% per 31 hari
 
-        // geser data
-        liveData.labels.push(liveData.labels.length);
-        liveData.labels.shift();
-        liveData.datasets[0].data.push(newVal);
-        liveData.datasets[0].data.shift();
+// Hitung reward per detik
+function getRewardPerSecond() {
+  return (paketBossx * monthlyYieldRate) / contractSeconds;
+}
 
-        chart.update();
-      }, 500);
-    }
+// Aktivasi Node
+function aktivasi() {
+  let val = parseInt(document.getElementById("input-bossx").value);
+  if (isNaN(val) || val < 50) {
+    alert("Minimal aktivasi 50 BossX!");
+    return;
+  }
+  paketBossx = val;
+  document.getElementById("info-node").innerText = "Aktivasi berhasil: " + paketBossx + " BossX";
+  addHistoryAktivasi(val);
+}
 
-    function stopLiveChart() {
-      if (liveChartInterval) {
-        clearInterval(liveChartInterval);
-        liveChartInterval = null;
-      }
-    }
-  </script>
+// History Aktivasi
+function addHistoryAktivasi(amount) {
+  let table = document.getElementById("history-aktivasi");
+  let row = table.insertRow(1);
+  let now = new Date();
+  row.insertCell(0).innerText = now.toLocaleDateString();
+  row.insertCell(1).innerText = now.toLocaleTimeString();
+  row.insertCell(2).innerText = amount;
+  row.insertCell(3).innerText = "Aktivasi";
+  row.insertCell(4).innerText = "31 hari";
+}
+
+// Tombol ON Validasi
+function startValidasi() {
+  if (isRunning) return;
+  if (paketBossx < 50) {
+    alert("Aktivasi minimal 50 BossX dulu!");
+    return;
+  }
+  isRunning = true;
+  startTime = Date.now();
+  lastClaim = Date.now();
+  document.getElementById("btn-validasi").innerText = "Running...";
+  document.getElementById("btn-validasi").disabled = true;
+}
+
+// Auto-claim real-time
+function autoClaimCheck() {
+  if (!isRunning) return;
+  let now = Date.now();
+  let diff = Math.floor((now - lastClaim) / 1000); // detik penuh
+
+  if (diff >= 1) {
+    let rewardPerSecond = getRewardPerSecond();
+    let totalReward = rewardPerSecond * diff;
+    runningReward += totalReward;
+    rewardBalance += totalReward;
+    addHistoryValidasi(totalReward);
+    lastClaim = now;
+    updateUI();
+  }
+}
+
+// Update UI
+function updateUI() {
+  document.getElementById("running-reward").innerText = runningReward.toFixed(9);
+  document.getElementById("reward-validasi").innerText = rewardBalance.toFixed(9);
+  document.getElementById("balance-usdt").innerText = usdtBalance.toFixed(2);
+}
+
+// History Validasi
+function addHistoryValidasi(amount) {
+  let table = document.getElementById("history-validasi");
+  let row = table.insertRow(1);
+  let now = new Date();
+  row.insertCell(0).innerText = now.toLocaleDateString();
+  row.insertCell(1).innerText = now.toLocaleTimeString();
+  row.insertCell(2).innerText = "+" + amount.toFixed(9);
+}
+
+// Convert Reward ke USDT
+function convertToUSDT() {
+  if (rewardBalance < 1) {
+    alert("Minimal 1 BossX untuk convert!");
+    return;
+  }
+  let converted = rewardBalance;
+  rewardBalance = 0;
+  usdtBalance += converted * 1; // flat 1 BossX = 1 USDT
+  addHistoryConvert(converted, converted);
+  updateUI();
+}
+
+// History Convert
+function addHistoryConvert(bossx, usdt) {
+  let table = document.getElementById("history-convert");
+  let row = table.insertRow(1);
+  let now = new Date();
+  row.insertCell(0).innerText = now.toLocaleDateString();
+  row.insertCell(1).innerText = now.toLocaleTimeString();
+  row.insertCell(2).innerText = bossx.toFixed(9);
+  row.insertCell(3).innerText = usdt.toFixed(2);
+}
+
+// Cek tiap detik
+setInterval(autoClaimCheck, 1000);
+</script>
 
 </body>
 </html>
