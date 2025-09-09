@@ -1,63 +1,204 @@
-<canvas id="liveChart"></canvas>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-const ctx = document.getElementById('liveChart').getContext('2d');
-
-// batas atas & bawah
-const upperLimit = 8;
-const lowerLimit = 3;
-
-// data awal
-const data = {
-  labels: Array.from({length: 50}, (_, i) => i),
-  datasets: [{
-    data: Array.from({length: 50}, () => Math.random() * 10),
-    borderWidth: 2,
-    fill: false,
-    tension: 0.4,
-    pointRadius: 0,
-    segment: {
-      borderColor: ctx => {
-        const value = ctx.p1.parsed.y;
-        if (value >= upperLimit) return 'blue';
-        if (value <= lowerLimit) return 'red';
-        return 'lime'; // normal zone
-      }
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BossX Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f0f23;
+      margin: 0;
+      padding: 20px;
+      color: white;
     }
-  }]
-};
+    .card {
+      background: #1c1c3c;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+      margin-bottom: 20px;
+    }
+    h2 {
+      margin-top: 0;
+    }
+    .saldo-value {
+      font-size: 20px;
+      font-weight: bold;
+      margin: 10px 0;
+    }
+    .timer {
+      color: #aaa;
+      margin-bottom: 10px;
+    }
+    .btn-container {
+      text-align: center;
+      margin: 10px 0;
+    }
+    .power-btn {
+      background: #444;
+      border: none;
+      border-radius: 50%;
+      padding: 20px;
+      cursor: pointer;
+      transition: background 0.3s;
+      color: white;
+    }
+    .power-btn.active {
+      background: #1e90ff;
+    }
+    .power-btn svg {
+      width: 30px;
+      height: 30px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+    }
+  </style>
+</head>
+<body>
 
-const chart = new Chart(ctx, {
-  type: 'line',
-  data,
-  options: {
-    animation: false,
-    responsive: true,
-    maintainAspectRatio: false,
-    scales: {
-      x: { display: false },
-      y: { min: 0, max: 10 }
-    },
-    plugins: {
-      legend: { display: false },
-      annotation: {
-        annotations: {
-          upper: { type: 'line', yMin: upperLimit, yMax: upperLimit, borderColor: 'blue', borderWidth: 1 },
-          lower: { type: 'line', yMin: lowerLimit, yMax: lowerLimit, borderColor: 'red', borderWidth: 1 }
+  <div class="card">
+    <h2>Validasi Running</h2>
+    <div class="saldo-value" id="mining">0.000000000 BossX</div>
+    <div class="timer" id="stopCountdown">Belum berjalan</div>
+    <div class="btn-container">
+      <button class="power-btn" id="onBtn">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 2v10M5.6 5.6a8 8 0 1 0 11.3 0"/>
+        </svg>
+      </button>
+    </div>
+    <!-- Chart line trading style -->
+    <div style="height:150px; margin-top:10px;">
+      <canvas id="liveChart"></canvas>
+    </div>
+  </div>
+
+  <script>
+    let isMiningActive = false;
+    let miningValue = 0;
+    let miningInterval;
+    let stopTime;
+    let countdownInterval;
+    let liveChartInterval;
+
+    const miningDisplay = document.getElementById("mining");
+    const stopCountdown = document.getElementById("stopCountdown");
+    const onBtn = document.getElementById("onBtn");
+
+    // batas atas & bawah
+    const upperLimit = 8;
+    const lowerLimit = 3;
+
+    // ==== CHART SETUP ====
+    const ctx = document.getElementById('liveChart').getContext('2d');
+    const liveData = {
+      labels: Array.from({length: 50}, (_, i) => i),
+      datasets: [{
+        data: Array.from({length: 50}, () => 5),
+        borderWidth: 2,
+        fill: false,
+        tension: 0.4,
+        pointRadius: 0,
+        segment: {
+          borderColor: ctx => {
+            const value = ctx.p1.parsed.y;
+            if (value >= upperLimit) return 'blue';
+            if (value <= lowerLimit) return 'red';
+            return 'lime';
+          }
         }
+      }]
+    };
+
+    const chart = new Chart(ctx, {
+      type: 'line',
+      data: liveData,
+      options: {
+        animation: false,
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          x: { display: false },
+          y: { min: 0, max: 10, display: false }
+        },
+        plugins: {
+          legend: { display: false },
+          annotation: {
+            annotations: {
+              upper: { type: 'line', yMin: upperLimit, yMax: upperLimit, borderColor: 'blue', borderWidth: 1 },
+              lower: { type: 'line', yMin: lowerLimit, yMax: lowerLimit, borderColor: 'red', borderWidth: 1 }
+            }
+          }
+        }
+      },
+      plugins: [Chart.registry.getPlugin('annotation')]
+    });
+
+    // fungsi start chart
+    function startLiveChart() {
+      if (liveChartInterval) clearInterval(liveChartInterval);
+      liveChartInterval = setInterval(() => {
+        if (!isMiningActive) return;
+        liveData.labels.push(liveData.labels.length);
+        liveData.labels.shift();
+        const lastVal = liveData.datasets[0].data.at(-1) || 5;
+        const newVal = Math.max(0, lastVal + (Math.random() - 0.5) * 1.5);
+        liveData.datasets[0].data.push(newVal);
+        liveData.datasets[0].data.shift();
+        chart.update();
+      }, 500);
+    }
+
+    function stopLiveChart() {
+      if (liveChartInterval) {
+        clearInterval(liveChartInterval);
+        liveChartInterval = null;
       }
     }
-  },
-  plugins: [Chart.registry.getPlugin('annotation')]
-});
 
-// update otomatis
-setInterval(() => {
-  data.labels.push(data.labels.length);
-  data.labels.shift();
-  data.datasets[0].data.push(Math.random() * 10); // nilai baru
-  data.datasets[0].data.shift();
-  chart.update();
-}, 500);
-</script>
+    // ==== MINING LOGIC ====
+    onBtn.addEventListener("click", () => {
+      if (!isMiningActive) {
+        isMiningActive = true;
+        onBtn.classList.add("active");
+
+        // mulai mining
+        miningInterval = setInterval(() => {
+          miningValue += 0.000000001;
+          miningDisplay.textContent = miningValue.toFixed(9) + " BossX";
+        }, 1000);
+
+        // set stop jam 06:00
+        const now = new Date();
+        stopTime = new Date(now);
+        stopTime.setHours(6, 0, 0, 0);
+        if (stopTime <= now) stopTime.setDate(stopTime.getDate() + 1);
+
+        countdownInterval = setInterval(() => {
+          const diff = stopTime - new Date();
+          if (diff <= 0) {
+            clearInterval(miningInterval);
+            clearInterval(countdownInterval);
+            stopLiveChart();
+            isMiningActive = false;
+            onBtn.classList.remove("active");
+            stopCountdown.textContent = "Sudah berhenti";
+          } else {
+            const h = Math.floor(diff / 1000 / 60 / 60);
+            const m = Math.floor((diff / 1000 / 60) % 60);
+            const s = Math.floor((diff / 1000) % 60);
+            stopCountdown.textContent = `${h}j ${m}m ${s}d`;
+          }
+        }, 1000);
+
+        // start chart
+        startLiveChart();
+      }
+    });
+  </script>
+</body>
+</html>
