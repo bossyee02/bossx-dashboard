@@ -1,146 +1,231 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Dashboard BossX</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <meta charset="UTF-8">
+  <title>BossX Validator</title>
   <style>
-    /* ===== VARIABEL GLOBAL ===== */
-    :root {
-      --gap: 16px;
-      --radius: 12px;
-      --color-primary: #6a0dad;
-      --color-accent: #FFD700;
-      --sidebar-width: 250px;
-      --sidebar-collapsed: 60px;
-      --bg-from: #6a0dad;
-      --bg-to: #ff69b4;
-      --text-color: var(--color-accent);
-      --card-bg: rgba(0,0,0,0.3);
-      --card-border: var(--color-accent);
-      --table-border: var(--color-accent);
-    }
-    [data-theme="dark"] {
-      --bg-from: #111;
-      --bg-to: #000;
-      --text-color: #EEE;
-      --card-bg: rgba(255,255,255,0.08);
-      --card-border: #555;
-      --table-border: #777;
-    }
-    /* Layout, sidebar, card, table dll tetap seperti versi kamu */
-    body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, var(--bg-from), var(--bg-to)); color: var(--text-color); display: flex; min-height: 100vh; }
-    .container { display: grid; grid-template-columns: var(--sidebar-width) 1fr; width: 100%; }
-    .content { display: flex; flex-direction: column; width: 100%; }
-    main { flex: 1; padding: var(--gap); max-width: 1200px; margin: auto; display: flex; gap: var(--gap); flex-wrap: wrap; }
-    .card { background: var(--card-bg); padding: var(--gap); border-radius: var(--radius); border: 1px solid var(--card-border); }
-    .saldo-value { font-size: 1.4rem; font-weight: bold; margin-bottom: 8px; }
+    body { font-family: Arial, sans-serif; margin: 20px; background: #f4f6f9; }
+    .card { background: #fff; border-radius: 10px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+    .card h2 { margin-top: 0; }
+    button { padding: 8px 15px; border: none; border-radius: 6px; cursor: pointer; }
+    #btn-validasi { background: #007bff; color: #fff; }
+    #btn-validasi:disabled { background: #6c757d; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+    th { background: #007bff; color: #fff; }
   </style>
 </head>
-<body data-theme="light">
-  <div class="container">
-    <!-- Sidebar & Header tetap sama dengan file kamu -->
-    <div class="content">
-      <header>
-        <div id="realTimeClock">Loading…</div>
-        <button id="themeToggle" class="btn">🌙</button>
-      </header>
-      <main>
-        <div class="left-column">
-          <div class="card">
-            <h2>Validasi Running</h2>
-            <div class="saldo-value" id="mining">0.000000000 BossX</div>
-            <div id="stopCountdown">Belum berjalan</div>
-            <button class="btn" id="onBtn">ON</button>
-          </div>
-          <div class="card">
-            <h2>Reward Validasi</h2>
-            <div class="saldo-value" id="balance">0.000000000 BossX</div>
-            <div id="countdown">Auto-claim: 60s</div>
-            <button class="btn" id="convertBtn">Convert to USDT</button>
-          </div>
-        </div>
-        <div class="right-column">
-          <div class="card">
-            <h2>History Validasi</h2>
-            <table>
-              <thead><tr><th>Hari</th><th>Tanggal</th><th>Jam</th><th>BossX</th><th>Status</th></tr></thead>
-              <tbody id="history"></tbody>
-            </table>
-          </div>
-        </div>
-      </main>
-    </div>
+<body>
+
+  <!-- Node Amount -->
+  <div class="card">
+    <h2>Node Amount</h2>
+    <input type="number" id="input-bossx" placeholder="Input BossX (min 50)">
+    <button onclick="aktivasi()">Aktivasi</button>
+    <p id="info-node"></p>
+  </div>
+
+  <!-- Validasi Running -->
+  <div class="card">
+    <h2>Validasi Running</h2>
+    <button id="btn-validasi" onclick="startValidasi()">ON</button>
+    <p>Reward sementara: <span id="running-reward">0.000000000</span> BossX</p>
+  </div>
+
+  <!-- Reward Validasi -->
+  <div class="card">
+    <h2>Reward Validasi</h2>
+    <p>Total Reward: <span id="reward-validasi">0.000000000</span> BossX</p>
+    <button onclick="convertToUSDT()">Convert to USDT</button>
+  </div>
+
+  <!-- Balance USDT -->
+  <div class="card">
+    <h2>Balance USDT</h2>
+    <p><span id="balance-usdt">0.00</span> USDT</p>
+  </div>
+
+  <!-- History Aktivasi -->
+  <div class="card">
+    <h2>History Aktivasi</h2>
+    <table id="history-aktivasi">
+      <tr><th>Hari</th><th>Waktu</th><th>Jumlah</th><th>Jenis</th><th>Masa Akhir Kontrak</th></tr>
+    </table>
+  </div>
+
+  <!-- History Validasi -->
+  <div class="card">
+    <h2>History Validasi</h2>
+    <table id="history-validasi">
+      <tr><th>Tanggal</th><th>Jam</th><th>BossX</th></tr>
+    </table>
+  </div>
+
+  <!-- History Convert -->
+  <div class="card">
+    <h2>History Convert</h2>
+    <table id="history-convert">
+      <tr><th>Tanggal</th><th>Jam</th><th>BossX</th><th>USDT</th></tr>
+    </table>
   </div>
 
 <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    // Clock realtime
-    setInterval(() => {
-      const d = new Date();
-      document.getElementById("realTimeClock").textContent = d.toLocaleString("id-ID");
-    }, 1000);
+let paketBossx = 0;
+let isRunning = false;
+let rewardBalance = 0;
+let runningReward = 0;
+let usdtBalance = 0;
 
-    // Variabel
-    let isMiningActive = false;
-    let rewardPerSecond = 0;
-    let mining = 0;
-    let balance = parseFloat(localStorage.getItem("balance") || 0);
-    let usdtBalance = parseFloat(localStorage.getItem("usdtBalance") || 0);
-    let contractEndTime = parseInt(localStorage.getItem("contractEndTime") || 0);
-    let lastUpdateTime = parseInt(localStorage.getItem("lastUpdateTime") || Date.now());
+const contractSeconds = 31 * 24 * 60 * 60; // 2,678,400 detik
+const monthlyYieldRate = 0.10; // 10% per 31 hari
+const claimInterval = 60; // 60 detik (1 menit)
 
-    const monthlyYieldRate = 0.10;
-    const contractSeconds = 31 * 24 * 60 * 60;
-    const bossXtoUSDT = 1;
+// --- Simpan / ambil data dari localStorage ---
+function saveState() {
+  localStorage.setItem("bossxState", JSON.stringify({
+    paketBossx, isRunning, rewardBalance, runningReward, usdtBalance,
+    lastClaim: Date.now()
+  }));
+}
 
-    const miningLabel = document.getElementById("mining");
-    const balanceLabel = document.getElementById("balance");
-    const countdownLabel = document.getElementById("countdown");
-    const historyBody = document.getElementById("history");
-
-    balanceLabel.textContent = balance.toFixed(9) + " BossX";
-
-    // Hitung reward missed saat offline / tab ditutup
-    function syncRewards() {
-      const now = Date.now();
-      if (isMiningActive && lastUpdateTime) {
-        const elapsed = Math.floor((now - lastUpdateTime)/1000);
-        const reward = elapsed * rewardPerSecond;
-        if (reward > 0) {
-          balance += reward;
-          balanceLabel.textContent = balance.toFixed(9) + " BossX";
-        }
+function loadState() {
+  let data = localStorage.getItem("bossxState");
+  if (data) {
+    let s = JSON.parse(data);
+    paketBossx = s.paketBossx || 0;
+    isRunning = s.isRunning || false;
+    rewardBalance = s.rewardBalance || 0;
+    runningReward = s.runningReward || 0;
+    usdtBalance = s.usdtBalance || 0;
+    if (isRunning) {
+      let now = Date.now();
+      let diffSec = Math.floor((now - s.lastClaim) / 1000);
+      let rewardPerSecond = getRewardPerSecond();
+      let addReward = Math.floor(diffSec / claimInterval) * rewardPerSecond * claimInterval;
+      if (addReward > 0) {
+        rewardBalance += addReward;
+        runningReward += addReward;
+        addHistoryValidasi(addReward);
       }
-      lastUpdateTime = now;
-      localStorage.setItem("lastUpdateTime", lastUpdateTime);
-      localStorage.setItem("balance", balance);
     }
+    updateUI();
+    if (isRunning) {
+      document.getElementById("btn-validasi").innerText = "Running...";
+      document.getElementById("btn-validasi").disabled = true;
+    }
+  }
+}
 
-    setInterval(syncRewards, 1000);
+// Hitung reward per detik
+function getRewardPerSecond() {
+  return (paketBossx * monthlyYieldRate) / contractSeconds;
+}
 
-    // Tombol ON
-    document.getElementById("onBtn").addEventListener("click", () => {
-      if (isMiningActive) return;
-      isMiningActive = true;
-      rewardPerSecond = (50 * monthlyYieldRate) / contractSeconds; // contoh fixed 50 BossX aktivasi
-      lastUpdateTime = Date.now();
-      localStorage.setItem("lastUpdateTime", lastUpdateTime);
-      localStorage.setItem("contractEndTime", Date.now() + contractSeconds*1000);
-    });
+// Aktivasi Node
+function aktivasi() {
+  let val = parseInt(document.getElementById("input-bossx").value);
+  if (isNaN(val) || val < 50) {
+    alert("Minimal aktivasi 50 BossX!");
+    return;
+  }
+  paketBossx = val;
+  document.getElementById("info-node").innerText = "Aktivasi berhasil: " + paketBossx + " BossX";
+  addHistoryAktivasi(val);
+  saveState();
+}
 
-    // Convert
-    document.getElementById("convertBtn").addEventListener("click", () => {
-      if (balance < 1) return alert("Minimal convert adalah 1 BossX");
-      const usdt = balance * bossXtoUSDT;
-      usdtBalance += usdt;
-      localStorage.setItem("usdtBalance", usdtBalance);
-      balance = 0;
-      localStorage.setItem("balance", balance);
-      balanceLabel.textContent = "0.000000000 BossX";
-    });
-  });
+// History Aktivasi
+function addHistoryAktivasi(amount) {
+  let table = document.getElementById("history-aktivasi");
+  let row = table.insertRow(1);
+  let now = new Date();
+  row.insertCell(0).innerText = now.toLocaleDateString();
+  row.insertCell(1).innerText = now.toLocaleTimeString();
+  row.insertCell(2).innerText = amount;
+  row.insertCell(3).innerText = "Aktivasi";
+  row.insertCell(4).innerText = "31 hari";
+}
+
+// Tombol ON Validasi
+function startValidasi() {
+  if (isRunning) return;
+  if (paketBossx < 50) {
+    alert("Aktivasi minimal 50 BossX dulu!");
+    return;
+  }
+  isRunning = true;
+  document.getElementById("btn-validasi").innerText = "Running...";
+  document.getElementById("btn-validasi").disabled = true;
+  saveState();
+}
+
+// Auto-claim tiap 60 detik
+function autoClaimCheck() {
+  if (!isRunning) return;
+  let state = JSON.parse(localStorage.getItem("bossxState"));
+  let lastClaim = state?.lastClaim || Date.now();
+  let now = Date.now();
+  let diffSec = Math.floor((now - lastClaim) / 1000);
+
+  if (diffSec >= claimInterval) {
+    let rewardPerSecond = getRewardPerSecond();
+    let totalReward = rewardPerSecond * diffSec;
+    runningReward += totalReward;
+    rewardBalance += totalReward;
+    addHistoryValidasi(totalReward);
+    saveState();
+    updateUI();
+  }
+}
+
+// Update UI
+function updateUI() {
+  document.getElementById("running-reward").innerText = runningReward.toFixed(9);
+  document.getElementById("reward-validasi").innerText = rewardBalance.toFixed(9);
+  document.getElementById("balance-usdt").innerText = usdtBalance.toFixed(2);
+}
+
+// History Validasi
+function addHistoryValidasi(amount) {
+  let table = document.getElementById("history-validasi");
+  let row = table.insertRow(1);
+  let now = new Date();
+  row.insertCell(0).innerText = now.toLocaleDateString();
+  row.insertCell(1).innerText = now.toLocaleTimeString();
+  row.insertCell(2).innerText = "+" + amount.toFixed(9);
+}
+
+// Convert Reward ke USDT
+function convertToUSDT() {
+  if (rewardBalance < 1) {
+    alert("Minimal 1 BossX untuk convert!");
+    return;
+  }
+  let converted = rewardBalance;
+  rewardBalance = 0;
+  usdtBalance += converted * 1; // flat 1 BossX = 1 USDT
+  addHistoryConvert(converted, converted);
+  saveState();
+  updateUI();
+}
+
+// History Convert
+function addHistoryConvert(bossx, usdt) {
+  let table = document.getElementById("history-convert");
+  let row = table.insertRow(1);
+  let now = new Date();
+  row.insertCell(0).innerText = now.toLocaleDateString();
+  row.insertCell(1).innerText = now.toLocaleTimeString();
+  row.insertCell(2).innerText = bossx.toFixed(9);
+  row.insertCell(3).innerText = usdt.toFixed(2);
+}
+
+// Cek tiap detik
+setInterval(autoClaimCheck, 1000);
+
+// Load state saat halaman dibuka
+loadState();
 </script>
+
 </body>
 </html>
