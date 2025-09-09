@@ -4,33 +4,51 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Dashboard BossX</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    /* ===== VARIABEL GLOBAL ===== */
     :root {
       --gap: 16px;
       --radius: 12px;
-      --color-primary: #6a0dad;
       --color-accent: #FFD700;
-      --sidebar-width: 250px;
-      --sidebar-collapsed: 60px;
+      --color-primary: #6a0dad;
       --bg-from: #6a0dad;
       --bg-to: #ff69b4;
-      --text-color: var(--color-accent);
-      --card-bg: rgba(0,0,0,0.3);
-      --card-border: var(--color-accent);
-      --table-border: var(--color-accent);
     }
 
-    /* ===== ANIMASI GEAR ===== */
-    @keyframes spin {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, var(--bg-from), var(--bg-to));
+      color: var(--color-accent);
+      display: flex;
+      min-height: 100vh;
+      justify-content: center;
+      align-items: center;
     }
-    @keyframes pulse {
-      0%,100% { transform: scale(1) rotate(0deg); }
-      50% { transform: scale(1.1) rotate(180deg); }
+
+    .card {
+      background: rgba(0,0,0,0.3);
+      padding: var(--gap);
+      border-radius: var(--radius);
+      border: 1px solid var(--color-accent);
+      width: 350px;
+      position: relative;
     }
+
+    .saldo-value { font-size: 1.2rem; font-weight: bold; margin-bottom: 8px; }
+    .timer { margin-bottom: 10px; }
+    .btn-container { text-align: center; margin-top: 10px; }
+    .power-btn {
+      background: #007bff;
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .power-btn:hover { background: #0056b3; }
+
+    /* ===== GEAR ANIMASI ===== */
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    @keyframes pulse { 0%,100% { transform: scale(1) rotate(0deg); } 50% { transform: scale(1.1) rotate(180deg); } }
 
     .gear-container {
       position: absolute;
@@ -41,11 +59,7 @@
       gap: 6px;
     }
     .gear {
-      width: 40px;
-      height: 40px;
-      fill: #111;
-      opacity: 0.8;
-      transition: fill 0.3s, opacity 0.3s;
+      width: 40px; height: 40px; fill: #111; opacity: 0.8; transition: fill 0.3s, opacity 0.3s;
     }
     .gear.small { width: 28px; height: 28px; }
     .gear.running {
@@ -56,112 +70,90 @@
     .gear.running:nth-child(1) { animation-delay: 0s; }
     .gear.running:nth-child(2) { animation-delay: 0.3s; }
     .gear.running:nth-child(3) { animation-delay: 0.6s; }
-
-    /* ===== LAYOUT UTAMA (CSS SEBELUMNYA) ===== */
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, var(--bg-from), var(--bg-to));
-      color: var(--text-color);
-      display: flex;
-      min-height: 100vh;
-    }
-    .container {
-      display: grid;
-      grid-template-columns: var(--sidebar-width) 1fr;
-      transition: grid-template-columns 0.3s ease;
-      width: 100%;
-    }
-    .container.collapsed {
-      grid-template-columns: var(--sidebar-collapsed) 1fr;
-    }
-    aside.sidebar { background: rgba(0,0,0,0.4); display: flex; flex-direction: column; }
-    .sidebar-header { display: flex; align-items: center; justify-content: space-between; padding: var(--gap); border-bottom: 1px solid var(--color-accent); }
-    .sidebar-logo { height: 80px; transition: 0.3s; }
-    .sidebar-logo-text { margin-left: 8px; font-size: 1.2rem; font-weight: bold; color: var(--color-accent); transition: 0.3s; }
-    .collapse-btn { background: none; border: none; color: var(--color-accent); font-size: 1.6rem; cursor: pointer; }
-    .sidebar-nav { display: flex; flex-direction: column; padding: var(--gap) 0; }
-    .nav-item { display: flex; align-items: center; padding: 12px var(--gap); color: var(--color-accent); text-decoration: none; }
-    .nav-item:hover { background: rgba(255,215,0,0.1); }
-    .nav-item.active { background: rgba(255,215,0,0.2); }
-    .content { display: flex; flex-direction: column; width: 100%; }
-    header { background: rgba(0,0,0,0.3); padding: var(--gap) calc(var(--gap)*2); border-bottom: 2px solid var(--color-accent); display: flex; align-items: center; justify-content: space-between; }
-    main { flex: 1; padding: var(--gap); max-width: 1200px; margin: auto; display: flex; gap: var(--gap); flex-wrap: wrap; }
-    .left-column, .right-column { display: flex; flex-direction: column; gap: var(--gap); }
-    .card {
-      background: var(--card-bg);
-      padding: var(--gap);
-      border-radius: var(--radius);
-      border: 1px solid var(--card-border);
-      position: relative; /* buat wadah gear absolute */
-    }
-    .saldo-value { font-size: 1.4rem; font-weight: bold; margin-bottom: 8px; }
-    .footer { text-align: center; padding: var(--gap); background: rgba(0,0,0,0.2); border-top: 1px solid var(--color-accent); }
   </style>
 </head>
 <body>
-  <div class="container">
-    <aside class="sidebar">
-      <div class="sidebar-header">
-        <div class="logo-container">
-          <img src="https://i.ibb.co/qYBkPDH3/Picsart-25-04-01-16-25-47-054.png" alt="Logo BossX" class="sidebar-logo"/>
-          <span class="sidebar-logo-text">BossX</span>
-        </div>
-        <button class="collapse-btn" id="toggleSidebar">☰</button>
-      </div>
-      <nav class="sidebar-nav">
-        <a href="#" class="nav-item active"><span class="icon">🏠</span><span class="label">Beranda</span></a>
-        <a href="#" class="nav-item"><span class="icon">💰</span><span class="label">Deposit</span></a>
-        <a href="#" class="nav-item"><span class="icon">💸</span><span class="label">Withdrawal</span></a>
-      </nav>
-    </aside>
+  <div class="card">
+    <h2>Validasi Running</h2>
+    <div class="saldo-value">Mining: <span id="mining">0.000000000</span> BossX</div>
+    <div class="saldo-value">Balance: <span id="balance">0.000000000</span> BossX</div>
+    <div class="timer" id="stopCountdown">Belum berjalan</div>
+    <div class="btn-container">
+      <button class="power-btn" id="onBtn">ON</button>
+    </div>
 
-    <div class="content">
-      <header>
-        <div>Dashboard BossX</div>
-      </header>
-
-      <main>
-        <div class="left-column">
-          <div class="card">
-            <h2>Validasi Running</h2>
-            <div class="saldo-value" id="mining">0.000000000 BossX</div>
-            <div class="timer" id="stopCountdown">Belum berjalan</div>
-            <div class="btn-container">
-              <button class="power-btn" id="onBtn">ON</button>
-            </div>
-
-            <!-- GEAR CONTAINER -->
-            <div class="gear-container">
-              <svg class="gear small" viewBox="0 0 24 24"><path d="M19.4 13a7.4 7.4 0 0 0 0-2l2-1.6-2-3.5-2.4 1a7.4 7.4 0 0 0-1.7-1L15 2h-6l-.3 2.9a7.4 7.4 0 0 0-1.7 1l-2.4-1-2 3.5 2 1.6a7.4 7.4 0 0 0 0 2l-2 1.6 2 3.5 2.4-1a7.4 7.4 0 0 0 1.7 1L9 22h6l.3-2.9a7.4 7.4 0 0 0 1.7-1l2.4 1 2-3.5-2-1.6zM12 15.6A3.6 3.6 0 1 1 12 8.4a3.6 3.6 0 0 1 0 7.2z"/></svg>
-              <svg class="gear" viewBox="0 0 24 24"><path d="M19.4 13a7.4 7.4 0 0 0 0-2l2-1.6-2-3.5-2.4 1a7.4 7.4 0 0 0-1.7-1L15 2h-6l-.3 2.9a7.4 7.4 0 0 0-1.7 1l-2.4-1-2 3.5 2 1.6a7.4 7.4 0 0 0 0 2l-2 1.6 2 3.5 2.4-1a7.4 7.4 0 0 0 1.7 1L9 22h6l.3-2.9a7.4 7.4 0 0 0 1.7-1l2.4 1 2-3.5-2-1.6zM12 15.6A3.6 3.6 0 1 1 12 8.4a3.6 3.6 0 0 1 0 7.2z"/></svg>
-              <svg class="gear small" viewBox="0 0 24 24"><path d="M19.4 13a7.4 7.4 0 0 0 0-2l2-1.6-2-3.5-2.4 1a7.4 7.4 0 0 0-1.7-1L15 2h-6l-.3 2.9a7.4 7.4 0 0 0-1.7 1l-2.4-1-2 3.5 2 1.6a7.4 7.4 0 0 0 0 2l-2 1.6 2 3.5 2.4-1a7.4 7.4 0 0 0 1.7 1L9 22h6l.3-2.9a7.4 7.4 0 0 0 1.7-1l2.4 1 2-3.5-2-1.6zM12 15.6A3.6 3.6 0 1 1 12 8.4a3.6 3.6 0 0 1 0 7.2z"/></svg>
-            </div>
-          </div>
-        </div>
-      </main>
-
-      <div class="footer">©2025 Dashboard BossX</div>
+    <!-- GEAR CONTAINER -->
+    <div class="gear-container">
+      <svg class="gear small" viewBox="0 0 24 24"><path d="M19.4 13a7.4 7.4 0 0 0 0-2l2-1.6-2-3.5-2.4 1a7.4 7.4 0 0 0-1.7-1L15 2h-6l-.3 2.9a7.4 7.4 0 0 0-1.7 1l-2.4-1-2 3.5 2 1.6a7.4 7.4 0 0 0 0 2l-2 1.6 2 3.5 2.4-1a7.4 7.4 0 0 0 1.7 1L9 22h6l.3-2.9a7.4 7.4 0 0 0 1.7-1l2.4 1 2-3.5-2-1.6zM12 15.6A3.6 3.6 0 1 1 12 8.4a3.6 3.6 0 0 1 0 7.2z"/></svg>
+      <svg class="gear" viewBox="0 0 24 24"><path d="M19.4 13a7.4 7.4 0 0 0 0-2l2-1.6-2-3.5-2.4 1a7.4 7.4 0 0 0-1.7-1L15 2h-6l-.3 2.9a7.4 7.4 0 0 0-1.7 1l-2.4-1-2 3.5 2 1.6a7.4 7.4 0 0 0 0 2l-2 1.6 2 3.5 2.4-1a7.4 7.4 0 0 0 1.7 1L9 22h6l.3-2.9a7.4 7.4 0 0 0 1.7-1l2.4 1 2-3.5-2-1.6zM12 15.6A3.6 3.6 0 1 1 12 8.4a3.6 3.6 0 0 1 0 7.2z"/></svg>
+      <svg class="gear small" viewBox="0 0 24 24"><path d="M19.4 13a7.4 7.4 0 0 0 0-2l2-1.6-2-3.5-2.4 1a7.4 7.4 0 0 0-1.7-1L15 2h-6l-.3 2.9a7.4 7.4 0 0 0-1.7 1l-2.4-1-2 3.5 2 1.6a7.4 7.4 0 0 0 0 2l-2 1.6 2 3.5 2.4-1a7.4 7.4 0 0 0 1.7 1L9 22h6l.3-2.9a7.4 7.4 0 0 0 1.7-1l2.4 1 2-3.5-2-1.6zM12 15.6A3.6 3.6 0 1 1 12 8.4a3.6 3.6 0 0 1 0 7.2z"/></svg>
     </div>
   </div>
 
   <script>
     const onBtn = document.getElementById("onBtn");
     const gears = document.querySelectorAll(".gear");
+    const miningEl = document.getElementById("mining");
+    const balanceEl = document.getElementById("balance");
+    const stopCountdown = document.getElementById("stopCountdown");
+
     let isRunning = false;
+    let miningValue = 0;
+    let balanceValue = 0;
+    let miningInterval;
+    let countdownInterval;
+    const miningRate = 0.00000005; // reward per tick
+    const miningDuration = 30; // detik sebelum auto-claim
 
     onBtn.addEventListener("click", () => {
-      isRunning = !isRunning;
-      gears.forEach(gear => {
-        if (isRunning) {
-          gear.classList.add("running");
-          onBtn.textContent = "OFF";
-        } else {
-          gear.classList.remove("running");
-          onBtn.textContent = "ON";
-        }
-      });
+      if (isRunning) {
+        stopMining();
+      } else {
+        startMining();
+      }
     });
+
+    function startMining() {
+      isRunning = true;
+      onBtn.textContent = "OFF";
+      gears.forEach(g => g.classList.add("running"));
+
+      let countdown = miningDuration;
+      stopCountdown.textContent = `Auto-claim dalam: ${countdown}s`;
+
+      miningInterval = setInterval(() => {
+        miningValue += miningRate;
+        miningEl.textContent = miningValue.toFixed(9);
+      }, 1000);
+
+      countdownInterval = setInterval(() => {
+        countdown--;
+        stopCountdown.textContent = `Auto-claim dalam: ${countdown}s`;
+        if (countdown <= 0) {
+          autoClaim();
+        }
+      }, 1000);
+    }
+
+    function stopMining() {
+      isRunning = false;
+      onBtn.textContent = "ON";
+      gears.forEach(g => g.classList.remove("running"));
+      clearInterval(miningInterval);
+      clearInterval(countdownInterval);
+      stopCountdown.textContent = "Berhenti";
+    }
+
+    function autoClaim() {
+      clearInterval(miningInterval);
+      clearInterval(countdownInterval);
+      balanceValue += miningValue;
+      balanceEl.textContent = balanceValue.toFixed(9);
+      miningValue = 0;
+      miningEl.textContent = "0.000000000";
+      stopCountdown.textContent = "Auto-claim selesai ✅";
+      stopMining();
+    }
   </script>
 </body>
 </html>
