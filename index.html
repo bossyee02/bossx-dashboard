@@ -103,11 +103,12 @@ function addHistoryAktivasi(amount) {
   let table = document.getElementById("history-aktivasi");
   let row = table.insertRow(1);
   let now = new Date();
+  let endDate = new Date(now.getTime() + contractSeconds * 1000);
   row.insertCell(0).innerText = now.toLocaleDateString();
   row.insertCell(1).innerText = now.toLocaleTimeString();
   row.insertCell(2).innerText = amount;
   row.insertCell(3).innerText = "Aktivasi";
-  row.insertCell(4).innerText = "31 hari";
+  row.insertCell(4).innerText = endDate.toLocaleDateString();
 }
 
 // Tombol ON Validasi
@@ -120,23 +121,26 @@ function startValidasi() {
   isRunning = true;
   startTime = Date.now();
   lastClaim = Date.now();
+  localStorage.setItem("startTime", startTime);
+  localStorage.setItem("lastClaim", lastClaim);
   document.getElementById("btn-validasi").innerText = "Running...";
   document.getElementById("btn-validasi").disabled = true;
 }
 
-// Auto-claim real-time
+// Auto-claim real-time (catat tiap menit)
 function autoClaimCheck() {
   if (!isRunning) return;
   let now = Date.now();
-  let diff = Math.floor((now - lastClaim) / 1000); // detik penuh
+  let diff = Math.floor((now - lastClaim) / 1000);
 
-  if (diff >= 1) {
+  if (diff >= 60) { // klaim per menit
     let rewardPerSecond = getRewardPerSecond();
     let totalReward = rewardPerSecond * diff;
     runningReward += totalReward;
     rewardBalance += totalReward;
     addHistoryValidasi(totalReward);
     lastClaim = now;
+    localStorage.setItem("lastClaim", lastClaim);
     updateUI();
   }
 }
