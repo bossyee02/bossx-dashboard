@@ -30,6 +30,7 @@
     <h2>Validasi Running</h2>
     <button id="btn-validasi" onclick="startValidasi()">ON</button>
     <p>Reward sementara: <span id="running-reward">0.000000000</span> BossX</p>
+    <p>Sisa kontrak: <span id="sisa-kontrak">0</span> detik</p>
   </div>
 
   <!-- Reward Validasi -->
@@ -70,23 +71,21 @@
   </div>
 
 <script>
-let paketBossx = 0;
-let isRunning = false;
-let startTime = null;
-let lastClaim = null;
-let rewardBalance = 0;
+let paketBossx = parseInt(localStorage.getItem("paketBossx")) || 0;
+let isRunning = localStorage.getItem("isRunning") === "true";
+let startTime = parseInt(localStorage.getItem("startTime")) || null;
+let lastClaim = parseInt(localStorage.getItem("lastClaim")) || null;
+let rewardBalance = parseFloat(localStorage.getItem("rewardBalance")) || 0;
 let runningReward = 0;
-let usdtBalance = 0;
+let usdtBalance = parseFloat(localStorage.getItem("usdtBalance")) || 0;
 
-const contractSeconds = 31 * 24 * 60 * 60; // 2,678,400 detik
+const contractSeconds = 31 * 24 * 60 * 60; // 2.678.400 detik
 const monthlyYieldRate = 0.10; // 10% per 31 hari
 
-// Hitung reward per detik
 function getRewardPerSecond() {
   return (paketBossx * monthlyYieldRate) / contractSeconds;
 }
 
-// Aktivasi Node
 function aktivasi() {
   let val = parseInt(document.getElementById("input-bossx").value);
   if (isNaN(val) || val < 50) {
@@ -94,24 +93,22 @@ function aktivasi() {
     return;
   }
   paketBossx = val;
+  localStorage.setItem("paketBossx", paketBossx);
   document.getElementById("info-node").innerText = "Aktivasi berhasil: " + paketBossx + " BossX";
   addHistoryAktivasi(val);
 }
 
-// History Aktivasi
 function addHistoryAktivasi(amount) {
   let table = document.getElementById("history-aktivasi");
   let row = table.insertRow(1);
   let now = new Date();
-  let endDate = new Date(now.getTime() + contractSeconds * 1000);
   row.insertCell(0).innerText = now.toLocaleDateString();
   row.insertCell(1).innerText = now.toLocaleTimeString();
   row.insertCell(2).innerText = amount;
   row.insertCell(3).innerText = "Aktivasi";
-  row.insertCell(4).innerText = endDate.toLocaleDateString();
+  row.insertCell(4).innerText = contractSeconds + " detik";
 }
 
-// Tombol ON Validasi
 function startValidasi() {
   if (isRunning) return;
   if (paketBossx < 50) {
@@ -121,38 +118,44 @@ function startValidasi() {
   isRunning = true;
   startTime = Date.now();
   lastClaim = Date.now();
+  localStorage.setItem("isRunning", true);
   localStorage.setItem("startTime", startTime);
   localStorage.setItem("lastClaim", lastClaim);
   document.getElementById("btn-validasi").innerText = "Running...";
   document.getElementById("btn-validasi").disabled = true;
 }
 
-// Auto-claim real-time (catat tiap menit)
 function autoClaimCheck() {
   if (!isRunning) return;
   let now = Date.now();
   let diff = Math.floor((now - lastClaim) / 1000);
 
-  if (diff >= 60) { // klaim per menit
+  if (diff >= 1) {
     let rewardPerSecond = getRewardPerSecond();
     let totalReward = rewardPerSecond * diff;
     runningReward += totalReward;
     rewardBalance += totalReward;
+    localStorage.setItem("rewardBalance", rewardBalance);
     addHistoryValidasi(totalReward);
     lastClaim = now;
     localStorage.setItem("lastClaim", lastClaim);
     updateUI();
   }
+
+  // hitung sisa kontrak
+  if (startTime) {
+    let elapsed = Math.floor((now - startTime) / 1000);
+    let remaining = Math.max(contractSeconds - elapsed, 0);
+    document.getElementById("sisa-kontrak").innerText = remaining;
+  }
 }
 
-// Update UI
 function updateUI() {
   document.getElementById("running-reward").innerText = runningReward.toFixed(9);
   document.getElementById("reward-validasi").innerText = rewardBalance.toFixed(9);
   document.getElementById("balance-usdt").innerText = usdtBalance.toFixed(2);
 }
 
-// History Validasi
 function addHistoryValidasi(amount) {
   let table = document.getElementById("history-validasi");
   let row = table.insertRow(1);
@@ -162,7 +165,6 @@ function addHistoryValidasi(amount) {
   row.insertCell(2).innerText = "+" + amount.toFixed(9);
 }
 
-// Convert Reward ke USDT
 function convertToUSDT() {
   if (rewardBalance < 1) {
     alert("Minimal 1 BossX untuk convert!");
@@ -170,12 +172,13 @@ function convertToUSDT() {
   }
   let converted = rewardBalance;
   rewardBalance = 0;
-  usdtBalance += converted * 1; // flat 1 BossX = 1 USDT
+  localStorage.setItem("rewardBalance", rewardBalance);
+  usdtBalance += converted * 1;
+  localStorage.setItem("usdtBalance", usdtBalance);
   addHistoryConvert(converted, converted);
   updateUI();
 }
 
-// History Convert
 function addHistoryConvert(bossx, usdt) {
   let table = document.getElementById("history-convert");
   let row = table.insertRow(1);
@@ -186,8 +189,8 @@ function addHistoryConvert(bossx, usdt) {
   row.insertCell(3).innerText = usdt.toFixed(2);
 }
 
-// Cek tiap detik
 setInterval(autoClaimCheck, 1000);
+updateUI();
 </script>
 
 </body>
