@@ -3,15 +3,14 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Dashboard BossX – Deposit</title>
+  <title>Deposit USDT & Boost</title>
   <style>
     :root {
       --gap: 16px;
       --radius: 12px;
-      --color-primary: #6a0dad;
       --color-accent: #FFD700;
+      --color-primary: #6a0dad;
       --card-bg: rgba(0,0,0,0.3);
-      --card-border: var(--color-accent);
       --table-border: var(--color-accent);
     }
     body {
@@ -19,20 +18,17 @@
       font-family: 'Segoe UI', sans-serif;
       background: linear-gradient(135deg, #6a0dad, #ff69b4);
       color: var(--color-accent);
-      display: flex;
-      min-height: 100vh;
     }
     main {
-      flex: 1;
-      max-width: 1400px;          /* diperlebar dari 1200px */
-      margin: auto;
       display: flex;
-      gap: var(--gap);
-      padding: var(--gap);
       flex-wrap: wrap;
+      gap: var(--gap);
+      max-width: 1400px;
+      margin: auto;
+      padding: var(--gap);
     }
     .deposit-column {
-      flex: 1 1 calc(48% - var(--gap));  /* masing-masing 48% lebar */
+      flex: 1 1 calc(48% - var(--gap));
       display: flex;
       flex-direction: column;
       gap: var(--gap);
@@ -40,13 +36,14 @@
     }
     .card {
       background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: var(--radius);
       padding: var(--gap);
+      border: 1px solid var(--color-accent);
+      border-radius: var(--radius);
     }
     .card h2 {
-      margin: 0 0 12px;
+      margin-top: 0;
       color: var(--color-accent);
+      font-size: 1.2rem;
     }
     .qr-container {
       display: flex;
@@ -129,14 +126,14 @@
 <body>
 
   <main>
-    <!-- Kolom USDT -->
+    <!-- Kolom Deposit USDT -->
     <div class="deposit-column">
       <div class="card">
         <h2>Deposit USDT</h2>
         <div class="qr-container">
-          <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=0x3dD3C0b9F3e3e3E3e3e3e3e3e3e3e3e3e3e3e3" alt="QR USDT"/>
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=0x3dD3C0b9F3e3e3E3e3e3e3e3e3e3e3e3e3e3e3e3" alt="QR USDT"/>
           <div class="wallet-address" id="usdtAddress">
-            0x3dD3C0b9F3e3e3E3e3e3e3e3e3e3e3e3e3e3e3
+            0x3dD3C0b9F3e3e3E3e3e3e3e3e3e3e3e3e3e3e3e3
           </div>
           <button class="copy-btn" onclick="copyAddress('usdtAddress')">Copy Address</button>
         </div>
@@ -145,17 +142,18 @@
             <tr><th>No</th><th>Tanggal</th><th>Jumlah</th><th>Status</th></tr>
           </thead>
           <tbody>
-            <tr><td>1</td><td>10/09/2025</td><td>100 USDT</td><td>✅ Selesai</td></tr>
-            <tr><td>2</td><td>09/09/2025</td><td>50 USDT</td><td>⏳ Pending</td></tr>
+            <tr><td>1</td><td>2023-09-23</td><td>100.00000000</td><td>Success</td></tr>
+            <tr><td>2</td><td>2023-09-23</td><td>100.00000000</td><td>Success</td></tr>
+            <tr><td>3</td><td>2023-09-23</td><td>100.00000000</td><td>Success</td></tr>
           </tbody>
         </table>
       </div>
     </div>
 
-    <!-- Kolom Boost -->
+    <!-- Kolom Deposit BossX -->
     <div class="deposit-column">
       <div class="card">
-        <h2>Deposit Boost</h2>
+        <h2>Deposit BossX</h2>
         <div class="qr-container">
           <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=0x4dD4C0b9F4e4e4E4e4e4e4e4e4e4e4e4e4e4e4e4" alt="QR Boost"/>
           <div class="wallet-address" id="boostAddress">
@@ -168,8 +166,9 @@
             <tr><th>No</th><th>Tanggal</th><th>Jumlah</th><th>Status</th></tr>
           </thead>
           <tbody>
-            <tr><td>1</td><td>10/09/2025</td><td>200 Boost</td><td>✅ Selesai</td></tr>
-            <tr><td>2</td><td>09/09/2025</td><td>75 Boost</td><td>⏳ Pending</td></tr>
+            <tr><td>1</td><td>2023-09-23</td><td>100.00000000</td><td>Success</td></tr>
+            <tr><td>2</td><td>2023-09-23</td><td>100.00000000</td><td>Success</td></tr>
+            <tr><td>3</td><td>2023-09-23</td><td>100.00000000</td><td>Success</td></tr>
           </tbody>
         </table>
       </div>
