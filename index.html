@@ -5,7 +5,187 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>BossX Dashboard</title>
   <style>
-    /* ... (CSS tetap sama seperti sebelumnya) ... */
+    :root {
+      --gap: 16px;
+      --radius: 12px;
+      --color-primary: #6a0dad;
+      --color-accent: #FFD700;
+      --sidebar-width: 250px;
+      --sidebar-collapsed: 60px;
+      --bg-from: #6a0dad;
+      --bg-to: #ff69b4;
+      --text-color: var(--color-accent);
+      --card-bg: rgba(0,0,0,0.3);
+      --card-border: var(--color-accent);
+      --table-border: var(--color-accent);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, var(--bg-from), var(--bg-to));
+      color: var(--text-color);
+      display: flex; min-height: 100vh;
+    }
+    .container {
+      display: grid;
+      grid-template-columns: var(--sidebar-width) 1fr;
+      width: 100%;
+      transition: .3s;
+    }
+    .container.collapsed {
+      grid-template-columns: var(--sidebar-collapsed) 1fr;
+    }
+
+    /* Sidebar */
+    aside.sidebar {
+      background: rgba(0,0,0,0.4);
+      display: flex; flex-direction: column;
+    }
+    .sidebar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: var(--gap);
+      border-bottom: 1px solid var(--color-accent);
+    }
+    .logo-container { display: flex; align-items: center; gap: 8px; }
+    .sidebar-logo { height: 40px; }
+    .sidebar-logo-text {
+      font-size: 1.2rem; font-weight: 700;
+      color: var(--color-accent);
+    }
+    .collapse-btn {
+      background: none; border: 1px solid var(--color-accent);
+      border-radius: 6px; padding: 4px 8px;
+      color: var(--color-accent); cursor: pointer;
+    }
+    .sidebar-nav {
+      flex: 1; display: flex; flex-direction: column;
+      padding: var(--gap) 0;
+    }
+    .nav-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px var(--gap); text-decoration: none;
+      color: var(--text-color); transition: .2s;
+    }
+    .nav-item:hover { background: rgba(255,215,0,0.1); }
+    .nav-item.active { background: rgba(255,215,0,0.2); }
+    .icon { width: 24px; text-align: center; font-size: 1.1rem; }
+
+    /* Content */
+    .content {
+      display: flex; flex-direction: column; width: 100%;
+    }
+    header {
+      display: flex; justify-content: space-between;
+      align-items: center;
+      background: rgba(0,0,0,0.3);
+      padding: var(--gap) calc(var(--gap)*2);
+      border-bottom: 2px solid var(--color-accent);
+    }
+    .btn {
+      background: var(--color-accent);
+      color: var(--color-primary);
+      border: none; border-radius: 6px;
+      padding: 6px 12px; cursor: pointer;
+      font-weight: 600;
+    }
+    main {
+      flex: 1; padding: var(--gap);
+      max-width: 1400px; margin: var(--gap);
+    }
+    section.page { display: none; }
+    section.page.active { display: block; }
+
+    /* Card & Table */
+    .deposit-row, .withdraw-row {
+      display: flex; gap: var(--gap);
+      flex-wrap: wrap; justify-content: flex-start;
+    }
+    .deposit-column, .withdraw-column {
+      flex: 1; min-width: 350px;
+      display: flex; flex-direction: column;
+      gap: var(--gap);
+    }
+    .card {
+      background: var(--card-bg);
+      padding: var(--gap);
+      border-radius: var(--radius);
+      border: 1px solid var(--card-border);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      transition: transform 0.2s ease;
+    }
+    .card:hover { transform: scale(1.02); }
+    .card h2 {
+      margin-bottom: var(--gap);
+      font-size: 1.2rem;
+      color: var(--color-accent);
+      text-align: center;
+    }
+    .qr-container {
+      display: flex; flex-direction: column;
+      align-items: center; gap: 8px;
+    }
+    .qr-container img {
+      width: 180px; height: 180px; background: #fff;
+      padding: 8px;
+      border: 4px solid var(--color-accent);
+      border-radius: var(--radius);
+    }
+    .wallet-address {
+      font-family: monospace;
+      background: rgba(255,255,255,0.1);
+      padding: 6px 10px;
+      border: 1px solid var(--color-accent);
+      border-radius: 6px;
+      word-break: break-word;
+      text-align: center;
+      font-size: 0.9rem;
+    }
+    .copy-btn {
+      margin-top: 8px; display: block; width: 100%;
+      padding: 6px 12px;
+      background: var(--color-accent);
+      color: var(--color-primary);
+      border: none; border-radius: 6px;
+      cursor: pointer; font-size: 0.9rem;
+    }
+    .copy-btn:hover { background: #ffec8b; }
+    table {
+      width: 100%; border-collapse: collapse;
+      margin-top: 8px; font-size: 0.9rem;
+    }
+    th, td {
+      border: 1px solid var(--table-border);
+      padding: 8px; text-align: center;
+    }
+    th {
+      background: var(--color-accent);
+      color: var(--color-primary);
+    }
+
+    /* Footer & Toast */
+    .footer {
+      text-align: center; padding: 12px;
+      font-size: 0.9rem;
+      background: rgba(0,0,0,0.2);
+      border-top: 1px solid rgba(255,215,0,0.3);
+    }
+    .toast {
+      position: fixed; bottom: 20px; right: 20px;
+      background: var(--color-accent);
+      color: var(--color-primary);
+      padding: 10px 14px;
+      border-radius: 6px;
+      opacity: 0; pointer-events: none;
+      transition: opacity .3s; z-index: 9999;
+    }
+    .toast.show { opacity: 1; }
+
+    @media (max-width: 768px) {
+      .deposit-row, .withdraw-row { flex-direction: column; }
+      .card { margin-bottom: var(--gap); }
+    }
   </style>
 </head>
 
@@ -35,19 +215,87 @@
     <div class="content">
       <header>
         <div class="header-left">
+          <div id="realTimeClock">--:--:--</div>
           <button id="themeToggle" class="btn">🌙</button>
+        </div>
+        <div class="user-info">
+          <img src="https://i.ibb.co/gbVsGLy0/FB-IMG-1617237754232.jpg" alt="Avatar"/>
+          <div class="info-text">
+            <h2>Fery Mulianna</h2>
+            <p>Validator ID: 8055</p>
+          </div>
         </div>
       </header>
 
       <main>
         <!-- Deposit Page -->
         <section id="deposit" class="page active">
-          <!-- ... isi deposit ... -->
+          <div class="deposit-row">
+            <!-- USDT Deposit -->
+            <div class="deposit-column">
+              <div class="card">
+                <h2>Deposit USDT</h2>
+                <div class="qr-container">
+                  <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=0x8C..." alt="QR USDT"/>
+                  <div class="wallet-address" id="usdtAddress">
+                    0x8C2C3eC2dB0bBf3fA2eA2b8f3e3e3e3e3e3e3e3e
+                  </div>
+                  <button class="copy-btn" onclick="copyAddress('usdtAddress')">Copy Address</button>
+                </div>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Hari</th><th>Tanggal</th><th>Jam</th><th>Jumlah USDT</th><th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>Senin</td><td>25/07/2023</td><td>14:30</td><td>100.00000000</td><td>✅ Success</td></tr>
+                    <tr><td>Senin</td><td>25/07/2023</td><td>13:15</td><td>50.00000000</td><td>⏳ Pending</td></tr>
+                    <tr><td>Minggu</td><td>24/07/2023</td><td>18:05</td><td>25.00000000</td><td>❌ Gagal</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- BossX Deposit -->
+            <div class="deposit-column">
+              <div class="card">
+                <h2>Deposit BossX</h2>
+                <div class="qr-container">
+                  <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=0x8C..." alt="QR BossX"/>
+                  <div class="wallet-address" id="bossxAddress">
+                    0x8C2C3eC2dB0bBf3fA2eA2b8f3e3e3e3e3e3e3e3e
+                  </div>
+                  <button class="copy-btn" onclick="copyAddress('bossxAddress')">Copy Address</button>
+                </div>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Hari</th><th>Tanggal</th><th>Jam</th><th>Jumlah BossX</th><th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>Senin</td><td>25/07/2023</td><td>15:45</td><td>200.00000000</td><td>✅ Success</td></tr>
+                    <tr><td>Minggu</td><td>24/07/2023</td><td>17:22</td><td>75.00000000</td><td>⏳ Pending</td></tr>
+                    <tr><td>Minggu</td><td>24/07/2023</td><td>11:09</td><td>30.00000000</td><td>❌ Gagal</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
         </section>
 
         <!-- Withdrawal Page -->
         <section id="withdraw" class="page">
-          <!-- ... isi withdrawal ... -->
+          <div class="withdraw-row">
+            <div class="withdraw-column">
+              <div class="card">
+                <h2>Withdrawal USDT</h2>
+                <!-- Form & History akan diisi -->
+                <p>Form dan history Withdrawal akan ditambahkan di sini.</p>
+              </div>
+            </div>
+          </div>
         </section>
       </main>
 
@@ -62,16 +310,30 @@
     document.getElementById('toggleSidebar').onclick = () =>
       document.getElementById('container').classList.toggle('collapsed');
 
-    // Page routing (hanya Deposit & Withdrawal)
+    // Page routing (hanya deposit & withdrawal)
     document.querySelectorAll('.nav-item').forEach(a => {
       a.onclick = () => {
-        document.querySelectorAll('.nav-item').forEach(x => x.classList.remove('active'));
+        document.querySelectorAll('.nav-item')
+          .forEach(x => x.classList.remove('active'));
         a.classList.add('active');
         const page = a.dataset.page;
-        document.querySelectorAll('section.page').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('section.page')
+          .forEach(s => s.classList.remove('active'));
         document.getElementById(page).classList.add('active');
       };
     });
+
+    // Real-time clock
+    function updateClock() {
+      document.getElementById('realTimeClock').textContent =
+        new Date().toLocaleTimeString('id-ID', {
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit'
+        });
+    }
+    updateClock();
+    setInterval(updateClock, 1000);
 
     // Copy address + toast
     function copyAddress(id) {
