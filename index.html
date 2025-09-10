@@ -4,7 +4,6 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Dashboard BossX - Deposit</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     :root {
       --gap: 16px;
@@ -45,10 +44,10 @@
       padding: var(--gap); border-bottom: 1px solid var(--color-accent);
     }
     .logo-container { display: flex; align-items: center; }
-    .sidebar-logo { height: 80px; transition: 0.3s; }
+    .sidebar-logo { height: 80px; }
     .sidebar-logo-text {
       margin-left: 8px; font-size: 1.2rem; font-weight: bold;
-      color: var(--color-accent); transition: 0.3s;
+      color: var(--color-accent);
     }
     .collapse-btn {
       background: none; border: none; color: var(--color-accent);
@@ -176,18 +175,16 @@
       </div>
       <nav class="sidebar-nav">
         <a href="#" class="nav-item active"><span class="icon">💰</span><span class="label">Deposit</span></a>
-        <a href="index.html" class="nav-item"><span class="icon">🏠</span><span class="label">Beranda</span></a>
         <a href="withdraw.html" class="nav-item"><span class="icon">💸</span><span class="label">Withdrawal</span></a>
-        <a href="p2p.html" class="nav-item"><span class="icon">🔄</span><span class="label">Peer to Peer</span></a>
+        <a href="wallet.html" class="nav-item"><span class="icon">👛</span><span class="label">Wallet</span></a>
         <a href="referral.html" class="nav-item"><span class="icon">🤝</span><span class="label">Referral</span></a>
         <a href="masternode.html" class="nav-item"><span class="icon">🚀</span><span class="label">Masternode</span></a>
-        <a href="faq.html" class="nav-item"><span class="icon">❓</span><span class="label">FAQ</span></a>
-        <a href="support.html" class="nav-item"><span class="icon">📞</span><span class="label">Support</span></a>
-        <a href="profil.html" class="nav-item"><span class="icon">👤</span><span class="label">Profil</span></a>
+        <a href="multisend.html" class="nav-item"><span class="icon">📤</span><span class="label">Multisend</span></a>
+        <a href="tools.html" class="nav-item"><span class="icon">🛠</span><span class="label">Tools</span></a>
       </nav>
       <div class="sidebar-follow">
         <span class="follow-text">Follow us on</span>
-        <a href="https://t.me/Bossx<a href="https://t.me/BossX_Official" class="social-link" target="_blank">
+        <a href="https://t.me/BossX_Official" class="social-link" target="_blank">
           <img src="https://simpleicons.org/icons/telegram.svg" alt="Telegram" class="social-icon"/>
         </a>
         <a href="https://twitter.com/BossX_Official" class="social-link" target="_blank">
@@ -196,13 +193,13 @@
       </div>
     </aside>
 
-    <!-- ===== KONTEN ===== -->
+    <!-- Konten -->
     <div class="content">
       <header>
-        <div id="realTimeClock" class="real-time-clock">Loading…</div>
+        <div id="realTimeClock">Loading…</div>
         <button id="themeToggle" class="btn" style="margin:0 16px;">🌙</button>
         <div class="user-info">
-          <img src="https://i.ibb.co/gbVsGLy0/FB-IMG-1617237754232.jpg" alt="Avatar"/>
+          <img src="https://i.ibb.co/gbVsGLy0/FB-IMG-1617237754232.jpg" alt="Avatar" style="width:40px;height:40px;border-radius:50%;"/>
           <div class="info-text">
             <h2>Fery Muliawan</h2>
             <p>Validator ID: 8055</p>
@@ -355,3 +352,4 @@
   </script>
 </body>
 </html>
+        
