@@ -3,9 +3,73 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Deposit - BossX</title>
-  <link rel="stylesheet" href="style.css"/>
+  <title>Dashboard BossX - Deposit</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
+    /* ===== VARIABEL GLOBAL ===== */
+    :root {
+      --gap: 16px;
+      --radius: 12px;
+      --color-primary: #6a0dad;
+      --color-accent: #FFD700;
+      --sidebar-width: 250px;
+      --sidebar-collapsed: 60px;
+      --bg-from: #6a0dad;
+      --bg-to: #ff69b4;
+      --text-color: var(--color-accent);
+      --card-bg: rgba(0,0,0,0.3);
+      --card-border: var(--color-accent);
+      --table-border: var(--color-accent);
+    }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, var(--bg-from), var(--bg-to));
+      color: var(--text-color);
+      display: flex;
+      min-height: 100vh;
+    }
+    .container {
+      display: grid;
+      grid-template-columns: var(--sidebar-width) 1fr;
+      transition: grid-template-columns 0.3s ease;
+      width: 100%;
+    }
+    .container.collapsed {
+      grid-template-columns: var(--sidebar-collapsed) 1fr;
+    }
+    aside.sidebar {
+      background: rgba(0,0,0,0.4);
+      display: flex; flex-direction: column;
+    }
+    .sidebar-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: var(--gap); border-bottom: 1px solid var(--color-accent);
+    }
+    .logo-container { display: flex; align-items: center; }
+    .sidebar-logo { height: 80px; transition: 0.3s; }
+    .sidebar-logo-text {
+      margin-left: 8px; font-size: 1.2rem; font-weight: bold;
+      color: var(--color-accent); transition: 0.3s;
+    }
+    .collapse-btn {
+      background: none; border: none; color: var(--color-accent);
+      font-size: 1.6rem; cursor: pointer;
+    }
+    .sidebar-nav { display: flex; flex-direction: column; padding: var(--gap) 0; }
+    .nav-item {
+      display: flex; align-items: center;
+      padding: 12px var(--gap);
+      color: var(--color-accent); text-decoration: none;
+      transition: background 0.2s;
+    }
+    .nav-item:hover { background: rgba(255,215,0,0.1); }
+    .nav-item.active { background: rgba(255,215,0,0.2); }
+    .nav-item .icon { width: 24px; text-align: center; font-size: 1.2rem; }
+    .nav-item .label { margin-left: 12px; white-space: nowrap; }
+    .sidebar-follow { margin-top: auto; padding: var(--gap); text-align: center; }
+    .sidebar-follow .social-icon { width: 24px; height: 24px; filter: invert(1); }
+
+    /* ===== Deposit Page Specific ===== */
     .qr-container {
       display: flex;
       flex-direction: column;
@@ -39,9 +103,7 @@
       border-radius: 4px;
       cursor: pointer;
     }
-    .copy-btn:hover {
-      background: #ffec8b;
-    }
+    .copy-btn:hover { background: #ffec8b; }
     .toast {
       position: fixed;
       bottom: 20px;
@@ -56,15 +118,38 @@
       transition: opacity 0.3s ease;
       z-index: 9999;
     }
-    .toast.show {
-      opacity: 1;
+    .toast.show { opacity: 1; }
+    .content { display: flex; flex-direction: column; width: 100%; }
+    header {
+      background: rgba(0,0,0,0.3);
+      padding: var(--gap) calc(var(--gap)*2);
+      border-bottom: 2px solid var(--color-accent);
     }
+    main {
+      flex: 1; padding: var(--gap);
+      max-width: 1200px; margin: auto;
+      display: flex; flex-direction: column; gap: var(--gap);
+    }
+    .card {
+      background: var(--card-bg);
+      padding: var(--gap);
+      border-radius: var(--radius);
+      border: 1px solid var(--card-border);
+    }
+    table {
+      width: 100%; border-collapse: collapse; margin-top: 8px;
+    }
+    th, td {
+      border: 1px solid var(--table-border);
+      padding: 6px; text-align: center; font-size: 0.9rem;
+    }
+    th { background: var(--color-accent); color: var(--color-primary); }
   </style>
 </head>
 <body data-theme="light">
 
   <div class="container" id="container">
-    <!-- ===== SIDEBAR ===== -->
+    <!-- Sidebar -->
     <aside class="sidebar">
       <div class="sidebar-header">
         <div class="logo-container">
@@ -75,7 +160,7 @@
       </div>
       <nav class="sidebar-nav">
         <a href="index.html" class="nav-item"><span class="icon">🏠</span><span class="label">Beranda</span></a>
-        <a href="deposit.html" class="nav-item active"><span class="icon">💰</span><span class="label">Deposit</span></a>
+        <a href="#" class="nav-item active"><span class="icon">💰</span><span class="label">Deposit</span></a>
         <a href="withdraw.html" class="nav-item"><span class="icon">💸</span><span class="label">Withdrawal</span></a>
         <a href="p2p.html" class="nav-item"><span class="icon">🔄</span><span class="label">Peer to Peer</span></a>
         <a href="referral.html" class="nav-item"><span class="icon">🤝</span><span class="label">Referral</span></a>
@@ -94,10 +179,11 @@
         </a>
       </div>
     </aside>
-
-    <!-- ===== KONTEN DEPOSIT ===== -->
+    <!-- ===== KONTEN ===== -->
     <div class="content">
-      <header><h1>Deposit BossX & USDT</h1></header>
+      <header>
+        <h1>Deposit BossX & USDT</h1>
+      </header>
       <main>
         <!-- Deposit USDT -->
         <div class="card">
@@ -149,19 +235,19 @@
         </div>
       </main>
       <div class="footer">©2025 Dashboard BossX • Halaman Deposit</div>
-    </div>
-  </div>
+    </div> <!-- penutup .content -->
+  </div> <!-- penutup .container -->
 
   <!-- Toast Notification -->
   <div class="toast" id="toast">Alamat berhasil disalin!</div>
 
   <script>
-    // Sidebar toggle
+    // Toggle sidebar
     document.getElementById('toggleSidebar').addEventListener('click', () => {
       document.getElementById('container').classList.toggle('collapsed');
     });
 
-    // Copy address function
+    // Fungsi salin alamat
     function copyAddress(elementId) {
       const text = document.getElementById(elementId).textContent;
       navigator.clipboard.writeText(text).then(() => {
@@ -169,7 +255,7 @@
       });
     }
 
-    // Show toast notification
+    // Tampilkan toast
     function showToast() {
       const toast = document.getElementById('toast');
       toast.classList.add('show');
