@@ -19,7 +19,7 @@
       --card-border: var(--color-accent);
       --table-border: var(--color-accent);
     }
-    /* Global */
+
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
@@ -28,6 +28,7 @@
       display: flex;
       min-height: 100vh;
     }
+
     .container {
       display: grid;
       grid-template-columns: var(--sidebar-width) 1fr;
@@ -45,24 +46,43 @@
       flex-direction: column;
     }
     .sidebar-header {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: var(--gap); border-bottom: 1px solid var(--color-accent);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--gap);
+      border-bottom: 1px solid var(--color-accent);
     }
-    .logo-container { display: flex; align-items: center; gap: 8px; }
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
     .sidebar-logo { height: 56px; }
-    .sidebar-logo-text { font-size: 1.2rem; font-weight: 700; color: var(--color-accent); }
+    .sidebar-logo-text {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--color-accent);
+    }
     .collapse-btn {
-      background: none; border: 1px solid var(--color-accent);
-      color: var(--color-accent); border-radius: 6px;
-      padding: 6px 10px; cursor: pointer;
+      background: none;
+      border: 1px solid var(--color-accent);
+      color: var(--color-accent);
+      border-radius: 6px;
+      padding: 6px 10px;
+      cursor: pointer;
     }
     .sidebar-nav {
-      display: flex; flex-direction: column; padding: var(--gap) 0;
+      display: flex;
+      flex-direction: column;
+      padding: var(--gap) 0;
     }
     .nav-item {
-      display: flex; align-items: center; gap: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
       padding: 12px var(--gap);
-      color: var(--color-accent); text-decoration: none;
+      color: var(--text-color);
+      text-decoration: none;
       transition: background 0.2s;
     }
     .nav-item:hover { background: rgba(255,215,0,0.1); }
@@ -70,41 +90,78 @@
     .nav-item .icon { width: 24px; text-align: center; font-size: 1.1rem; }
     .nav-item .label { white-space: nowrap; }
     .sidebar-follow {
-      margin-top: auto; padding: var(--gap); text-align: center;
+      margin-top: auto;
+      padding: var(--gap);
+      text-align: center;
       border-top: 1px solid rgba(255,215,0,0.3);
     }
     .social-link { margin: 0 6px; }
-    .social-icon { width: 22px; height: 22px; filter: invert(1); }
+    .social-icon {
+      width: 22px;
+      height: 22px;
+      filter: invert(1);
+    }
 
     /* Content */
-    .content { display: flex; flex-direction: column; width: 100%; }
+    .content {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+    }
     header {
-      display: flex; align-items: center; justify-content: space-between;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       background: rgba(0,0,0,0.3);
       padding: var(--gap) calc(var(--gap)*2);
       border-bottom: 2px solid var(--color-accent);
     }
-    .header-left { display: flex; align-items: center; gap: 12px; }
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
     .btn {
-      background: var(--color-accent); color: var(--color-primary);
-      border: none; border-radius: 6px; padding: 6px 12px;
-      cursor: pointer; font-weight: 600;
+      background: var(--color-accent);
+      color: var(--color-primary);
+      border: none;
+      border-radius: 6px;
+      padding: 6px 12px;
+      cursor: pointer;
+      font-weight: 600;
     }
-    .user-info { display: flex; align-items: center; gap: 10px; }
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
     .user-info img {
-      width: 40px; height: 40px; border-radius: 50%; object-fit: cover;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
     }
-    .info-text h2 { margin: 0; font-size: 1rem; color: var(--color-accent); }
-    .info-text p { margin: 0; font-size: 0.8rem; opacity: 0.9; }
+    .info-text h2 {
+      margin: 0;
+      font-size: 1rem;
+      color: var(--color-accent);
+    }
+    .info-text p {
+      margin: 0;
+      font-size: 0.8rem;
+      opacity: 0.9;
+    }
 
     /* Ticker */
     .crypto-ticker {
-      overflow: hidden; white-space: nowrap;
+      overflow: hidden;
+      white-space: nowrap;
       background: rgba(0,0,0,0.2);
       border-bottom: 1px solid rgba(255,215,0,0.3);
     }
     .ticker-track {
-      display: inline-block; padding: 10px var(--gap);
+      display: inline-block;
+      padding: 10px var(--gap);
       animation: ticker 20s linear infinite;
     }
     @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
@@ -115,13 +172,20 @@
 
     /* Main & Deposit */
     main {
-      flex: 1; padding: var(--gap);
-      max-width: 1400px; margin: auto;
-      display: flex; flex-wrap: wrap; gap: var(--gap);
+      flex: 1;
+      max-width: 1400px;
+      /* rapatkan ke kiri */
+      margin: var(--gap) var(--gap) var(--gap) var(--gap);
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--gap);
+      justify-content: flex-start;
     }
     .deposit-column {
       flex: 1 1 calc(48% - var(--gap));
-      display: flex; flex-direction: column; gap: var(--gap);
+      display: flex;
+      flex-direction: column;
+      gap: var(--gap);
       min-width: 300px;
     }
     .card {
@@ -130,61 +194,99 @@
       border-radius: var(--radius);
       border: 1px solid var(--card-border);
     }
-    .card h2 { margin: 0 0 12px; color: var(--color-accent); }
-
+    .card h2 {
+      margin: 0 0 12px;
+      color: var(--color-accent);
+    }
     .qr-container {
-      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
       margin-bottom: var(--gap);
     }
     .qr-container img {
-      width: 180px; height: 180px; background: #fff; padding: 8px;
-      border: 4px solid var(--color-accent); border-radius: var(--radius);
+      width: 180px;
+      height: 180px;
+      background: #fff;
+      padding: 8px;
+      border: 4px solid var(--color-accent);
+      border-radius: var(--radius);
     }
     .wallet-address {
-      width: 100%; background: rgba(255,255,255,0.1);
-      padding: 6px 10px; border: 1px solid var(--color-accent);
-      border-radius: 6px; word-break: break-all;
-      text-align: center; font-size: 0.9rem;
+      width: 100%;
+      background: rgba(255,255,255,0.1);
+      padding: 6px 10px;
+      border: 1px solid var(--color-accent);
+      border-radius: 6px;
+      word-break: break-all;
+      text-align: center;
+      font-size: 0.9rem;
     }
     .copy-btn {
-      margin-top: 4px; padding: 6px 12px;
-      background: var(--color-accent); color: var(--color-primary);
-      border: none; border-radius: 6px; cursor: pointer;
+      margin-top: 4px;
+      padding: 6px 12px;
+      background: var(--color-accent);
+      color: var(--color-primary);
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
       font-size: 0.9rem;
     }
     .copy-btn:hover { background: #ffec8b; }
 
     table {
-      width: 100%; border-collapse: collapse; font-size: 0.9rem;
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
     }
     th, td {
       border: 1px solid var(--table-border);
-      padding: 8px; text-align: center;
+      padding: 8px;
+      text-align: center;
     }
     th {
-      background: var(--color-accent); color: var(--color-primary);
+      background: var(--color-accent);
+      color: var(--color-primary);
     }
+
     @media (max-width: 768px) {
-      main { flex-direction: column; }
-      .deposit-column { flex: 1 1 100%; }
+      main {
+        flex-direction: column;
+        margin: var(--gap);
+      }
+      .deposit-column {
+        flex: 1 1 100%;
+      }
     }
 
     /* Footer & Toast */
     .footer {
-      text-align: center; padding: 12px; font-size: 0.9rem;
-      background: rgba(0,0,0,0.2); border-top: 1px solid rgba(255,215,0,0.3);
+      text-align: center;
+      padding: 12px;
+      font-size: 0.9rem;
+      background: rgba(0,0,0,0.2);
+      border-top: 1px solid rgba(255,215,0,0.3);
     }
     .toast {
-      position: fixed; bottom: 20px; right: 20px;
-      background: var(--color-accent); color: var(--color-primary);
-      padding: 10px 14px; border-radius: 6px; opacity: 0;
-      pointer-events: none; transition: opacity 0.3s ease;
-      font-size: 0.9rem; z-index: 9999;
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--color-accent);
+      color: var(--color-primary);
+      padding: 10px 14px;
+      border-radius: 6px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      font-size: 0.9rem;
+      z-index: 9999;
     }
     .toast.show { opacity: 1; }
   </style>
 </head>
 <body data-theme="light">
+
   <div class="container" id="container">
     <!-- Sidebar -->
     <aside class="sidebar">
@@ -234,12 +336,11 @@
         </div>
       </header>
 
-      <!-- Ticker -->
       <div class="crypto-ticker">
         <div class="ticker-track" id="cryptoTicker">Loading prices...</div>
       </div>
 
-      <!-- Deposit Layout -->
+      <!-- Deposit USDT & Boost -->
       <main>
         <!-- USDT Column -->
         <div class="deposit-column">
@@ -296,7 +397,7 @@
     </div>
   </div>
 
-  <!-- Toast -->
+  <!-- Toast Notifikasi -->
   <div class="toast" id="toast">Alamat berhasil disalin!</div>
 
   <script>
@@ -314,10 +415,10 @@
     updateClock();
     setInterval(updateClock, 1000);
 
-    // Copy & toast
+    // Copy address + toast
     function copyAddress(id) {
-      const text = document.getElementById(id).textContent.trim();
-      navigator.clipboard.writeText(text).then(() => {
+      const txt = document.getElementById(id).textContent.trim();
+      navigator.clipboard.writeText(txt).then(() => {
         const t = document.getElementById('toast');
         t.classList.add('show');
         setTimeout(() => t.classList.remove('show'), 2000);
@@ -326,21 +427,15 @@
 
     // Dummy ticker
     (function() {
-      const coins = {
-        'BOSSX/USDT': { price: 1.00, change: 0.00 },
-        'BTC/USDT': { price: 62000 }, 'ETH/USDT': { price: 4295.88 },
-        'TRX/USDT': { price: 0.3316 }, 'SOL/USDT': { price: 207.16 }
-      };
+      const coins = { 'BOSSX/USDT':1.00,'BTC/USDT':62000,'ETH/USDT':4295.88 };
       const keys = Object.keys(coins);
       const track = document.getElementById('cryptoTicker');
-      function fmt(p) {
-        return p >= 1 ? p.toFixed(2) : p.toFixed(6).replace(/0+$/, '').replace(/\.$/, '') || '0';
-      }
-      track.innerHTML = keys.concat(keys).map(k => {
-        const c = coins[k], up = (c.change||0)>=0;
+      function fmt(p){ return p>=1 ? p.toFixed(2) : p.toFixed(6).replace(/0+$/,'').replace(/\.$/,'')||'0'; }
+      track.innerHTML = keys.concat(keys).map(k=>{
         return `<span class="ticker-item">
-          <span class="ticker-label">${k}</span><span class="ticker-sep">•</span>
-          <span class="${up?'price-up':'price-down'}">${fmt(c.price)} USDT</span>
+          <span class="ticker-label">${k}</span>
+          <span class="ticker-sep">•</span>
+          <span class="price-up">${fmt(coins[k])} USDT</span>
         </span>`;
       }).join('');
     })();
