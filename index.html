@@ -288,13 +288,60 @@
 
         <!-- Formulir Penarikan -->
         <div class="withdrawal-form">
-          <label for="withdrawAmount">Jumlah Penarikan (USDT):</label>
-          <input type="number" id="withdrawAmount" placeholder="Contoh: 50">
+     <!-- Form Penarikan Khusus -->
+<div class="card withdrawal-form-card">
+  <!-- 1) Total Saldo USDT -->
+  <div class="form-group">
+    <label>Total Saldo USDT:</label>
+    <p id="totalBalance" class="balance-display">0.00000000 USDT</p>
+  </div>
 
-          <label for="withdrawWallet">Alamat Dompet Tujuan:</label>
-          <input type="text" id="withdrawWallet" placeholder="Contoh: 0x123...">
+  <!-- 2) Alamat Dompet Tujuan (full-width) -->
+  <div class="form-group">
+    <label for="withdrawWallet">Alamat Dompet Tujuan (USDT):</label>
+    <input 
+      type="text" 
+      id="withdrawWallet" 
+      name="wallet" 
+      placeholder="0x123..." 
+      required 
+    />
+  </div>
 
-          <button class="copy-btn" onclick="submitWithdrawal()">Kirim Permintaan</button>
+  <!-- 3) Jaringan (read-only) -->
+  <div class="form-group">
+    <label for="network">Jaringan:</label>
+    <input 
+      type="text" 
+      id="network" 
+      value="TRC20" 
+      readonly 
+    />
+  </div>
+
+  <!-- 4) Jumlah Penarikan (min 10 USDT) -->
+  <div class="form-group">
+    <label for="withdrawAmount">Jumlah Penarikan (USDT):</label>
+    <input 
+      type="number" 
+      id="withdrawAmount" 
+      name="amount" 
+      min="10" 
+      placeholder="Minimal 10 USDT" 
+      required 
+    />
+  </div>
+
+  <!-- 5) Tombol Kirim -->
+  <button 
+    type="button" 
+    class="btn-submit" 
+    onclick="submitWithdrawal()"
+  >
+    Ajukan Penarikan
+  </button>
+</div>
+     
         </div>
 
         <!-- Informasi Penting -->
