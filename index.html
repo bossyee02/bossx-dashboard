@@ -278,93 +278,101 @@
           </div>
         </section>
 
-        <!-- Withdrawal Page -->
+<!-- Withdrawal Page -->
 <section id="withdraw" class="page">
   <div class="withdraw-row">
     <div class="withdraw-column">
       <div class="card">
         <h2>Metode Withdrawal USDT</h2>
-        <p>Silakan isi formulir di bawah untuk melakukan penarikan.</p>
+        <p>Pilih jaringan dan isi form di bawah ini:</p>
 
-        <!-- Formulir Penarikan -->
-        <div class="withdrawal-form">
-     <!-- Form Penarikan Khusus -->
-<div class="card withdrawal-form-card">
-  <!-- 1) Total Saldo USDT -->
-  <div class="form-group">
-    <label>Total Saldo USDT:</label>
-    <p id="totalBalance" class="balance-display">0.00000000 USDT</p>
-  </div>
+        <form id="withdrawForm">
+          <!-- 1) Pilih Jaringan -->
+          <div class="form-group">
+            <label for="network">Pilih Jaringan:</label>
+            <select id="network" name="network" required>
+              <option value="TRC20" selected>TRON (TRC20)</option>
+              <option value="ERC20">Ethereum (ERC20)</option>
+              <!-- tambahkan opsi lain jika perlu -->
+            </select>
+          </div>
 
-  <!-- 2) Alamat Dompet Tujuan (full-width) -->
-  <div class="form-group">
-    <label for="withdrawWallet">Alamat Dompet Tujuan (USDT):</label>
-    <input 
-      type="text" 
-      id="withdrawWallet" 
-      name="wallet" 
-      placeholder="0x123..." 
-      required 
-    />
-  </div>
+          <!-- 2) Alamat Dompet Tujuan -->
+          <div class="form-group">
+            <label for="withdrawWallet">Alamat Dompet Tujuan (USDT):</label>
+            <input
+              type="text"
+              id="withdrawWallet"
+              name="wallet"
+              placeholder="0x123…"
+              required
+            />
+          </div>
 
-  <!-- 3) Jaringan (read-only) -->
-  <div class="form-group">
-    <label for="network">Jaringan:</label>
-    <input 
-      type="text" 
-      id="network" 
-      value="TRC20" 
-      readonly 
-    />
-  </div>
+          <!-- 3) Jumlah Penarikan -->
+          <div class="form-group">
+            <label for="withdrawAmount">Jumlah Penarikan (USDT):</label>
+            <input
+              type="number"
+              id="withdrawAmount"
+              name="amount"
+              min="10"
+              step="0.00000001"
+              placeholder="Minimal 10 USDT"
+              required
+            />
+          </div>
 
-  <!-- 4) Jumlah Penarikan (min 10 USDT) -->
-  <div class="form-group">
-    <label for="withdrawAmount">Jumlah Penarikan (USDT):</label>
-    <input 
-      type="number" 
-      id="withdrawAmount" 
-      name="amount" 
-      min="10" 
-      placeholder="Minimal 10 USDT" 
-      required 
-    />
-  </div>
+          <!-- 4) Jumlah Diterima (read-only) -->
+          <div class="form-group">
+            <label for="amountReceived">Jumlah Diterima (USDT):</label>
+            <input
+              type="text"
+              id="amountReceived"
+              value="0.00000000"
+              readonly
+            />
+          </div>
 
-  <!-- 5) Tombol Kirim -->
-  <button 
-    type="button" 
-    class="btn-submit" 
-    onclick="submitWithdrawal()"
-  >
-    Ajukan Penarikan
-  </button>
-</div>
-     
-        </div>
+          <!-- 5) Masukkan PIN -->
+          <div class="form-group">
+            <label for="userPin">Masukkan PIN:</label>
+            <input
+              type="password"
+              id="userPin"
+              name="pin"
+              maxlength="6"
+              placeholder="••••••"
+              required
+            />
+          </div>
 
-        <!-- Informasi Penting -->
-        <div class="info-box">
-          <ul>
-             <li>⚠️ Minimal penarikan: <strong>10 USDT</strong></li>
-             <li>⏱️ Proses: <strong>1-2 jam</strong></li>
-             <li>📌 Pastikan alamat wallet benar sebelum mengirim</li>
-          </ul>
-        </div>
+          <!-- 6) Tombol Kirim -->
+          <button type="submit" class="btn-submit">Kirim Permintaan</button>
+        </form>
 
         <!-- Riwayat Penarikan -->
-        <div class="history-section">
-          <h2>Riwayat Penarikan</h2>
-          <button class="copy-btn" onclick="downloadHistory()">Unduh Riwayat</button>
+        <h3>Riwayat Penarikan</h3>
+        <div class="table-responsive">
           <table>
             <thead>
-              <tr><th>Hari</th><th>Tanggal</th><th>Jam</th><th>Jumlah USDT</th><th>Status</th></tr>
+              <tr>
+                <th>Metode</th>
+                <th>Tanggal</th>
+                <th>Jam</th>
+                <th>Jumlah USDT</th>
+                <th>Status</th>
+              </tr>
             </thead>
-            <tbody>
-              <tr><td>Selasa</td><td>10/09/2025</td><td>16:45</td><td>75.00000000</td><td>✅ Success</td></tr>
-              <tr><td>Senin</td><td>09/09/2025</td><td>13:20</td><td>40.00000000</td><td>⏳ Pending</td></tr>
-              <tr><td>Minggu</td><td>08/09/2025</td><td>19:10</td><td>20.00000000</td><td>❌ Gagal</td></tr>
+            <tbody id="withdrawHistory">
+              <tr>
+                <td>TRON (TRC20)</td>
+                <td>08/09/2023</td>
+                <td>15:26</td>
+                <td>42.00000000</td>
+                <td>✅ Selesai</td>
+              </tr>
+              <!-- baris lainnya… -->
             </tbody>
           </table>
         </div>
@@ -372,6 +380,7 @@
     </div>
   </div>
 </section>
+
       <div class="footer">©2025 BossX • Dashboard</div>
     </div>
   </div>
