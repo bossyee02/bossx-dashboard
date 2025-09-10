@@ -19,17 +19,20 @@
       font-family: 'Segoe UI', sans-serif;
       background: linear-gradient(135deg, #6a0dad, #ff69b4);
       color: var(--color-accent);
+      display: flex;
+      min-height: 100vh;
     }
     main {
+      flex: 1;
+      max-width: 1400px;          /* diperlebar dari 1200px */
+      margin: auto;
       display: flex;
       gap: var(--gap);
       padding: var(--gap);
       flex-wrap: wrap;
-      max-width: 1200px;
-      margin: auto;
     }
     .deposit-column {
-      flex: 1 1 calc(50% - var(--gap));
+      flex: 1 1 calc(48% - var(--gap));  /* masing-masing 48% lebar */
       display: flex;
       flex-direction: column;
       gap: var(--gap);
@@ -61,13 +64,13 @@
       border-radius: var(--radius);
     }
     .wallet-address {
+      width: 100%;
       background: rgba(255,255,255,0.1);
       padding: 6px 10px;
       border: 1px solid var(--color-accent);
       border-radius: 6px;
       word-break: break-all;
       text-align: center;
-      width: 100%;
       font-size: 0.9rem;
     }
     .copy-btn {
@@ -97,8 +100,6 @@
       background: var(--color-accent);
       color: var(--color-primary);
     }
-
-    /* Responsif: satu kolom bila sempit */
     @media (max-width: 768px) {
       main {
         flex-direction: column;
@@ -107,8 +108,6 @@
         flex: 1 1 100%;
       }
     }
-
-    /* Toast */
     .toast {
       position: fixed;
       bottom: 20px;
@@ -135,9 +134,9 @@
       <div class="card">
         <h2>Deposit USDT</h2>
         <div class="qr-container">
-          <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=0x3dD3C0b9F3e3e3E3e3e3e3e3e3e3e3e3e3e3e3e3" alt="QR USDT">
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=0x3dD3C0b9F3e3e3E3e3e3e3e3e3e3e3e3e3e3e3" alt="QR USDT"/>
           <div class="wallet-address" id="usdtAddress">
-            0x3dD3C0b9F3e3e3E3e3e3e3e3e3e3e3e3e3e3e3e3
+            0x3dD3C0b9F3e3e3E3e3e3e3e3e3e3e3e3e3e3e3
           </div>
           <button class="copy-btn" onclick="copyAddress('usdtAddress')">Copy Address</button>
         </div>
@@ -153,31 +152,30 @@
       </div>
     </div>
 
-    <!-- Kolom BossX -->
+    <!-- Kolom Boost -->
     <div class="deposit-column">
       <div class="card">
-        <h2>Deposit BossX</h2>
+        <h2>Deposit Boost</h2>
         <div class="qr-container">
-          <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=0x4dD4C0b9F4e4e4E4e4e4e4e4e4e4e4e4e4e4e4e4" alt="QR BossX">
-          <div class="wallet-address" id="bossxAddress">
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=0x4dD4C0b9F4e4e4E4e4e4e4e4e4e4e4e4e4e4e4e4" alt="QR Boost"/>
+          <div class="wallet-address" id="boostAddress">
             0x4dD4C0b9F4e4e4E4e4e4e4e4e4e4e4e4e4e4e4e4
           </div>
-          <button class="copy-btn" onclick="copyAddress('bossxAddress')">Copy Address</button>
+          <button class="copy-btn" onclick="copyAddress('boostAddress')">Copy Address</button>
         </div>
         <table>
           <thead>
             <tr><th>No</th><th>Tanggal</th><th>Jumlah</th><th>Status</th></tr>
           </thead>
           <tbody>
-            <tr><td>1</td><td>10/09/2025</td><td>200 BossX</td><td>✅ Selesai</td></tr>
-            <tr><td>2</td><td>09/09/2025</td><td>75 BossX</td><td>⏳ Pending</td></tr>
+            <tr><td>1</td><td>10/09/2025</td><td>200 Boost</td><td>✅ Selesai</td></tr>
+            <tr><td>2</td><td>09/09/2025</td><td>75 Boost</td><td>⏳ Pending</td></tr>
           </tbody>
         </table>
       </div>
     </div>
   </main>
 
-  <!-- Toast Notification -->
   <div class="toast" id="toast">Alamat berhasil disalin!</div>
 
   <script>
