@@ -3,189 +3,347 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Deposit USDT & Boost</title>
+  <title>Dashboard BossX • Deposit</title>
   <style>
     :root {
       --gap: 16px;
       --radius: 12px;
-      --color-accent: #FFD700;
       --color-primary: #6a0dad;
+      --color-accent: #FFD700;
+      --sidebar-width: 250px;
+      --sidebar-collapsed: 60px;
+      --bg-from: #6a0dad;
+      --bg-to: #ff69b4;
+      --text-color: var(--color-accent);
       --card-bg: rgba(0,0,0,0.3);
+      --card-border: var(--color-accent);
       --table-border: var(--color-accent);
     }
+    /* Global */
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, #6a0dad, #ff69b4);
-      color: var(--color-accent);
-    }
-    main {
+      background: linear-gradient(135deg, var(--bg-from), var(--bg-to));
+      color: var(--text-color);
       display: flex;
-      flex-wrap: wrap;
-      gap: var(--gap);
-      max-width: 1400px;
-      margin: auto;
-      padding: var(--gap);
+      min-height: 100vh;
+    }
+    .container {
+      display: grid;
+      grid-template-columns: var(--sidebar-width) 1fr;
+      transition: grid-template-columns 0.3s ease;
+      width: 100%;
+    }
+    .container.collapsed {
+      grid-template-columns: var(--sidebar-collapsed) 1fr;
+    }
+
+    /* Sidebar */
+    aside.sidebar {
+      background: rgba(0,0,0,0.4);
+      display: flex;
+      flex-direction: column;
+    }
+    .sidebar-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: var(--gap); border-bottom: 1px solid var(--color-accent);
+    }
+    .logo-container { display: flex; align-items: center; gap: 8px; }
+    .sidebar-logo { height: 56px; }
+    .sidebar-logo-text { font-size: 1.2rem; font-weight: 700; color: var(--color-accent); }
+    .collapse-btn {
+      background: none; border: 1px solid var(--color-accent);
+      color: var(--color-accent); border-radius: 6px;
+      padding: 6px 10px; cursor: pointer;
+    }
+    .sidebar-nav {
+      display: flex; flex-direction: column; padding: var(--gap) 0;
+    }
+    .nav-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px var(--gap);
+      color: var(--color-accent); text-decoration: none;
+      transition: background 0.2s;
+    }
+    .nav-item:hover { background: rgba(255,215,0,0.1); }
+    .nav-item.active { background: rgba(255,215,0,0.2); }
+    .nav-item .icon { width: 24px; text-align: center; font-size: 1.1rem; }
+    .nav-item .label { white-space: nowrap; }
+    .sidebar-follow {
+      margin-top: auto; padding: var(--gap); text-align: center;
+      border-top: 1px solid rgba(255,215,0,0.3);
+    }
+    .social-link { margin: 0 6px; }
+    .social-icon { width: 22px; height: 22px; filter: invert(1); }
+
+    /* Content */
+    .content { display: flex; flex-direction: column; width: 100%; }
+    header {
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(0,0,0,0.3);
+      padding: var(--gap) calc(var(--gap)*2);
+      border-bottom: 2px solid var(--color-accent);
+    }
+    .header-left { display: flex; align-items: center; gap: 12px; }
+    .btn {
+      background: var(--color-accent); color: var(--color-primary);
+      border: none; border-radius: 6px; padding: 6px 12px;
+      cursor: pointer; font-weight: 600;
+    }
+    .user-info { display: flex; align-items: center; gap: 10px; }
+    .user-info img {
+      width: 40px; height: 40px; border-radius: 50%; object-fit: cover;
+    }
+    .info-text h2 { margin: 0; font-size: 1rem; color: var(--color-accent); }
+    .info-text p { margin: 0; font-size: 0.8rem; opacity: 0.9; }
+
+    /* Ticker */
+    .crypto-ticker {
+      overflow: hidden; white-space: nowrap;
+      background: rgba(0,0,0,0.2);
+      border-bottom: 1px solid rgba(255,215,0,0.3);
+    }
+    .ticker-track {
+      display: inline-block; padding: 10px var(--gap);
+      animation: ticker 20s linear infinite;
+    }
+    @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+    .ticker-item { margin-right: 28px; }
+    .price-up { color: #7CFC00; font-weight: 700; }
+    .price-down { color: #FF6B6B; font-weight: 700; }
+    .ticker-sep { margin: 0 6px; opacity: 0.8; }
+
+    /* Main & Deposit */
+    main {
+      flex: 1; padding: var(--gap);
+      max-width: 1400px; margin: auto;
+      display: flex; flex-wrap: wrap; gap: var(--gap);
     }
     .deposit-column {
       flex: 1 1 calc(48% - var(--gap));
-      display: flex;
-      flex-direction: column;
-      gap: var(--gap);
+      display: flex; flex-direction: column; gap: var(--gap);
       min-width: 300px;
     }
     .card {
       background: var(--card-bg);
       padding: var(--gap);
-      border: 1px solid var(--color-accent);
       border-radius: var(--radius);
+      border: 1px solid var(--card-border);
     }
-    .card h2 {
-      margin-top: 0;
-      color: var(--color-accent);
-      font-size: 1.2rem;
-    }
+    .card h2 { margin: 0 0 12px; color: var(--color-accent); }
+
     .qr-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
       margin-bottom: var(--gap);
     }
     .qr-container img {
-      width: 180px;
-      height: 180px;
-      background: #fff;
-      padding: 8px;
-      border: 4px solid var(--color-accent);
-      border-radius: var(--radius);
+      width: 180px; height: 180px; background: #fff; padding: 8px;
+      border: 4px solid var(--color-accent); border-radius: var(--radius);
     }
     .wallet-address {
-      width: 100%;
-      background: rgba(255,255,255,0.1);
-      padding: 6px 10px;
-      border: 1px solid var(--color-accent);
-      border-radius: 6px;
-      word-break: break-all;
-      text-align: center;
-      font-size: 0.9rem;
+      width: 100%; background: rgba(255,255,255,0.1);
+      padding: 6px 10px; border: 1px solid var(--color-accent);
+      border-radius: 6px; word-break: break-all;
+      text-align: center; font-size: 0.9rem;
     }
     .copy-btn {
-      margin-top: 4px;
-      padding: 6px 12px;
-      background: var(--color-accent);
-      color: var(--color-primary);
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
+      margin-top: 4px; padding: 6px 12px;
+      background: var(--color-accent); color: var(--color-primary);
+      border: none; border-radius: 6px; cursor: pointer;
       font-size: 0.9rem;
     }
-    .copy-btn:hover {
-      background: #ffec8b;
-    }
+    .copy-btn:hover { background: #ffec8b; }
+
     table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.9rem;
+      width: 100%; border-collapse: collapse; font-size: 0.9rem;
     }
     th, td {
       border: 1px solid var(--table-border);
-      padding: 8px;
-      text-align: center;
+      padding: 8px; text-align: center;
     }
     th {
-      background: var(--color-accent);
-      color: var(--color-primary);
+      background: var(--color-accent); color: var(--color-primary);
     }
     @media (max-width: 768px) {
-      main {
-        flex-direction: column;
-      }
-      .deposit-column {
-        flex: 1 1 100%;
-      }
+      main { flex-direction: column; }
+      .deposit-column { flex: 1 1 100%; }
+    }
+
+    /* Footer & Toast */
+    .footer {
+      text-align: center; padding: 12px; font-size: 0.9rem;
+      background: rgba(0,0,0,0.2); border-top: 1px solid rgba(255,215,0,0.3);
     }
     .toast {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: var(--color-accent);
-      color: var(--color-primary);
-      padding: 10px 14px;
-      border-radius: 6px;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s ease;
-      font-size: 0.9rem;
+      position: fixed; bottom: 20px; right: 20px;
+      background: var(--color-accent); color: var(--color-primary);
+      padding: 10px 14px; border-radius: 6px; opacity: 0;
+      pointer-events: none; transition: opacity 0.3s ease;
+      font-size: 0.9rem; z-index: 9999;
     }
-    .toast.show {
-      opacity: 1;
-    }
+    .toast.show { opacity: 1; }
   </style>
 </head>
-<body>
-
-  <main>
-    <!-- Kolom Deposit USDT -->
-    <div class="deposit-column">
-      <div class="card">
-        <h2>Deposit USDT</h2>
-        <div class="qr-container">
-          <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=0x3dD3C0b9F3e3e3E3e3e3e3e3e3e3e3e3e3e3e3e3" alt="QR USDT"/>
-          <div class="wallet-address" id="usdtAddress">
-            0x3dD3C0b9F3e3e3E3e3e3e3e3e3e3e3e3e3e3e3e3
-          </div>
-          <button class="copy-btn" onclick="copyAddress('usdtAddress')">Copy Address</button>
+<body data-theme="light">
+  <div class="container" id="container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo-container">
+          <img src="https://i.ibb.co/qYBkPDH3/Picsart-25-04-01-16-25-47-054.png"
+               alt="Logo BossX" class="sidebar-logo"/>
+          <span class="sidebar-logo-text">BossX</span>
         </div>
-        <table>
-          <thead>
-            <tr><th>No</th><th>Tanggal</th><th>Jumlah</th><th>Status</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>1</td><td>2023-09-23</td><td>100.00000000</td><td>Success</td></tr>
-            <tr><td>2</td><td>2023-09-23</td><td>100.00000000</td><td>Success</td></tr>
-            <tr><td>3</td><td>2023-09-23</td><td>100.00000000</td><td>Success</td></tr>
-          </tbody>
-        </table>
+        <button class="collapse-btn" id="toggleSidebar">☰</button>
       </div>
-    </div>
+      <nav class="sidebar-nav">
+        <a href="index.html" class="nav-item"><span class="icon">🏠</span><span class="label">Beranda</span></a>
+        <a href="#" class="nav-item active"><span class="icon">💰</span><span class="label">Deposit</span></a>
+        <a href="withdraw.html" class="nav-item"><span class="icon">💸</span><span class="label">Withdrawal</span></a>
+        <a href="p2p.html" class="nav-item"><span class="icon">🔄</span><span class="label">P2P</span></a>
+        <a href="referral.html" class="nav-item"><span class="icon">🤝</span><span class="label">Referral</span></a>
+        <a href="masternode.html" class="nav-item"><span class="icon">🚀</span><span class="label">Masternode</span></a>
+        <a href="faq.html" class="nav-item"><span class="icon">❓</span><span class="label">FAQ</span></a>
+        <a href="support.html" class="nav-item"><span class="icon">📞</span><span class="label">Support</span></a>
+        <a href="profil.html" class="nav-item"><span class="icon">👤</span><span class="label">Profil</span></a>
+      </nav>
+      <div class="sidebar-follow">
+        <span class="follow-text">Follow us on</span>
+        <a href="https://t.me/BossX_Official" class="social-link" target="_blank">
+          <img src="https://simpleicons.org/icons/telegram.svg" alt="Telegram" class="social-icon"/>
+        </a>
+        <a href="https://twitter.com/BossX_Official" class="social-link" target="_blank">
+          <img src="https://simpleicons.org/icons/twitter.svg" alt="Twitter" class="social-icon"/>
+        </a>
+      </div>
+    </aside>
 
-    <!-- Kolom Deposit BossX -->
-    <div class="deposit-column">
-      <div class="card">
-        <h2>Deposit BossX</h2>
-        <div class="qr-container">
-          <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=0x4dD4C0b9F4e4e4E4e4e4e4e4e4e4e4e4e4e4e4e4" alt="QR Boost"/>
-          <div class="wallet-address" id="boostAddress">
-            0x4dD4C0b9F4e4e4E4e4e4e4e4e4e4e4e4e4e4e4e4
-          </div>
-          <button class="copy-btn" onclick="copyAddress('boostAddress')">Copy Address</button>
+    <!-- Konten Utama -->
+    <div class="content">
+      <header>
+        <div class="header-left">
+          <div id="realTimeClock">--:--:--</div>
+          <button id="themeToggle" class="btn">🌙</button>
         </div>
-        <table>
-          <thead>
-            <tr><th>No</th><th>Tanggal</th><th>Jumlah</th><th>Status</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>1</td><td>2023-09-23</td><td>100.00000000</td><td>Success</td></tr>
-            <tr><td>2</td><td>2023-09-23</td><td>100.00000000</td><td>Success</td></tr>
-            <tr><td>3</td><td>2023-09-23</td><td>100.00000000</td><td>Success</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </main>
+        <div class="user-info">
+          <img src="https://i.ibb.co/gbVsGLy0/FB-IMG-1617237754232.jpg" alt="Avatar"/>
+          <div class="info-text">
+            <h2>Fery Muliawan</h2>
+            <p>Validator ID: 8055</p>
+          </div>
+        </div>
+      </header>
 
+      <!-- Ticker -->
+      <div class="crypto-ticker">
+        <div class="ticker-track" id="cryptoTicker">Loading prices...</div>
+      </div>
+
+      <!-- Deposit Layout -->
+      <main>
+        <!-- USDT Column -->
+        <div class="deposit-column">
+          <div class="card">
+            <h2>Deposit USDT</h2>
+            <div class="qr-container">
+              <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=0x3dD3C0b9F3e3e3E3e3e3e3e3e3e3e3e3e3e3e3e3"
+                   alt="QR USDT"/>
+              <div class="wallet-address" id="usdtAddress">
+                0x3dD3C0b9F3e3e3E3e3e3e3e3e3e3e3e3e3e3e3e3
+              </div>
+              <button class="copy-btn" onclick="copyAddress('usdtAddress')">Copy Address</button>
+            </div>
+            <table>
+              <thead>
+                <tr><th>No</th><th>Tanggal</th><th>Jumlah</th><th>Status</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>1</td><td>2023-09-23</td><td>100.00000000</td><td>Success</td></tr>
+                <tr><td>2</td><td>2023-09-23</td><td>100.00000000</td><td>Success</td></tr>
+                <tr><td>3</td><td>2023-09-23</td><td>100.00000000</td><td>Success</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Boost Column -->
+        <div class="deposit-column">
+          <div class="card">
+            <h2>Deposit Boost</h2>
+            <div class="qr-container">
+              <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=0x4dD4C0b9F4e4e4E4e4e4e4e4e4e4e4e4e4e4e4e4"
+                   alt="QR Boost"/>
+              <div class="wallet-address" id="boostAddress">
+                0x4dD4C0b9F4e4e4E4e4e4e4e4e4e4e4e4e4e4e4e4
+              </div>
+              <button class="copy-btn" onclick="copyAddress('boostAddress')">Copy Address</button>
+            </div>
+            <table>
+              <thead>
+                <tr><th>No</th><th>Tanggal</th><th>Jumlah</th><th>Status</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>1</td><td>2023-09-23</td><td>100.00000000</td><td>Success</td></tr>
+                <tr><td>2</td><td>2023-09-23</td><td>100.00000000</td><td>Success</td></tr>
+                <tr><td>3</td><td>2023-09-23</td><td>100.00000000</td><td>Success</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+
+      <div class="footer">©2025 Dashboard BossX • Deposit</div>
+    </div>
+  </div>
+
+  <!-- Toast -->
   <div class="toast" id="toast">Alamat berhasil disalin!</div>
 
   <script>
+    // Toggle sidebar
+    document.getElementById('toggleSidebar').addEventListener('click', () => {
+      document.getElementById('container').classList.toggle('collapsed');
+    });
+
+    // Real-time clock
+    function updateClock() {
+      const now = new Date();
+      document.getElementById('realTimeClock').textContent =
+        now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    }
+    updateClock();
+    setInterval(updateClock, 1000);
+
+    // Copy & toast
     function copyAddress(id) {
       const text = document.getElementById(id).textContent.trim();
       navigator.clipboard.writeText(text).then(() => {
-        const toast = document.getElementById('toast');
-        toast.classList.add('show');
-        setTimeout(() => toast.classList.remove('show'), 2000);
+        const t = document.getElementById('toast');
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 2000);
       });
     }
+
+    // Dummy ticker
+    (function() {
+      const coins = {
+        'BOSSX/USDT': { price: 1.00, change: 0.00 },
+        'BTC/USDT': { price: 62000 }, 'ETH/USDT': { price: 4295.88 },
+        'TRX/USDT': { price: 0.3316 }, 'SOL/USDT': { price: 207.16 }
+      };
+      const keys = Object.keys(coins);
+      const track = document.getElementById('cryptoTicker');
+      function fmt(p) {
+        return p >= 1 ? p.toFixed(2) : p.toFixed(6).replace(/0+$/, '').replace(/\.$/, '') || '0';
+      }
+      track.innerHTML = keys.concat(keys).map(k => {
+        const c = coins[k], up = (c.change||0)>=0;
+        return `<span class="ticker-item">
+          <span class="ticker-label">${k}</span><span class="ticker-sep">•</span>
+          <span class="${up?'price-up':'price-down'}">${fmt(c.price)} USDT</span>
+        </span>`;
+      }).join('');
+    })();
   </script>
 </body>
 </html>
