@@ -278,18 +278,54 @@
           </div>
         </section>
 
-        <!-- Withdrawal Page (Dummy) -->
-        <section id="withdraw" class="page">
-          <div class="withdraw-row">
-            <div class="withdraw-column">
-              <div class="card">
-                <h2>Withdrawal USDT</h2>
-                <!-- isi form + history mirip deposit -->
-                <p>Form dan history Withdrawal akan ditambahkan di sini.</p>
-              </div>
-            </div>
-          </div>
-        </section>
+        <!-- Withdrawal Page -->
+<section id="withdraw" class="page">
+  <div class="withdraw-row">
+    <div class="withdraw-column">
+      <div class="card">
+        <h2>Withdrawal USDT</h2>
+        <p>Silakan isi formulir di bawah untuk melakukan penarikan.</p>
+
+        <!-- Formulir Penarikan -->
+        <div class="withdrawal-form">
+          <label for="withdrawAmount">Jumlah Penarikan (USDT):</label>
+          <input type="number" id="withdrawAmount" placeholder="Contoh: 50">
+
+          <label for="withdrawWallet">Alamat Dompet Tujuan:</label>
+          <input type="text" id="withdrawWallet" placeholder="Contoh: 0x123...">
+
+          <button class="copy-btn" onclick="submitWithdrawal()">Kirim Permintaan</button>
+        </div>
+
+        <!-- Informasi Penting -->
+        <div class="info-box">
+          <ul>
+            <li>⚠️ Minimal penarikan: <strong>10 USDT</strong></li>
+            <li>⏱️ Proses: <strong>1–24 jam</strong></li>
+            <li>📌 Pastikan alamat wallet benar sebelum mengirim</li>
+          </ul>
+        </div>
+
+        <!-- Riwayat Penarikan -->
+        <div class="history-section">
+          <h2>Riwayat Penarikan</h2>
+          <button class="copy-btn" onclick="downloadHistory()">Unduh Riwayat</button>
+          <table>
+            <thead>
+              <tr><th>Hari</th><th>Tanggal</th><th>Jam</th><th>Jumlah USDT</th><th>Status</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Selasa</td><td>10/09/2025</td><td>16:45</td><td>75.00000000</td><td>✅ Success</td></tr>
+              <tr><td>Senin</td><td>09/09/2025</td><td>13:20</td><td>40.00000000</td><td>⏳ Pending</td></tr>
+              <tr><td>Minggu</td><td>08/09/2025</td><td>19:10</td><td>20.00000000</td><td>❌ Gagal</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 
         <!-- P2P / Referral / Profile / Support placeholders -->
         <section id="p2p" class="page"><p>P2P Page (soon)</p></section>
@@ -350,5 +386,29 @@
       ).join('');
     })();
   </script>
+  // Fungsi kirim permintaan penarikan
+function submitWithdrawal() {
+  const amount = document.getElementById('withdrawAmount').value.trim();
+  const wallet = document.getElementById('withdrawWallet').value.trim();
+
+  if (!amount || !wallet) {
+    alert("Mohon isi jumlah dan alamat wallet terlebih dahulu.");
+    return;
+  }
+
+  if (parseFloat(amount) < 10) {
+    alert("Minimal penarikan adalah 10 USDT.");
+    return;
+  }
+
+  alert(`Permintaan penarikan sebesar ${amount} USDT ke alamat:\n${wallet}\nberhasil dikirim.`);
+}
+
+// Fungsi unduh riwayat penarikan
+function downloadHistory() {
+  alert("Riwayat penarikan sedang diproses untuk diunduh...");
+  // Di sini kamu bisa tambahkan window.open('link-ke-file.csv') atau fetch dari backend
+}
+
 </body>
 </html>
