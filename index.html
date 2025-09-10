@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Crypto Boost • Deposit</title>
+  <title>BossX • Deposit</title>
   <style>
     :root {
       --gap: 16px;
@@ -286,8 +286,8 @@
       <div class="sidebar-header">
         <div class="logo-container">
           <img src="https://i.ibb.co/qYBkPDH3/Picsart-25-04-01-16-25-47-054.png"
-               alt="Logo Crypto Boost" class="sidebar-logo"/>
-          <span class="sidebar-logo-text">Crypto Boost</span>
+               alt="Logo BossX" class="sidebar-logo"/>
+          <span class="sidebar-logo-text">BossX</span>
         </div>
         <button class="collapse-btn" id="toggleSidebar">☰</button>
       </div>
@@ -301,10 +301,10 @@
       </nav>
       <div class="sidebar-follow">
         <span class="follow-text">Follow us on</span>
-        <a href="https://t.me/CryptoBoost" class="social-link" target="_blank">
+        <a href="https://t.me/BossX_Official" class="social-link" target="_blank">
           <img src="https://simpleicons.org/icons/telegram.svg" alt="Telegram" class="social-icon"/>
         </a>
-        <a href="https://twitter.com/CryptoBoost" class="social-link" target="_blank">
+        <a href="https://twitter.com/BossX_Official" class="social-link" target="_blank">
           <img src="https://simpleicons.org/icons/twitter.svg" alt="Twitter" class="social-icon"/>
         </a>
       </div>
@@ -368,17 +368,17 @@
           </div>
         </div>
 
-        <!-- Deposit Boost -->
+        <!-- Deposit BossX -->
         <div class="deposit-column">
           <div class="card">
-            <h2>Deposit Boost</h2>
+            <h2>Deposit BossX</h2>
             <div class="qr-container">
               <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=0x8C2C3eC2dB0bBf3fA2eA2b8f3e3e3e3e3e3e3e3e"
-                   alt="QR Boost"/>
-              <div class="wallet-address" id="boostAddress">
+                   alt="QR BossX"/>
+              <div class="wallet-address" id="bossxAddress">
                 0x8C2C3eC2dB0bBf3fA2eA2b8f3e3e3e3e3e3e3e3e
               </div>
-              <button class="copy-btn" onclick="copyAddress('boostAddress')">Copy Address</button>
+              <button class="copy-btn" onclick="copyAddress('bossxAddress')">Copy Address</button>
             </div>
             <table>
               <thead>
@@ -386,7 +386,7 @@
                   <th>Hari</th>
                   <th>Tanggal</th>
                   <th>Jam</th>
-                  <th>Jumlah Boost</th>
+                  <th>Jumlah BossX</th>
                   <th>Status</th>
                 </tr>
               </thead>
@@ -409,7 +409,7 @@
         </div>
       </main>
 
-      <div class="footer">©2025 Crypto Boost • Deposit</div>
+      <div class="footer">©2025 BossX • Deposit</div>
     </div>
   </div>
 
@@ -419,15 +419,19 @@
   <script>
     // Toggle sidebar
     document.getElementById('toggleSidebar')
-      .addEventListener('click', () => document.getElementById('container')
-      .classList.toggle('collapsed'));
+      .addEventListener('click', () =>
+        document.getElementById('container')
+                .classList.toggle('collapsed')
+      );
 
     // Real-time clock
     function updateClock() {
       const now = new Date();
       document.getElementById('realTimeClock').textContent =
         now.toLocaleTimeString('id-ID', {
-          hour: '2-digit', minute: '2-digit', second: '2-digit'
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit'
         });
     }
     updateClock();
