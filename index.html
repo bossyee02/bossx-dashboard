@@ -6,7 +6,6 @@
   <title>Dashboard BossX - Deposit</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    /* ===== VARIABEL GLOBAL ===== */
     :root {
       --gap: 16px;
       --radius: 12px;
@@ -69,7 +68,34 @@
     .sidebar-follow { margin-top: auto; padding: var(--gap); text-align: center; }
     .sidebar-follow .social-icon { width: 24px; height: 24px; filter: invert(1); }
 
-    /* ===== Deposit Page Specific ===== */
+    .content { display: flex; flex-direction: column; width: 100%; }
+    header {
+      background: rgba(0,0,0,0.3);
+      padding: var(--gap) calc(var(--gap)*2);
+      border-bottom: 2px solid var(--color-accent);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    main {
+      flex: 1; padding: var(--gap);
+      max-width: 1200px; margin: auto;
+      display: flex; flex-direction: column; gap: var(--gap);
+    }
+    .card {
+      background: var(--card-bg);
+      padding: var(--gap);
+      border-radius: var(--radius);
+      border: 1px solid var(--card-border);
+    }
+    table {
+      width: 100%; border-collapse: collapse; margin-top: 8px;
+    }
+    th, td {
+      border: 1px solid var(--table-border);
+      padding: 6px; text-align: center; font-size: 0.9rem;
+    }
+    th { background: var(--color-accent); color: var(--color-primary); }
+
+    /* Deposit Specific */
     .qr-container {
       display: flex;
       flex-direction: column;
@@ -119,31 +145,21 @@
       z-index: 9999;
     }
     .toast.show { opacity: 1; }
-    .content { display: flex; flex-direction: column; width: 100%; }
-    header {
-      background: rgba(0,0,0,0.3);
-      padding: var(--gap) calc(var(--gap)*2);
-      border-bottom: 2px solid var(--color-accent);
+
+    /* Layout kiri-kanan */
+    .deposit-row {
+      display: flex;
+      gap: var(--gap);
+      flex-wrap: wrap;
     }
-    main {
-      flex: 1; padding: var(--gap);
-      max-width: 1200px; margin: auto;
-      display: flex; flex-direction: column; gap: var(--gap);
+    .deposit-row .card {
+      flex: 1 1 calc(50% - var(--gap));
     }
-    .card {
-      background: var(--card-bg);
-      padding: var(--gap);
-      border-radius: var(--radius);
-      border: 1px solid var(--card-border);
+    @media (max-width: 768px) {
+      .deposit-row .card {
+        flex: 1 1 100%;
+      }
     }
-    table {
-      width: 100%; border-collapse: collapse; margin-top: 8px;
-    }
-    th, td {
-      border: 1px solid var(--table-border);
-      padding: 6px; text-align: center; font-size: 0.9rem;
-    }
-    th { background: var(--color-accent); color: var(--color-primary); }
   </style>
 </head>
 <body data-theme="light">
@@ -167,11 +183,11 @@
         <a href="masternode.html" class="nav-item"><span class="icon">🚀</span><span class="label">Masternode</span></a>
         <a href="faq.html" class="nav-item"><span class="icon">❓</span><span class="label">FAQ</span></a>
         <a href="support.html" class="nav-item"><span class="icon">📞</span><span class="label">Support</span></a>
-        <a href="profil.html" class="nav-item"><span class="icon">👤</span><span class="label">Profil</span></
-                </nav>
+        <a href="profil.html" class="nav-item"><span class="icon">👤</span><span class="label">Profil</span></a>
+      </nav>
       <div class="sidebar-follow">
         <span class="follow-text">Follow us on</span>
-        <a href="https://t.me/BossX_Official" class="social-link" target="_blank">
+        <a href="https://t.me/Bossx<a href="https://t.me/BossX_Official" class="social-link" target="_blank">
           <img src="https://simpleicons.org/icons/telegram.svg" alt="Telegram" class="social-icon"/>
         </a>
         <a href="https://twitter.com/BossX_Official" class="social-link" target="_blank">
@@ -200,23 +216,25 @@
       </div>
 
       <main>
-        <!-- Deposit USDT -->
-        <div class="card">
-          <h2>Deposit USDT</h2>
-          <div class="qr-container">
-            <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=USDT_WALLET_ADDRESS" alt="QR USDT"/>
-            <div class="wallet-address" id="usdtAddress">0x1234abcd5678efgh9012ijkl3456mnop7890qrst</div>
-            <button class="copy-btn" onclick="copyAddress('usdtAddress')">Salin Alamat</button>
+        <div class="deposit-row">
+          <!-- Deposit USDT -->
+          <div class="card">
+            <h2>Deposit USDT</h2>
+            <div class="qr-container">
+              <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=USDT_WALLET_ADDRESS" alt="QR USDT"/>
+              <div class="wallet-address" id="usdtAddress">0x1234abcd5678efgh9012ijkl3456mnop7890qrst</div>
+              <button class="copy-btn" onclick="copyAddress('usdtAddress')">Salin Alamat</button>
+            </div>
           </div>
-        </div>
 
-        <!-- Deposit BossX -->
-        <div class="card">
-          <h2>Deposit BossX</h2>
-          <div class="qr-container">
-            <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=BOSSX_WALLET_ADDRESS" alt="QR BossX"/>
-            <div class="wallet-address" id="bossxAddress">BOSSX1q2w3e4r5t6y7u8i9o0p123456789abcdef</div>
-            <button class="copy-btn" onclick="copyAddress('bossxAddress')">Salin Alamat</button>
+          <!-- Deposit BossX -->
+          <div class="card">
+            <h2>Deposit BossX</h2>
+            <div class="qr-container">
+              <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=BOSSX_WALLET_ADDRESS" alt="QR BossX"/>
+              <div class="wallet-address" id="bossxAddress">BOSSX1q2w3e4r5t6y7u8i9o0p123456789abcdef</div>
+              <button class="copy-btn" onclick="copyAddress('bossxAddress')">Salin Alamat</button>
+            </div>
           </div>
         </div>
 
@@ -249,20 +267,21 @@
           </table>
         </div>
       </main>
+
       <div class="footer">©2025 Dashboard BossX • Halaman Deposit</div>
-    </div> <!-- penutup .content -->
-  </div> <!-- penutup .container -->
+    </div>
+  </div>
 
   <!-- Toast Notification -->
   <div class="toast" id="toast">Alamat berhasil disalin!</div>
 
   <script>
-    // ===== Toggle Sidebar =====
+    // Toggle sidebar
     document.getElementById('toggleSidebar').addEventListener('click', () => {
       document.getElementById('container').classList.toggle('collapsed');
     });
 
-    // ===== Real-Time Clock =====
+    // Real-Time Clock
     function updateClock() {
       const now = new Date();
       const timeString = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
@@ -271,7 +290,7 @@
     setInterval(updateClock, 1000);
     updateClock();
 
-    // ===== Copy Address =====
+    // Copy address
     function copyAddress(elementId) {
       const text = document.getElementById(elementId).textContent;
       navigator.clipboard.writeText(text).then(() => {
@@ -279,7 +298,7 @@
       });
     }
 
-    // ===== Toast Notification =====
+    // Toast
     function showToast() {
       const toast = document.getElementById('toast');
       toast.classList.add('show');
@@ -288,7 +307,7 @@
       }, 2000);
     }
 
-    // ===== Running Ticker Dummy =====
+    // Running ticker dummy
     (function() {
       const coins = {
         'BOSSX/USDT': { price: 1.00, change: 0.00, fixed: true },
