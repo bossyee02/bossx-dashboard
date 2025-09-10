@@ -386,28 +386,75 @@
       ).join('');
     })();
   </script>
-  // Fungsi kirim permintaan penarikan
-function submitWithdrawal() {
-  const amount = document.getElementById('withdrawAmount').value.trim();
-  const wallet = document.getElementById('withdrawWallet').value.trim();
+<script>
+  // Sidebar toggle
+  document.getElementById('toggleSidebar').onclick = () =>
+    document.getElementById('container').classList.toggle('collapsed');
 
-  if (!amount || !wallet) {
-    alert("Mohon isi jumlah dan alamat wallet terlebih dahulu.");
-    return;
+  // Page routing
+  document.querySelectorAll('.nav-item').forEach(a => {
+    a.onclick = () => {
+      document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));
+      a.classList.add('active');
+      const page = a.dataset.page;
+      document.querySelectorAll('section.page').forEach(s=>s.classList.remove('active'));
+      document.getElementById(page).classList.add('active');
+    };
+  });
+
+  // Real-time clock
+  function updateClock() {
+    document.getElementById('realTimeClock').textContent =
+      new Date().toLocaleTimeString('id-ID', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  }
+  updateClock(); setInterval(updateClock,1000);
+
+  // Copy address + toast
+  function copyAddress(id) {
+    navigator.clipboard.writeText(document.getElementById(id).textContent.trim())
+      .then(() => {
+        const t = document.getElementById('toast');
+        t.classList.add('show');
+        setTimeout(()=>t.classList.remove('show'),2000);
+      });
   }
 
-  if (parseFloat(amount) < 10) {
-    alert("Minimal penarikan adalah 10 USDT.");
-    return;
+  // Dummy ticker
+  (function(){
+    const coins={'BOSSX/USDT':1,'BTC/USDT':62000,'ETH/USDT':4295.88};
+    const track=document.getElementById('cryptoTicker'), keys=Object.keys(coins);
+    function fmt(p){return p>=1? p.toFixed(2):p.toFixed(6).replace(/0+$/,'').replace(/\.$/,'')||'0';}
+    track.innerHTML = keys.concat(keys).map(k=>
+      `<span class="ticker-item">
+         <span>${k}</span><span class="ticker-sep">•</span>
+         <span class="price-up">${fmt(coins[k])} USDT</span>
+       </span>`
+    ).join('');
+  })();
+
+  // ✅ Tambahan untuk Withdrawal
+  function submitWithdrawal() {
+    const amount = document.getElementById('withdrawAmount').value.trim();
+    const wallet = document.getElementById('withdrawWallet').value.trim();
+
+    if (!amount || !wallet) {
+      alert("Mohon isi jumlah dan alamat wallet terlebih dahulu.");
+      return;
+    }
+
+    if (parseFloat(amount) < 10) {
+      alert("Minimal penarikan adalah 10 USDT.");
+      return;
+    }
+
+    alert(`Permintaan penarikan sebesar ${amount} USDT ke alamat:\n${wallet}\nberhasil dikirim.`);
   }
 
-  alert(`Permintaan penarikan sebesar ${amount} USDT ke alamat:\n${wallet}\nberhasil dikirim.`);
-}
+  function downloadHistory() {
+    alert("Riwayat penarikan sedang diproses untuk diunduh...");
+  }
+</script>
 
-// Fungsi unduh riwayat penarikan
-function downloadHistory() {
-  alert("Riwayat penarikan sedang diproses untuk diunduh...");
-  // Di sini kamu bisa tambahkan window.open('link-ke-file.csv') atau fetch dari backend
 }
 
 </body>
