@@ -159,16 +159,16 @@
         <button class="collapse-btn" id="toggleSidebar">☰</button>
       </div>
       <nav class="sidebar-nav">
-        <a href="index.html" class="nav-item"><span class="icon">🏠</span><span class="label">Beranda</span></a>
         <a href="#" class="nav-item active"><span class="icon">💰</span><span class="label">Deposit</span></a>
+        <a href="index.html" class="nav-item"><span class="icon">🏠</span><span class="label">Beranda</span></a>
         <a href="withdraw.html" class="nav-item"><span class="icon">💸</span><span class="label">Withdrawal</span></a>
         <a href="p2p.html" class="nav-item"><span class="icon">🔄</span><span class="label">Peer to Peer</span></a>
         <a href="referral.html" class="nav-item"><span class="icon">🤝</span><span class="label">Referral</span></a>
         <a href="masternode.html" class="nav-item"><span class="icon">🚀</span><span class="label">Masternode</span></a>
         <a href="faq.html" class="nav-item"><span class="icon">❓</span><span class="label">FAQ</span></a>
         <a href="support.html" class="nav-item"><span class="icon">📞</span><span class="label">Support</span></a>
-        <a href="profil.html" class="nav-item"><span class="icon">👤</span><span class="label">Profil</span></a>
-      </nav>
+        <a href="profil.html" class="nav-item"><span class="icon">👤</span><span class="label">Profil</span></
+                </nav>
       <div class="sidebar-follow">
         <span class="follow-text">Follow us on</span>
         <a href="https://t.me/BossX_Official" class="social-link" target="_blank">
@@ -179,11 +179,26 @@
         </a>
       </div>
     </aside>
+
     <!-- ===== KONTEN ===== -->
     <div class="content">
       <header>
-        <h1>Deposit BossX & USDT</h1>
+        <div id="realTimeClock" class="real-time-clock">Loading…</div>
+        <button id="themeToggle" class="btn" style="margin:0 16px;">🌙</button>
+        <div class="user-info">
+          <img src="https://i.ibb.co/gbVsGLy0/FB-IMG-1617237754232.jpg" alt="Avatar"/>
+          <div class="info-text">
+            <h2>Fery Muliawan</h2>
+            <p>Validator ID: 8055</p>
+          </div>
+        </div>
       </header>
+
+      <!-- ===== RUNNING TEXT ===== -->
+      <div class="crypto-ticker">
+        <div class="ticker-track" id="cryptoTicker">Loading prices...</div>
+      </div>
+
       <main>
         <!-- Deposit USDT -->
         <div class="card">
@@ -242,12 +257,21 @@
   <div class="toast" id="toast">Alamat berhasil disalin!</div>
 
   <script>
-    // Toggle sidebar
+    // ===== Toggle Sidebar =====
     document.getElementById('toggleSidebar').addEventListener('click', () => {
       document.getElementById('container').classList.toggle('collapsed');
     });
 
-    // Fungsi salin alamat
+    // ===== Real-Time Clock =====
+    function updateClock() {
+      const now = new Date();
+      const timeString = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      document.getElementById('realTimeClock').textContent = timeString;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // ===== Copy Address =====
     function copyAddress(elementId) {
       const text = document.getElementById(elementId).textContent;
       navigator.clipboard.writeText(text).then(() => {
@@ -255,7 +279,7 @@
       });
     }
 
-    // Tampilkan toast
+    // ===== Toast Notification =====
     function showToast() {
       const toast = document.getElementById('toast');
       toast.classList.add('show');
@@ -263,6 +287,52 @@
         toast.classList.remove('show');
       }, 2000);
     }
+
+    // ===== Running Ticker Dummy =====
+    (function() {
+      const coins = {
+        'BOSSX/USDT': { price: 1.00, change: 0.00, fixed: true },
+        'BTC/USDT': { price: 62000.00, change: 1.20 },
+        'ETH/USDT': { price: 4295.88, change: 0.02 },
+        'TRX/USDT': { price: 0.3316, change: 0.91 },
+        'SOL/USDT': { price: 207.16, change: 2.10 },
+        'DOGE/USDT': { price: 0.1500, change: 0.50 },
+        'SHIB/USDT': { price: 0.000025, change: -0.20 },
+        'SUI/USDT': { price: 0.8500, change: 1.80 },
+        'TRUMP/USDT': { price: 8.51, change: 0.35 }
+      };
+      const displayOrder = [
+        'BOSSX/USDT','BTC/USDT','ETH/USDT','BOSSX/USDT',
+        'TRX/USDT','SOL/USDT','BOSSX/USDT','DOGE/USDT',
+        'SHIB/USDT','BOSSX/USDT','SUI/USDT','BOSSX/USDT','TRUMP/USDT'
+      ];
+      function formatPrice(price) {
+        if (price >= 1000) return price.toLocaleString('en-US', { maximumFractionDigits: 2 });
+        if (price >= 1) return price.toFixed(2);
+        return price.toFixed(6).replace(/0+$/, '').replace(/\.$/, '') || '0';
+      }
+      function createTickerItem(label, price, change) {
+        const isUp = change >= 0;
+        const cls = isUp ? 'price-up' : 'price-down';
+        const sign = isUp ? '+' : '';
+        return `
+          <span class="ticker-item">
+            <span class="ticker-label">${label}</span>
+            <span class="ticker-sep">•</span>
+            <span class="${cls}">${formatPrice(price)} USDT</span>
+            <span class="${cls}">${sign}${change.toFixed(2)}%</span>
+          </span>
+        `;
+      }
+      function updateTicker() {
+        const track = document.getElementById('cryptoTicker');
+        track.innerHTML = displayOrder.map(key => {
+          const { price, change } = coins[key];
+          return createTickerItem(key, price, change);
+        }).join('');
+      }
+      updateTicker();
+    })();
   </script>
 </body>
 </html>
