@@ -31,7 +31,6 @@
     .container.collapsed {
       grid-template-columns: var(--sidebar-collapsed) 1fr;
     }
-    /* Sidebar */
     aside.sidebar {
       background: rgba(0,0,0,0.4); display: flex; flex-direction: column;
     }
@@ -66,7 +65,6 @@
     .social-link { margin: 0 6px; }
     .social-icon { width: 22px; height: 22px; filter: invert(1); }
 
-    /* Content */
     .content {
       display: flex; flex-direction: column; width: 100%;
     }
@@ -90,7 +88,6 @@
     .info-text h2 { margin-bottom: 2px; font-size: 1rem; color: var(--color-accent); }
     .info-text p { font-size: 0.8rem; opacity: 0.9; }
 
-    /* Ticker */
     .crypto-ticker {
       overflow: hidden; white-space: nowrap;
       background: rgba(0,0,0,0.2); border-bottom: 1px solid rgba(255,215,0,0.3);
@@ -106,77 +103,10 @@
     .price-up { color: #7CFC00; font-weight: 700; }
     .price-down { color: #FF6B6B; font-weight: 700; }
     .ticker-sep { margin: 0 6px; opacity: 0.8; }
-
-    main {
-      flex: 1; padding: var(--gap);
-      max-width: 1400px; margin: var(--gap) var(--gap);
-    }
-    section.page { display: none; }
-    section.page.active { display: block; }
-
-    /* common card/table */
-    .deposit-row, .withdraw-row {
-      display: flex; gap: var(--gap); flex-wrap: wrap; justify-content: flex-start;
-    }
-    .deposit-column, .withdraw-column {
-      flex: 1; min-width: 350px; display: flex; flex-direction: column; gap: var(--gap);
-    }
-    .card {
-      background: var(--card-bg); padding: var(--gap);
-      border-radius: var(--radius); border: 1px solid var(--card-border);
-    }
-    .card h2 { margin-bottom: var(--gap); color: var(--color-accent); }
-    .qr-container {
-      display: flex; flex-direction: column; align-items: center; gap: 8px;
-      margin-bottom: var(--gap);
-    }
-    .qr-container img {
-      width: 180px; height: 180px; background: #fff; padding: 8px;
-      border: 4px solid var(--color-accent); border-radius: var(--radius);
-    }
-    .wallet-address {
-      width: 100%; background: rgba(255,255,255,0.1);
-      padding: 6px 10px; border:1px solid var(--color-accent);
-      border-radius:6px; word-break:break-all; text-align:center; font-size:0.9rem;
-    }
-    .copy-btn {
-      padding: 6px 12px; background:var(--color-accent);
-      color:var(--color-primary); border:none; border-radius:6px; cursor:pointer;
-      font-size:0.9rem;
-    }
-    .copy-btn:hover { background:#ffec8b; }
-
-    table {
-      width:100%; border-collapse:collapse; margin-top:8px; font-size:0.9rem;
-    }
-    th, td {
-      border:1px solid var(--table-border); padding:8px; text-align:center;
-    }
-    th {
-      background:var(--color-accent); color:var(--color-primary);
-    }
-
-    /* Footer & Toast */
-    .footer {
-      text-align:center; padding:12px; font-size:0.9rem;
-      background:rgba(0,0,0,0.2); border-top:1px solid rgba(255,215,0,0.3);
-    }
-    .toast {
-      position:fixed; bottom:20px; right:20px;
-      background:var(--color-accent); color:var(--color-primary);
-      padding:10px 14px; border-radius:6px; opacity:0;
-      pointer-events:none; transition:opacity .3s; z-index:9999;
-    }
-    .toast.show { opacity:1; }
-
-    @media (max-width:768px){
-      .deposit-row, .withdraw-row { flex-direction:column; }
-    }
   </style>
 </head>
 <body>
   <div class="container" id="container">
-    <!-- Sidebar -->
     <aside class="sidebar">
       <div class="sidebar-header">
         <div class="logo-container">
@@ -193,6 +123,9 @@
         <a href="#" class="nav-item" data-page="withdraw">
           <span class="icon">💸</span><span class="label">Withdrawal</span>
         </a>
+        <a href="#" class="nav-item" data-page="peer">
+          <span class="icon">🤝</span><span class="label">Peer to Peer</span>
+        </a>
       </nav>
       <div class="sidebar-follow">
         <span>Follow us on</span>
@@ -201,7 +134,6 @@
       </div>
     </aside>
 
-    <!-- Konten -->
     <div class="content">
       <header>
         <div class="header-left">
@@ -217,26 +149,19 @@
         </div>
       </header>
 
-      <!-- Ticker -->
       <div class="crypto-ticker">
         <div id="cryptoTicker" class="ticker-track"></div>
       </div>
-
-      <!-- Halaman Dinamis -->
       <main>
         <!-- Deposit Page -->
         <section id="deposit" class="page active">
           <div class="deposit-row">
-            <!-- USDT -->
             <div class="deposit-column">
               <div class="card">
                 <h2>Deposit USDT</h2>
                 <div class="qr-container">
-                  <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=0x8C2C3eC2dB0bBf3fA2eA2b8f3e3e3e3e3e3e3e3e"
-                       alt="QR USDT"/>
-                  <div class="wallet-address" id="usdtAddress">
-                    0x8C2C3eC2dB0bBf3fA2eA2b8f3e3e3e3e3e3e3e3e
-                  </div>
+                  <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=0xUSDTADDRESS" alt="QR USDT"/>
+                  <div class="wallet-address" id="usdtAddress">0xUSDTADDRESS</div>
                   <button class="copy-btn" onclick="copyAddress('usdtAddress')">Copy Address</button>
                 </div>
                 <table>
@@ -251,16 +176,12 @@
                 </table>
               </div>
             </div>
-            <!-- BossX -->
             <div class="deposit-column">
               <div class="card">
                 <h2>Deposit BossX</h2>
                 <div class="qr-container">
-                  <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=0x8C2C3eC2dB0bBf3fA2eA2b8f3e3e3e3e3e3e3e3e"
-                       alt="QR BossX"/>
-                  <div class="wallet-address" id="bossxAddress">
-                    0x8C2C3eC2dB0bBf3fA2eA2b8f3e3e3e3e3e3e3e3e
-                  </div>
+                  <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=0xBOSSXADDRESS" alt="QR BossX"/>
+                  <div class="wallet-address" id="bossxAddress">0xBOSSXADDRESS</div>
                   <button class="copy-btn" onclick="copyAddress('bossxAddress')">Copy Address</button>
                 </div>
                 <table>
@@ -279,56 +200,57 @@
         </section>
 
         <!-- Withdrawal Page -->
-<section id="withdraw" class="page">
-  <div class="withdraw-row">
-    <div class="withdraw-column">
-      <div class="card">
-        <h2>Metode Withdrawal USDT</h2>
-        <p>Silakan isi formulir di bawah untuk melakukan penarikan.</p>
+        <section id="withdraw" class="page">
+          <div class="withdraw-row">
+            <div class="withdraw-column">
+              <div class="card">
+                <h2>Metode Withdrawal USDT</h2>
+                <p>Silakan isi formulir di bawah untuk melakukan penarikan.</p>
+                <div class="withdrawal-form">
+                  <label for="withdrawAmount">Jumlah Penarikan (USDT):</label>
+                  <input type="number" id="withdrawAmount" placeholder="Contoh: 50">
+                  <label for="withdrawWallet">Alamat Dompet Tujuan:</label>
+                  <input type="text" id="withdrawWallet" placeholder="Contoh: 0x123...">
+                  <button class="copy-btn" onclick="submitWithdrawal()">Kirim Permintaan</button>
+                </div>
+                <div class="info-box">
+                  <ul>
+                    <li>⚠️ Minimal penarikan: <strong>10 USDT</strong></li>
+                    <li>⏱️ Proses: <strong>1-2 jam</strong></li>
+                    <li>📌 Pastikan alamat wallet benar sebelum mengirim</li>
+                  </ul>
+                </div>
+                <div class="history-section">
+                  <h2>Riwayat Penarikan</h2>
+                  <button class="copy-btn" onclick="downloadHistory()">Unduh Riwayat</button>
+                  <table>
+                    <thead>
+                      <tr><th>Hari</th><th>Tanggal</th><th>Jam</th><th>Jumlah USDT</th><th>Status</th></tr>
+                    </thead>
+                    <tbody>
+                      <tr><td>Selasa</td><td>10/09/2025</td><td>16:45</td><td>75.00000000</td><td>✅ Success</td></tr>
+                      <tr><td>Senin</td><td>09/09/2025</td><td>13:20</td><td>40.00000000</td><td>⏳ Pending</td></tr>
+                      <tr><td>Minggu</td><td>08/09/2025</td><td>19:10</td><td>20.00000000</td><td>❌ Gagal</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
 
-        <!-- Formulir Penarikan -->
-        <div class="withdrawal-form">
-          <label for="withdrawAmount">Jumlah Penarikan (USDT):</label>
-          <input type="number" id="withdrawAmount" placeholder="Contoh: 50">
+        <!-- Peer to Peer Page -->
+        <section id="peer" class="page">
+          <div class="card">
+            <h2>Halaman Peer to Peer</h2>
+            <p>Fitur transaksi antar pengguna akan ditampilkan di sini.</p>
+          </div>
+        </section>
 
-          <label for="withdrawWallet">Alamat Dompet Tujuan:</label>
-          <input type="text" id="withdrawWallet" placeholder="Contoh: 0x123...">
-
-          <button class="copy-btn" onclick="submitWithdrawal()">Kirim Permintaan</button>
-        </div>
-
-        <!-- Informasi Penting -->
-        <div class="info-box">
-          <ul>
-             <li>⚠️ Minimal penarikan: <strong>10 USDT</strong></li>
-             <li>⏱️ Proses: <strong>1-2 jam</strong></li>
-             <li>📌 Pastikan alamat wallet benar sebelum mengirim</li>
-          </ul>
-        </div>
-
-        <!-- Riwayat Penarikan -->
-        <div class="history-section">
-          <h2>Riwayat Penarikan</h2>
-          <button class="copy-btn" onclick="downloadHistory()">Unduh Riwayat</button>
-          <table>
-            <thead>
-              <tr><th>Hari</th><th>Tanggal</th><th>Jam</th><th>Jumlah USDT</th><th>Status</th></tr>
-            </thead>
-            <tbody>
-              <tr><td>Selasa</td><td>10/09/2025</td><td>16:45</td><td>75.00000000</td><td>✅ Success</td></tr>
-              <tr><td>Senin</td><td>09/09/2025</td><td>13:20</td><td>40.00000000</td><td>⏳ Pending</td></tr>
-              <tr><td>Minggu</td><td>08/09/2025</td><td>19:10</td><td>20.00000000</td><td>❌ Gagal</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+        <div class="footer">©2025 BossX • Dashboard</div>
+      </main>
     </div>
   </div>
-</section>
-      <div class="footer">©2025 BossX • Dashboard</div>
-    </div>
-  </div>
-
   <div class="toast" id="toast">Alamat berhasil disalin!</div>
 
   <script>
@@ -339,10 +261,10 @@
     // Page routing
     document.querySelectorAll('.nav-item').forEach(a => {
       a.onclick = () => {
-        document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(x => x.classList.remove('active'));
         a.classList.add('active');
         const page = a.dataset.page;
-        document.querySelectorAll('section.page').forEach(s=>s.classList.remove('active'));
+        document.querySelectorAll('section.page').forEach(s => s.classList.remove('active'));
         document.getElementById(page).classList.add('active');
       };
     });
@@ -350,100 +272,66 @@
     // Real-time clock
     function updateClock() {
       document.getElementById('realTimeClock').textContent =
-        new Date().toLocaleTimeString('id-ID', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+        new Date().toLocaleTimeString('id-ID', {
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit'
+        });
     }
-    updateClock(); setInterval(updateClock,1000);
+    updateClock();
+    setInterval(updateClock, 1000);
 
-    // Copy address + toast
+    // Copy wallet address + toast
     function copyAddress(id) {
       navigator.clipboard.writeText(document.getElementById(id).textContent.trim())
         .then(() => {
           const t = document.getElementById('toast');
           t.classList.add('show');
-          setTimeout(()=>t.classList.remove('show'),2000);
+          setTimeout(() => t.classList.remove('show'), 2000);
         });
     }
 
     // Dummy ticker
-    (function(){
-      const coins={'BOSSX/USDT':1,'BTC/USDT':62000,'ETH/USDT':4295.88};
-      const track=document.getElementById('cryptoTicker'), keys=Object.keys(coins);
-      function fmt(p){return p>=1? p.toFixed(2):p.toFixed(6).replace(/0+$/,'').replace(/\.$/,'')||'0';}
-      track.innerHTML = keys.concat(keys).map(k=>
+    (function () {
+      const coins = {
+        'BOSSX/USDT': 1,
+        'BTC/USDT': 62000,
+        'ETH/USDT': 4295.88
+      };
+      const track = document.getElementById('cryptoTicker');
+      const keys = Object.keys(coins);
+      function fmt(p) {
+        return p >= 1 ? p.toFixed(2) : p.toFixed(6).replace(/0+$/, '').replace(/\.$/, '') || '0';
+      }
+      track.innerHTML = keys.concat(keys).map(k =>
         `<span class="ticker-item">
            <span>${k}</span><span class="ticker-sep">•</span>
            <span class="price-up">${fmt(coins[k])} USDT</span>
          </span>`
       ).join('');
     })();
+
+    // Withdrawal form validation
+    function submitWithdrawal() {
+      const amount = document.getElementById('withdrawAmount').value.trim();
+      const wallet = document.getElementById('withdrawWallet').value.trim();
+
+      if (!amount || !wallet) {
+        alert("Mohon isi jumlah dan alamat wallet terlebih dahulu.");
+        return;
+      }
+
+      if (parseFloat(amount) < 10) {
+        alert("Minimal penarikan adalah 10 USDT.");
+        return;
+      }
+
+      alert(`Permintaan penarikan sebesar ${amount} USDT ke alamat:\n${wallet}\nberhasil dikirim.`);
+    }
+
+    function downloadHistory() {
+      alert("Riwayat penarikan sedang diproses untuk diunduh...");
+    }
   </script>
-<script>
-  // Sidebar toggle
-  document.getElementById('toggleSidebar').onclick = () =>
-    document.getElementById('container').classList.toggle('collapsed');
-
-  // Page routing
-  document.querySelectorAll('.nav-item').forEach(a => {
-    a.onclick = () => {
-      document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));
-      a.classList.add('active');
-      const page = a.dataset.page;
-      document.querySelectorAll('section.page').forEach(s=>s.classList.remove('active'));
-      document.getElementById(page).classList.add('active');
-    };
-  });
-
-  // Real-time clock
-  function updateClock() {
-    document.getElementById('realTimeClock').textContent =
-      new Date().toLocaleTimeString('id-ID', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
-  }
-  updateClock(); setInterval(updateClock,1000);
-
-  // Copy address + toast
-  function copyAddress(id) {
-    navigator.clipboard.writeText(document.getElementById(id).textContent.trim())
-      .then(() => {
-        const t = document.getElementById('toast');
-        t.classList.add('show');
-        setTimeout(()=>t.classList.remove('show'),2000);
-      });
-  }
-
-  // Dummy ticker
-  (function(){
-    const coins={'BOSSX/USDT':1,'BTC/USDT':62000,'ETH/USDT':4295.88};
-    const track=document.getElementById('cryptoTicker'), keys=Object.keys(coins);
-    function fmt(p){return p>=1? p.toFixed(2):p.toFixed(6).replace(/0+$/,'').replace(/\.$/,'')||'0';}
-    track.innerHTML = keys.concat(keys).map(k=>
-      `<span class="ticker-item">
-         <span>${k}</span><span class="ticker-sep">•</span>
-         <span class="price-up">${fmt(coins[k])} USDT</span>
-       </span>`
-    ).join('');
-  })();
-
-  // ✅ Tambahan untuk Withdrawal
-  function submitWithdrawal() {
-    const amount = document.getElementById('withdrawAmount').value.trim();
-    const wallet = document.getElementById('withdrawWallet').value.trim();
-
-    if (!amount || !wallet) {
-      alert("Mohon isi jumlah dan alamat wallet terlebih dahulu.");
-      return;
-    }
-
-    if (parseFloat(amount) < 10) {
-      alert("Minimal penarikan adalah 10 USDT.");
-      return;
-    }
-
-    alert(`Permintaan penarikan sebesar ${amount} USDT ke alamat:\n${wallet}\nberhasil dikirim.`);
-  }
-
-  function downloadHistory() {
-    alert("Riwayat penarikan sedang diproses untuk diunduh...");
-  }
-</script>
 </body>
 </html>
