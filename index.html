@@ -154,89 +154,57 @@
       </div>
       <main>
         <!-- Deposit Page -->
-        <section id="deposit" class="page active">
-          <div class="deposit-row">
-            <div class="deposit-column">
-              <div class="card">
-                <h2>Deposit USDT</h2>
-                <div class="qr-container">
-                  <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=0xUSDTADDRESS" alt="QR USDT"/>
-                  <div class="wallet-address" id="usdtAddress">0xUSDTADDRESS</div>
-                  <button class="copy-btn" onclick="copyAddress('usdtAddress')">Copy Address</button>
-                </div>
-                <table>
-                  <thead>
-                    <tr><th>Hari</th><th>Tanggal</th><th>Jam</th><th>Jumlah USDT</th><th>Status</th></tr>
-                  </thead>
-                  <tbody>
-                    <tr><td>Senin</td><td>25/07/2023</td><td>14:30</td><td>100.00000000</td><td>✅ Success</td></tr>
-                    <tr><td>Senin</td><td>25/07/2023</td><td>13:15</td><td>50.00000000</td><td>⏳ Pending</td></tr>
-                    <tr><td>Minggu</td><td>24/07/2023</td><td>18:05</td><td>25.00000000</td><td>❌ Gagal</td></tr>
-                  </tbody>
-                </table>
-              </div>
+        <section id="deposit" class="page active deposit-section">
+          <!-- Deposit USDT -->
+          <div class="deposit-card">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=TQzWJZzvZzZzZzZzZzZzZzZzZzZzZzZzZz" alt="QR USDT" class="qr">
+            <div class="info">
+              <h2>Deposit USDT</h2>
+              <p><strong>Network:</strong> TRC20</p>
+              <p><strong>Address:</strong> <span class="wallet">TQzWJZzvZzZzZzZzZzZzZzZzZzZzZzZzZz</span></p>
+              <p><strong>Status:</strong> ✅ Enabled</p>
+              <p><strong>Minimum Deposit:</strong> 1 USDT</p>
+              <p><strong>Fee:</strong> 0%</p>
+              <p><strong>Arrival Time:</strong> Instant</p>
+              <button class="copy-btn" onclick="copyAddress('.wallet')">Copy Address</button>
             </div>
-            <div class="deposit-column">
-              <div class="card">
-                <h2>Deposit BossX</h2>
-                <div class="qr-container">
-                  <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=0xBOSSXADDRESS" alt="QR BossX"/>
-                  <div class="wallet-address" id="bossxAddress">0xBOSSXADDRESS</div>
-                  <button class="copy-btn" onclick="copyAddress('bossxAddress')">Copy Address</button>
-                </div>
-                <table>
-                  <thead>
-                    <tr><th>Hari</th><th>Tanggal</th><th>Jam</th><th>Jumlah BossX</th><th>Status</th></tr>
-                  </thead>
-                  <tbody>
-                    <tr><td>Senin</td><td>25/07/2023</td><td>15:45</td><td>200.00000000</td><td>✅ Success</td></tr>
-                    <tr><td>Minggu</td><td>24/07/2023</td><td>17:22</td><td>75.00000000</td><td>⏳ Pending</td></tr>
-                    <tr><td>Minggu</td><td>24/07/2023</td><td>11:09</td><td>30.00000000</td><td>❌ Gagal</td></tr>
-                  </tbody>
-                </table>
-              </div>
+          </div>
+
+          <!-- Deposit BTC -->
+          <div class="deposit-card">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa" alt="QR BTC" class="qr">
+            <div class="info">
+              <h2>Deposit BTC</h2>
+              <p><strong>Network:</strong> Bitcoin</p>
+              <p><strong>Address:</strong> <span class="wallet">1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa</span></p>
+              <p><strong>Status:</strong> ✅ Enabled</p>
+              <p><strong>Minimum Deposit:</strong> 0.0001 BTC</p>
+              <p><strong>Fee:</strong> 0%</p>
+              <p><strong>Arrival Time:</strong> Instant</p>
+              <button class="copy-btn" onclick="copyAddress('.wallet')">Copy Address</button>
             </div>
           </div>
         </section>
 
         <!-- Withdrawal Page -->
-        <section id="withdraw" class="page">
-          <div class="withdraw-row">
-            <div class="withdraw-column">
-              <div class="card">
-                <h2>Metode Withdrawal USDT</h2>
-                <p>Silakan isi formulir di bawah untuk melakukan penarikan.</p>
-                <div class="withdrawal-form">
-                  <label for="withdrawAmount">Jumlah Penarikan (USDT):</label>
-                  <input type="number" id="withdrawAmount" placeholder="Contoh: 50">
-                  <label for="withdrawWallet">Alamat Dompet Tujuan:</label>
-                  <input type="text" id="withdrawWallet" placeholder="Contoh: 0x123...">
-                  <button class="copy-btn" onclick="submitWithdrawal()">Kirim Permintaan</button>
-                </div>
-                <div class="info-box">
-                  <ul>
-                    <li>⚠️ Minimal penarikan: <strong>10 USDT</strong></li>
-                    <li>⏱️ Proses: <strong>1-2 jam</strong></li>
-                    <li>📌 Pastikan alamat wallet benar sebelum mengirim</li>
-                  </ul>
-                </div>
-                <div class="history-section">
-                  <h2>Riwayat Penarikan</h2>
-                  <button class="copy-btn" onclick="downloadHistory()">Unduh Riwayat</button>
-                  <table>
-                    <thead>
-                      <tr><th>Hari</th><th>Tanggal</th><th>Jam</th><th>Jumlah USDT</th><th>Status</th></tr>
-                    </thead>
-                    <tbody>
-                      <tr><td>Selasa</td><td>10/09/2025</td><td>16:45</td><td>75.00000000</td><td>✅ Success</td></tr>
-                      <tr><td>Senin</td><td>09/09/2025</td><td>13:20</td><td>40.00000000</td><td>⏳ Pending</td></tr>
-                      <tr><td>Minggu</td><td>08/09/2025</td><td>19:10</td><td>20.00000000</td><td>❌ Gagal</td></tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          </div>
+        <section id="withdraw" class="page withdraw-section">
+          <h2>Method Withdrawal USDT</h2>
+          <form class="withdraw-form" onsubmit="event.preventDefault(); submitWithdrawal();">
+            <label for="method">Pilih Metode:</label>
+            <select id="method">
+              <option value="">-- Pilih --</option>
+              <option value="TRC20">TRC20</option>
+              <option value="BEP20">BEP20</option>
+            </select>
+
+            <label for="wallet">Alamat Wallet:</label>
+            <input type="text" id="withdrawWallet" placeholder="Masukkan alamat wallet">
+
+            <label for="withdrawAmount">Jumlah Penarikan (USDT):</label>
+            <input type="number" id="withdrawAmount" placeholder="Contoh: 50">
+
+            <button type="submit" class="submit-btn">Submit</button>
+          </form>
         </section>
 
         <!-- Peer to Peer Page -->
@@ -251,6 +219,92 @@
       </main>
     </div>
   </div>
+  <style>
+    /* ===== Layout Deposit & Withdrawal Baru ===== */
+    .deposit-section {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      padding: var(--gap);
+    }
+
+    .deposit-card {
+      display: flex;
+      gap: 16px;
+      background: var(--card-bg);
+      padding: 16px;
+      border-radius: var(--radius);
+      border: 1px solid var(--card-border);
+      flex: 1 1 400px;
+    }
+
+    .qr {
+      width: 180px;
+      height: 180px;
+      border: 4px solid var(--color-accent);
+      border-radius: var(--radius);
+      background: white;
+      padding: 8px;
+    }
+
+    .info {
+      flex: 1;
+    }
+
+    .copy-btn, .submit-btn {
+      background: var(--color-accent);
+      color: var(--color-primary);
+      border: none;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      margin-top: 8px;
+    }
+
+    .withdraw-section {
+      padding: var(--gap);
+    }
+
+    .withdraw-form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-width: 400px;
+    }
+
+    .withdraw-form select,
+    .withdraw-form input {
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid var(--color-accent);
+    }
+
+    @media (max-width: 768px) {
+      .deposit-card {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--color-accent);
+      color: var(--color-primary);
+      padding: 10px 14px;
+      border-radius: 6px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .3s;
+      z-index: 9999;
+    }
+    .toast.show { opacity: 1; }
+  </style>
+
   <div class="toast" id="toast">Alamat berhasil disalin!</div>
 
   <script>
@@ -282,13 +336,13 @@
     setInterval(updateClock, 1000);
 
     // Copy wallet address + toast
-    function copyAddress(id) {
-      navigator.clipboard.writeText(document.getElementById(id).textContent.trim())
-        .then(() => {
-          const t = document.getElementById('toast');
-          t.classList.add('show');
-          setTimeout(() => t.classList.remove('show'), 2000);
-        });
+    function copyAddress(selector) {
+      const text = document.querySelector(selector).textContent.trim();
+      navigator.clipboard.writeText(text).then(() => {
+        const t = document.getElementById('toast');
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 2000);
+      });
     }
 
     // Dummy ticker
@@ -315,9 +369,10 @@
     function submitWithdrawal() {
       const amount = document.getElementById('withdrawAmount').value.trim();
       const wallet = document.getElementById('withdrawWallet').value.trim();
+      const method = document.getElementById('method').value.trim();
 
-      if (!amount || !wallet) {
-        alert("Mohon isi jumlah dan alamat wallet terlebih dahulu.");
+      if (!method || !wallet || !amount) {
+        alert("Mohon isi semua data terlebih dahulu.");
         return;
       }
 
@@ -326,11 +381,7 @@
         return;
       }
 
-      alert(`Permintaan penarikan sebesar ${amount} USDT ke alamat:\n${wallet}\nberhasil dikirim.`);
-    }
-
-    function downloadHistory() {
-      alert("Riwayat penarikan sedang diproses untuk diunduh...");
+      alert(`Permintaan penarikan sebesar ${amount} USDT via ${method} ke alamat:\n${wallet}\nberhasil dikirim.`);
     }
   </script>
 </body>
