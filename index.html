@@ -6,171 +6,197 @@
   <title>BossX Dashboard</title>
   <style>
     :root {
-      --gap: 16px; --radius: 12px;
-      --color-primary: #6a0dad; --color-accent: #FFD700;
-      --sidebar-width: 250px; --sidebar-collapsed: 60px;
-      --bg-from: #6a0dad; --bg-to: #ff69b4;
+      --gap: 16px;
+      --radius: 12px;
+      --color-primary: #6a0dad;
+      --color-accent: #FFD700;
+      --sidebar-width: 250px;
+      --sidebar-collapsed: 60px;
+      --bg-from: #6a0dad;
+      --bg-to: #ff69b4;
       --text-color: var(--color-accent);
       --card-bg: rgba(0,0,0,0.3);
       --card-border: var(--color-accent);
       --table-border: var(--color-accent);
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     body {
       font-family: 'Segoe UI', sans-serif;
       background: linear-gradient(135deg, var(--bg-from), var(--bg-to));
       color: var(--text-color);
-      display: flex; min-height: 100vh;
+      display: flex;
+      min-height: 100vh;
     }
+
     .container {
       display: grid;
       grid-template-columns: var(--sidebar-width) 1fr;
       transition: .3s;
       width: 100%;
     }
+
     .container.collapsed {
       grid-template-columns: var(--sidebar-collapsed) 1fr;
     }
-    /* Sidebar */
+
     aside.sidebar {
-      background: rgba(0,0,0,0.4); display: flex; flex-direction: column;
+      background: rgba(0,0,0,0.4);
+      display: flex;
+      flex-direction: column;
     }
+
     .sidebar-header {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: var(--gap); border-bottom: 1px solid var(--color-accent);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: var(--gap);
+      border-bottom: 1px solid var(--color-accent);
     }
-    .logo-container { display: flex; align-items: center; gap: 8px; }
-    .sidebar-logo { height: 40px; }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .sidebar-logo {
+      height: 40px;
+    }
+
     .sidebar-logo-text {
-      font-size: 1.2rem; font-weight: 700; color: var(--color-accent);
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--color-accent);
     }
+
     .collapse-btn {
-      background: none; border: 1px solid var(--color-accent);
-      border-radius: 6px; padding: 4px 8px; color: var(--color-accent);
+      background: none;
+      border: 1px solid var(--color-accent);
+      border-radius: 6px;
+      padding: 4px 8px;
+      color: var(--color-accent);
       cursor: pointer;
     }
-    .sidebar-nav {
-      flex: 1; display: flex; flex-direction: column; padding: var(--gap) 0;
-    }
-    .nav-item {
-      display: flex; align-items: center; gap: 12px;
-      padding: 12px var(--gap); text-decoration: none;
-      color: var(--text-color); transition: .2s;
-    }
-    .nav-item:hover { background: rgba(255,215,0,0.1); }
-    .nav-item.active { background: rgba(255,215,0,0.2); }
-    .nav-item .icon { width: 24px; text-align: center; font-size: 1.1rem; }
-    .sidebar-follow {
-      padding: var(--gap); text-align: center; border-top: 1px solid rgba(255,215,0,0.3);
-    }
-    .social-link { margin: 0 6px; }
-    .social-icon { width: 22px; height: 22px; filter: invert(1); }
 
-    /* Content */
-    .content {
-      display: flex; flex-direction: column; width: 100%;
+    .sidebar-nav {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: var(--gap) 0;
     }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px var(--gap);
+      text-decoration: none;
+      color: var(--text-color);
+      transition: .2s;
+    }
+
+    .nav-item:hover {
+      background: rgba(255,215,0,0.1);
+    }
+
+    .nav-item.active {
+      background: rgba(255,215,0,0.2);
+    }
+
+    .nav-item .icon {
+      width: 24px;
+      text-align: center;
+      font-size: 1.1rem;
+    }
+
+    .sidebar-follow {
+      padding: var(--gap);
+      text-align: center;
+      border-top: 1px solid rgba(255,215,0,0.3);
+    }
+
+    .social-link {
+      margin: 0 6px;
+    }
+
+    .social-icon {
+      width: 22px;
+      height: 22px;
+      filter: invert(1);
+    }
+
+    .content {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+    }
+
     header {
-      display: flex; justify-content: space-between; align-items: center;
-      background: rgba(0,0,0,0.3); padding: var(--gap) calc(var(--gap)*2);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(0,0,0,0.3);
+      padding: var(--gap) calc(var(--gap)*2);
       border-bottom: 2px solid var(--color-accent);
     }
-    .header-left { display: flex; align-items: center; gap: 12px; }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
     .btn {
-      background: var(--color-accent); color: var(--color-primary);
-      border: none; border-radius: 6px; padding: 6px 12px;
-      cursor: pointer; font-weight: 600;
+      background: var(--color-accent);
+      color: var(--color-primary);
+      border: none;
+      border-radius: 6px;
+      padding: 6px 12px;
+      cursor: pointer;
+      font-weight: 600;
     }
+
     .user-info {
-      display: flex; align-items: center; gap: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
+
     .user-info img {
-      width: 40px; height: 40px; border-radius: 50%; object-fit: cover;
-    }
-    .info-text h2 { margin-bottom: 2px; font-size: 1rem; color: var(--color-accent); }
-    .info-text p { font-size: 0.8rem; opacity: 0.9; }
-
-    /* Ticker */
-    .crypto-ticker {
-      overflow: hidden; white-space: nowrap;
-      background: rgba(0,0,0,0.2); border-bottom: 1px solid rgba(255,215,0,0.3);
-    }
-    .ticker-track {
-      display: inline-block; padding: 10px var(--gap);
-      animation: ticker 20s linear infinite;
-    }
-    @keyframes ticker {
-      from { transform: translateX(0); } to { transform: translateX(-50%); }
-    }
-    .ticker-item { margin-right: 28px; font-size: 0.9rem; }
-    .price-up { color: #7CFC00; font-weight: 700; }
-    .price-down { color: #FF6B6B; font-weight: 700; }
-    .ticker-sep { margin: 0 6px; opacity: 0.8; }
-
-    main {
-      flex: 1; padding: var(--gap);
-      max-width: 1400px; margin: var(--gap) var(--gap);
-    }
-    section.page { display: none; }
-    section.page.active { display: block; }
-
-    /* common card/table */
-    .deposit-row, .withdraw-row {
-      display: flex; gap: var(--gap); flex-wrap: wrap; justify-content: flex-start;
-    }
-    .deposit-column, .withdraw-column {
-      flex: 1; min-width: 350px; display: flex; flex-direction: column; gap: var(--gap);
-    }
-    .card {
-      background: var(--card-bg); padding: var(--gap);
-      border-radius: var(--radius); border: 1px solid var(--card-border);
-    }
-    .card h2 { margin-bottom: var(--gap); color: var(--color-accent); }
-    .qr-container {
-      display: flex; flex-direction: column; align-items: center; gap: 8px;
-      margin-bottom: var(--gap);
-    }
-    .qr-container img {
-      width: 180px; height: 180px; background: #fff; padding: 8px;
-      border: 4px solid var(--color-accent); border-radius: var(--radius);
-    }
-    .wallet-address {
-      width: 100%; background: rgba(255,255,255,0.1);
-      padding: 6px 10px; border:1px solid var(--color-accent);
-      border-radius:6px; word-break:break-all; text-align:center; font-size:0.9rem;
-    }
-    .copy-btn {
-      padding: 6px 12px; background:var(--color-accent);
-      color:var(--color-primary); border:none; border-radius:6px; cursor:pointer;
-      font-size:0.9rem;
-    }
-    .copy-btn:hover { background:#ffec8b; }
-
-    table {
-      width:100%; border-collapse:collapse; margin-top:8px; font-size:0.9rem;
-    }
-    th, td {
-      border:1px solid var(--table-border); padding:8px; text-align:center;
-    }
-    th {
-      background:var(--color-accent); color:var(--color-primary);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
     }
 
-    /* Footer & Toast */
-    .footer {
-      text-align:center; padding:12px; font-size:0.9rem;
-      background:rgba(0,0,0,0.2); border-top:1px solid rgba(255,215,0,0.3);
+    .info-text h2 {
+      margin-bottom: 2px;
+      font-size: 1rem;
+      color: var(--color-accent);
     }
-    .toast {
-      position:fixed; bottom:20px; right:20px;
-      background:var(--color-accent); color:var(--color-primary);
-      padding:10px 14px; border-radius:6px; opacity:0;
-      pointer-events:none; transition:opacity .3s; z-index:9999;
+
+    .info-text p {
+      font-size: 0.8rem;
+      opacity: 0.9;
     }
-    .toast.show { opacity:1; }
+
+    .balance-amount {
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: var(--color-accent);
+      text-shadow: 0 0 6px #ff69b4;
+    }
 
     @media (max-width:768px){
-      .deposit-row, .withdraw-row { flex-direction:column; }
+      .deposit-row, .withdraw-row {
+        flex-direction: column;
+      }
     }
   </style>
 </head>
@@ -196,8 +222,12 @@
       </nav>
       <div class="sidebar-follow">
         <span>Follow us on</span>
-        <a href="https://t.me/BossX_Official" class="social-link"><img src="https://simpleicons.org/icons/telegram.svg" class="social-icon"/></a>
-        <a href="https://twitter.com/BossX_Official" class="social-link"><img src="https://simpleicons.org/icons/twitter.svg" class="social-icon"/></a>
+        <a href="https://t.me/BossX_Official" class="social-link">
+          <img src="https://simpleicons.org/icons/telegram.svg" class="social-icon"/>
+        </a>
+        <a href="https://twitter.com/BossX_Official" class="social-link">
+          <img src="https://simpleicons.org/icons/twitter.svg" class="social-icon"/>
+        </a>
       </div>
     </aside>
 
@@ -278,92 +308,90 @@
           </div>
         </section>
 
-<!-- Withdrawal Page -->
-<section id="withdraw" class="page">
-  <div class="withdraw-row">
-    <div class="withdraw-column">
+        <!-- Withdrawal Page -->
+        <section id="withdraw" class="page">
+          <div class="withdraw-row">
+            <div class="withdraw-column">
 
-      <!-- 1) Card: Metode Withdrawal USDT -->
-      <div class="card">
-        <h2>Metode Withdrawal USDT</h2>
-        <p>Pilih jaringan dan isi form di bawah ini:</p>
-        <div class="form-group">
-          <label for="network">Pilih Jaringan:</label>
-          <select id="network" name="network" required>
-            <option value="TRC20" selected>TRON (TRC20)</option>
-            <option value="ERC20">Ethereum (ERC20)</option>
-    <option value="BEP20">Binance Smart Chain (BEP20)</option> <!-- ✅ Tambahan baru -->
-</select>
-        </div>
-      </div>
+              <!-- 1) Card: Metode Withdrawal USDT -->
+              <div class="card">
+                <h2>Metode Withdrawal USDT</h2>
+                <p>Pilih jaringan dan isi form di bawah ini:</p>
+                <div class="form-group">
+                  <label for="network">Pilih Jaringan:</label>
+                  <select id="network" name="network" required>
+                    <option value="TRC20" selected>TRON (TRC20)</option>
+                    <option value="ERC20">Ethereum (ERC20)</option>
+                    <option value="BEP20">Binance Smart Chain (BEP20)</option> <!-- ✅ Tambahan baru -->
+                  </select>
+                </div>
+              </div>
 
-      <!-- 2) Card: Balance USDT -->
-      <div class="card balance-card">
-        <div class="balance-content">
-          <img
-            src="https://s2.coinmarketcap.com/static/img/coins/64x64/825.png"
-            alt="USDT Logo"
-            class="balance-logo"
-          />
-          <div class="balance-info">
-            <span class="balance-label">Balance</span>
-            <span class="balance-amount" id="totalBalance">0.00000000 USDT</span>
+              <!-- 2) Card: Balance USDT -->
+              <div class="card balance-card">
+                <div class="balance-content">
+                  <img
+                    src="https://s2.coinmarketcap.com/static/img/coins/64x64/825.png"
+                    alt="USDT Logo"
+                    class="balance-logo"
+                  />
+                  <div class="balance-info">
+                    <span class="balance-label">Balance</span>
+                    <span class="balance-amount" id="totalBalance">0.00000000 USDT</span>
+                  </div>
+                </div>
+              </div>
+              <!-- 3) Card: Formulir Penarikan -->
+              <div class="card">
+                <h2>Formulir Penarikan</h2>
+                <form id="withdrawForm">
+                  <!-- Alamat Dompet Tujuan -->
+                  <div class="form-group">
+                    <label for="withdrawWallet">Alamat Dompet Tujuan (USDT):</label>
+                    <input
+                      type="text"
+                      id="withdrawWallet"
+                      name="wallet"
+                      placeholder="0x123…"
+                      required
+                    />
+                  </div>
+
+                  <!-- Jumlah Penarikan (min 10) -->
+                  <div class="form-group">
+                    <label for="withdrawAmount">Jumlah Penarikan (USDT):</label>
+                    <input
+                      type="number"
+                      id="withdrawAmount"
+                      name="amount"
+                      min="10"
+                      step="0.00000001"
+                      placeholder="Minimal 10 USDT"
+                      required
+                    />
+                  </div>
+
+                  <!-- Masukkan PIN -->
+                  <div class="form-group">
+                    <label for="userPin">Masukkan PIN:</label>
+                    <input
+                      type="password"
+                      id="userPin"
+                      name="pin"
+                      maxlength="6"
+                      placeholder="••••••"
+                      required
+                    />
+                  </div>
+
+                  <!-- Tombol Kirim -->
+                  <button type="submit" class="btn">Kirim Permintaan</button>
+                </form>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
+        </section>
 
-      <!-- 3) Card: Formulir Penarikan -->
-      <div class="card">
-        <h2>Formulir Penarikan</h2>
-        <form id="withdrawForm">
-          <!-- Alamat Dompet Tujuan -->
-          <div class="form-group">
-            <label for="withdrawWallet">Alamat Dompet Tujuan (USDT):</label>
-            <input
-              type="text"
-              id="withdrawWallet"
-              name="wallet"
-              placeholder="0x123…"
-              required
-            />
-          </div>
-
-          <!-- Jumlah Penarikan (min 10) -->
-          <div class="form-group">
-            <label for="withdrawAmount">Jumlah Penarikan (USDT):</label>
-            <input
-              type="number"
-              id="withdrawAmount"
-              name="amount"
-              min="10"
-              step="0.00000001"
-              placeholder="Minimal 10 USDT"
-              required
-            />
-          </div>
-
-          <!-- Masukkan PIN -->
-          <div class="form-group">
-            <label for="userPin">Masukkan PIN:</label>
-            <input
-              type="password"
-              id="userPin"
-              name="pin"
-              maxlength="6"
-              placeholder="••••••"
-              required
-            />
-          </div>
-
-          <!-- Tombol Kirim -->
-          <button type="submit" class="btn-submit">Kirim Permintaan</button>
-        </form>
-      </div>
-
-    </div>
-  </div>
-</section>
-        
         <!-- Riwayat Penarikan -->
         <h3>Riwayat Penarikan</h3>
         <div class="table-responsive">
@@ -385,15 +413,13 @@
                 <td>42.00000000</td>
                 <td>✅ Selesai</td>
               </tr>
-              <!-- baris lainnya… -->
+              <!-- Tambahkan baris lain sesuai data -->
             </tbody>
           </table>
         </div>
-      </div>
-    </div>
-  </div>
-</section>
-<!-- Footer -->
+      </main>
+
+      <!-- Footer -->
       <div class="footer">©2025 BossX • Dashboard</div>
     </div>
   </div>
@@ -401,6 +427,7 @@
   <!-- Toast -->
   <div class="toast" id="toast">Alamat berhasil disalin!</div>
 
+  <!-- Script -->
   <script>
     // Sidebar toggle
     document.getElementById('toggleSidebar').onclick = () =>
@@ -409,10 +436,10 @@
     // Page routing
     document.querySelectorAll('.nav-item').forEach(a => {
       a.onclick = () => {
-        document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(x => x.classList.remove('active'));
         a.classList.add('active');
         const page = a.dataset.page;
-        document.querySelectorAll('section.page').forEach(s=>s.classList.remove('active'));
+        document.querySelectorAll('section.page').forEach(s => s.classList.remove('active'));
         document.getElementById(page).classList.add('active');
       };
     });
@@ -420,9 +447,9 @@
     // Real-time clock
     function updateClock() {
       document.getElementById('realTimeClock').textContent =
-        new Date().toLocaleTimeString('id-ID', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+        new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
     }
-    updateClock(); setInterval(updateClock,1000);
+    updateClock(); setInterval(updateClock, 1000);
 
     // Copy address + toast
     function copyAddress(id) {
@@ -430,90 +457,43 @@
         .then(() => {
           const t = document.getElementById('toast');
           t.classList.add('show');
-          setTimeout(()=>t.classList.remove('show'),2000);
+          setTimeout(() => t.classList.remove('show'), 2000);
         });
     }
 
     // Dummy ticker
-    (function(){
-      const coins={'BOSSX/USDT':1,'BTC/USDT':62000,'ETH/USDT':4295.88};
-      const track=document.getElementById('cryptoTicker'), keys=Object.keys(coins);
-      function fmt(p){return p>=1? p.toFixed(2):p.toFixed(6).replace(/0+$/,'').replace(/\.$/,'')||'0';}
-      track.innerHTML = keys.concat(keys).map(k=>
+    (function () {
+      const coins = { 'BOSSX/USDT': 1, 'BTC/USDT': 62000, 'ETH/USDT': 4295.88 };
+      const track = document.getElementById('cryptoTicker'), keys = Object.keys(coins);
+      function fmt(p) {
+        return p >= 1 ? p.toFixed(2) : p.toFixed(6).replace(/0+$/, '').replace(/\.$/, '') || '0';
+      }
+      track.innerHTML = keys.concat(keys).map(k =>
         `<span class="ticker-item">
            <span>${k}</span><span class="ticker-sep">•</span>
            <span class="price-up">${fmt(coins[k])} USDT</span>
          </span>`
       ).join('');
     })();
+
+    // Submit withdrawal
+    document.getElementById('withdrawForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const amount = document.getElementById('withdrawAmount').value.trim();
+      const wallet = document.getElementById('withdrawWallet').value.trim();
+
+      if (!amount || !wallet) {
+        alert("Mohon isi jumlah dan alamat wallet terlebih dahulu.");
+        return;
+      }
+
+      if (parseFloat(amount) < 10) {
+        alert("Minimal penarikan adalah 10 USDT.");
+        return;
+      }
+
+      alert(`Permintaan penarikan sebesar ${amount} USDT ke alamat:\n${wallet}\nberhasil dikirim.`);
+    });
   </script>
-<script>
-  // Sidebar toggle
-  document.getElementById('toggleSidebar').onclick = () =>
-    document.getElementById('container').classList.toggle('collapsed');
-
-  // Page routing
-  document.querySelectorAll('.nav-item').forEach(a => {
-    a.onclick = () => {
-      document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));
-      a.classList.add('active');
-      const page = a.dataset.page;
-      document.querySelectorAll('section.page').forEach(s=>s.classList.remove('active'));
-      document.getElementById(page).classList.add('active');
-    };
-  });
-
-  // Real-time clock
-  function updateClock() {
-    document.getElementById('realTimeClock').textContent =
-      new Date().toLocaleTimeString('id-ID', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
-  }
-  updateClock(); setInterval(updateClock,1000);
-
-  // Copy address + toast
-  function copyAddress(id) {
-    navigator.clipboard.writeText(document.getElementById(id).textContent.trim())
-      .then(() => {
-        const t = document.getElementById('toast');
-        t.classList.add('show');
-        setTimeout(()=>t.classList.remove('show'),2000);
-      });
-  }
-
-  // Dummy ticker
-  (function(){
-    const coins={'BOSSX/USDT':1,'BTC/USDT':62000,'ETH/USDT':4295.88};
-    const track=document.getElementById('cryptoTicker'), keys=Object.keys(coins);
-    function fmt(p){return p>=1? p.toFixed(2):p.toFixed(6).replace(/0+$/,'').replace(/\.$/,'')||'0';}
-    track.innerHTML = keys.concat(keys).map(k=>
-      `<span class="ticker-item">
-         <span>${k}</span><span class="ticker-sep">•</span>
-         <span class="price-up">${fmt(coins[k])} USDT</span>
-       </span>`
-    ).join('');
-  })();
-
-  // ✅ Tambahan untuk Withdrawal
-  function submitWithdrawal() {
-    const amount = document.getElementById('withdrawAmount').value.trim();
-    const wallet = document.getElementById('withdrawWallet').value.trim();
-
-    if (!amount || !wallet) {
-      alert("Mohon isi jumlah dan alamat wallet terlebih dahulu.");
-      return;
-    }
-
-    if (parseFloat(amount) < 10) {
-      alert("Minimal penarikan adalah 10 USDT.");
-      return;
-    }
-
-    alert(`Permintaan penarikan sebesar ${amount} USDT ke alamat:\n${wallet}\nberhasil dikirim.`);
-  }
-
-  function downloadHistory() {
-    alert("Riwayat penarikan sedang diproses untuk diunduh...");
-  }
-</script>
 </body>
 </html>
