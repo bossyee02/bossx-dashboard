@@ -1,400 +1,83 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>BossX Dashboard</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BossX Dashboard - Versi Minimal</title>
   <style>
-    :root {
-      --gap: 16px; --radius: 12px;
-      --color-primary: #6a0dad; --color-accent: #FFD700;
-      --sidebar-width: 250px; --sidebar-collapsed: 60px;
-      --bg-from: #6a0dad; --bg-to: #ff69b4;
-      --text-color: var(--color-accent);
-      --card-bg: rgba(0,0,0,0.3);
-      --card-border: var(--color-accent);
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, var(--bg-from), var(--bg-to));
-      color: var(--text-color);
-      display: flex; min-height: 100vh;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: linear-gradient(135deg, #6a0dad, #ff69b4);
+      color: #FFD700;
     }
     .container {
-      display: grid;
-      grid-template-columns: var(--sidebar-width) 1fr;
-      transition: .3s;
-      width: 100%;
+      display: flex;
+      min-height: 100vh;
     }
-    .container.collapsed {
-      grid-template-columns: var(--sidebar-collapsed) 1fr;
-    }
-    aside.sidebar {
-      background: rgba(0,0,0,0.4); display: flex; flex-direction: column;
-    }
-    .sidebar-header {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: var(--gap); border-bottom: 1px solid var(--color-accent);
-    }
-    .logo-container { display: flex; align-items: center; gap: 8px; }
-    .sidebar-logo { height: 40px; }
-    .sidebar-logo-text {
-      font-size: 1.2rem; font-weight: 700; color: var(--color-accent);
-    }
-    .collapse-btn {
-      background: none; border: 1px solid var(--color-accent);
-      border-radius: 6px; padding: 4px 8px; color: var(--color-accent);
-      cursor: pointer;
-    }
-    .sidebar-nav {
-      flex: 1; display: flex; flex-direction: column; padding: var(--gap) 0;
+    aside {
+      width: 200px;
+      background: rgba(0,0,0,0.4);
+      padding: 10px;
     }
     .nav-item {
-      display: flex; align-items: center; gap: 12px;
-      padding: 12px var(--gap); text-decoration: none;
-      color: var(--text-color); transition: .2s;
+      display: block;
+      padding: 10px;
+      color: #FFD700;
+      text-decoration: none;
+      border-radius: 4px;
+      margin-bottom: 5px;
     }
-    .nav-item:hover { background: rgba(255,215,0,0.1); }
-    .nav-item.active { background: rgba(255,215,0,0.2); }
-    .nav-item .icon { width: 24px; text-align: center; font-size: 1.1rem; }
-    .sidebar-follow {
-      padding: var(--gap); text-align: center; border-top: 1px solid rgba(255,215,0,0.3);
+    .nav-item.active {
+      background: rgba(255,215,0,0.2);
     }
-    .social-link { margin: 0 6px; }
-    .social-icon { width: 22px; height: 22px; filter: invert(1); }
-
-    .content {
-      display: flex; flex-direction: column; width: 100%;
+    main {
+      flex: 1;
+      padding: 20px;
     }
-    header {
-      display: flex; justify-content: space-between; align-items: center;
-      background: rgba(0,0,0,0.3); padding: var(--gap) calc(var(--gap)*2);
-      border-bottom: 2px solid var(--color-accent);
-    }
-    .header-left { display: flex; align-items: center; gap: 12px; }
-    .btn {
-      background: var(--color-accent); color: var(--color-primary);
-      border: none; border-radius: 6px; padding: 6px 12px;
-      cursor: pointer; font-weight: 600;
-    }
-    .user-info {
-      display: flex; align-items: center; gap: 10px;
-    }
-    .user-info img {
-      width: 40px; height: 40px; border-radius: 50%; object-fit: cover;
-    }
-    .info-text h2 { margin-bottom: 2px; font-size: 1rem; color: var(--color-accent); }
-    .info-text p { font-size: 0.8rem; opacity: 0.9; }
-
-    .crypto-ticker {
-      overflow: hidden; white-space: nowrap;
-      background: rgba(0,0,0,0.2); border-bottom: 1px solid rgba(255,215,0,0.3);
-    }
-    .ticker-track {
-      display: inline-block; padding: 10px var(--gap);
-      animation: ticker 20s linear infinite;
-    }
-    @keyframes ticker {
-      from { transform: translateX(0); } to { transform: translateX(-50%); }
-    }
-    .ticker-item { margin-right: 28px; font-size: 0.9rem; }
-    .price-up { color: #7CFC00; font-weight: 700; }
-    .price-down { color: #FF6B6B; font-weight: 700; }
-    .ticker-sep { margin: 0 6px; opacity: 0.8; }
-
-    /* Halaman default hidden */
+    /* Halaman default tersembunyi */
     .page { display: none; }
     .page.active { display: block; }
   </style>
 </head>
 <body>
-  <div class="container" id="container">
-    <aside class="sidebar">
-      <div class="sidebar-header">
-        <div class="logo-container">
-          <img src="https://i.ibb.co/qYBkPDH3/Picsart-25-04-01-16-25-47-054.png" alt="Logo BossX" class="sidebar-logo"/>
-          <span class="sidebar-logo-text">BossX</span>
-        </div>
-        <button class="collapse-btn" id="toggleSidebar">☰</button>
-      </div>
-      <nav class="sidebar-nav">
-        <a href="#" class="nav-item active" data-page="deposit"><span class="icon">💰</span><span class="label">Deposit</span></a>
-        <a href="#" class="nav-item" data-page="withdraw"><span class="icon">💸</span><span class="label">Withdrawal</span></a>
-        <a href="#" class="nav-item" data-page="peer"><span class="icon">🤝</span><span class="label">Peer to Peer</span></a>
-      </nav>
-      <div class="sidebar-follow">
-        <span>Follow us on</span>
-        <a href="https://t.me/BossX_Official" class="social-link"><img src="https://simpleicons.org/icons/telegram.svg" class="social-icon"/></a>
-        <a href="https://twitter.com/BossX_Official" class="social-link"><img src="https://simpleicons.org/icons/twitter.svg" class="social-icon"/></a>
-      </div>
+  <div class="container">
+    <aside>
+      <a href="#" class="nav-item active" data-page="deposit">💰 Deposit</a>
+      <a href="#" class="nav-item" data-page="withdraw">💸 Withdrawal</a>
+      <a href="#" class="nav-item" data-page="peer">🤝 Peer to Peer</a>
     </aside>
-
-    <div class="content">
-      <header>
-        <div class="header-left">
-          <div id="realTimeClock">--:--:--</div>
-          <button id="themeToggle" class="btn">🌙</button>
-        </div>
-        <div class="user-info">
-          <img src="https://i.ibb.co/gbVsGLy0/FB-IMG-1617237754232.jpg" alt="Avatar"/>
-          <div class="info-text">
-            <h2>Fery Muliawan</h2>
-            <p>Validator ID: 8055</p>
-          </div>
-        </div>
-      </header>
-
-      <div class="crypto-ticker">
-        <div id="cryptoTicker" class="ticker-track"></div>
-      </div>
-      <main>
-        <!-- Deposit Page -->
-        <section id="deposit" class="page active deposit-section">
-          <!-- Deposit BTC -->
-          <div class="deposit-card">
-            <div class="qr-box">
-              <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=bc1qv0zj..." alt="QR BTC" class="qr">
-            </div>
-            <div class="info">
-              <h2>Deposit BossX</h2>
-              <p><strong>Network:</strong> BossX</p>
-              <p><strong>Address:</strong> <span class="wallet">bc1qv0zj...</span></p>
-              <p><strong>Minimum:</strong> 1 BossX</p>
-              <p class="note">Note: Use BossX network only</p>
-              <button class="copy-btn" onclick="copyAddress('.wallet')">Copy Address</button>
-            </div>
-          </div>
-
-          <!-- Deposit USDT -->
-          <div class="deposit-card">
-            <div class="qr-box">
-              <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=TXrMZQk..." alt="QR USDT" class="qr">
-            </div>
-            <div class="info">
-              <h2>Deposit USDT</h2>
-              <p><strong>Network:</strong> TRC20</p>
-              <p><strong>Address:</strong> <span class="wallet">TXrMZQk...</span></p>
-              <p><strong>Minimum:</strong> 1 USDT</p>
-              <p class="note">Note: Use TRC20 network only</p>
-              <button class="copy-btn" onclick="copyAddress('.wallet')">Copy Address</button>
-            </div>
-          </div>
-        </section>
-
-        <!-- Withdrawal Page -->
-        <section id="withdraw" class="page withdraw-section">
-          <h2>Method Withdrawal USDT</h2>
-          <form class="withdraw-form" onsubmit="event.preventDefault(); submitWithdrawal();">
-            <label for="withdrawWallet">Alamat Wallet:</label>
-            <input type="text" id="withdrawWallet" placeholder="Masukkan alamat wallet">
-
-            <label for="bankName">Nama Bank:</label>
-            <input type="text" id="bankName" placeholder="Masukkan nama bank">
-
-            <label for="accountName">Nama Pemilik Rekening:</label>
-            <input type="text" id="accountName" placeholder="Masukkan nama pemilik rekening">
-
-            <label for="withdrawAmount">Jumlah Penarikan (USDT):</label>
-            <input type="number" id="withdrawAmount" placeholder="Contoh: 50">
-
-            <button type="submit" class="submit-btn">Submit</button>
-          </form>
-        </section>
-
-        <!-- Peer to Peer Page -->
-        <section id="peer" class="page">
-          <div class="card">
-            <h2>Halaman Peer to Peer</h2>
-            <p>Fitur transaksi antar pengguna akan ditampilkan di sini.</p>
-          </div>
-        </section>
-
-        <div class="footer">©2025 BossX • Dashboard</div>
-      </main>
-    </div>
+    <main>
+      <section id="deposit" class="page active">
+        <h1>Halaman Deposit</h1>
+        <p>Konten deposit akan ditaruh di sini.</p>
+      </section>
+      <section id="withdraw" class="page">
+        <h1>Halaman Withdrawal</h1>
+        <p>Konten withdrawal akan ditaruh di sini.</p>
+      </section>
+      <section id="peer" class="page">
+        <h1>Halaman Peer to Peer</h1>
+        <p>Konten P2P akan ditaruh di sini.</p>
+      </section>
+    </main>
   </div>
-  <style>
-    /* ===== Layout Deposit Baru ===== */
-    .deposit-section {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      padding: var(--gap);
-    }
-    .deposit-card {
-      display: flex;
-      gap: 16px;
-      background: var(--card-bg);
-      padding: 16px;
-      border-radius: var(--radius);
-      border: 1px solid var(--card-border);
-      align-items: center;
-    }
-    .qr-box {
-      flex-shrink: 0;
-    }
-    .qr {
-      width: 180px;
-      height: 180px;
-      border: 4px solid var(--color-accent);
-      border-radius: var(--radius);
-      background: white;
-      padding: 8px;
-    }
-    .info {
-      flex: 1;
-    }
-    .wallet {
-      background: rgba(255,255,255,0.1);
-      padding: 4px 6px;
-      border-radius: 4px;
-      display: inline-block;
-      font-family: monospace;
-    }
-    .copy-btn, .submit-btn {
-      background: var(--color-accent);
-      color: var(--color-primary);
-      border: none;
-      padding: 8px 12px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: bold;
-      margin-top: 8px;
-    }
-    .note {
-      font-size: 0.85rem;
-      font-style: italic;
-      opacity: 0.85;
-      margin-top: 4px;
-    }
-
-    /* ===== Layout Withdrawal ===== */
-    .withdraw-section {
-      padding: var(--gap);
-    }
-    .withdraw-form {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      max-width: 400px;
-    }
-    .withdraw-form label {
-      font-weight: bold;
-      margin-top: 8px;
-    }
-    .withdraw-form input, 
-    .withdraw-form select {
-      width: 100%;
-      padding: 8px;
-      border-radius: 6px;
-      border: 1px solid var(--color-accent);
-      background: rgba(255,255,255,0.1);
-      color: var(--color-accent);
-    }
-
-    /* ===== Responsif ===== */
-    @media (max-width: 768px) {
-      .deposit-card {
-        flex-direction: column;
-        text-align: center;
-      }
-    }
-
-    /* ===== Toast Notification ===== */
-    .toast {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: var(--color-accent);
-      color: var(--color-primary);
-      padding: 10px 14px;
-      border-radius: 6px;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity .3s;
-      z-index: 9999;
-    }
-    .toast.show { opacity: 1; }
-  </style>
-
-  <div class="toast" id="toast">Alamat berhasil disalin!</div>
 
   <script>
-    // Toggle sidebar
-    document.getElementById('toggleSidebar').onclick = () =>
-      document.getElementById('container').classList.toggle('collapsed');
-
-    // Navigasi antar halaman
-    document.querySelectorAll('.nav-item').forEach(a => {
-      a.onclick = () => {
-        document.querySelectorAll('.nav-item').forEach(x => x.classList.remove('active'));
-        a.classList.add('active');
-        const page = a.dataset.page;
-        document.querySelectorAll('section.page').forEach(s => s.classList.remove('active'));
-        document.getElementById(page).classList.add('active');
-      };
-    });
-
-    // Jam real-time
-    function updateClock() {
-      document.getElementById('realTimeClock').textContent =
-        new Date().toLocaleTimeString('id-ID', {
-          hour: '2-digit',
-          minute: '2-digit',
-          second: '2-digit'
-        });
-    }
-    updateClock();
-    setInterval(updateClock, 1000);
-
-    // Copy address + toast
-    function copyAddress(selector) {
-      const text = document.querySelector(selector).textContent.trim();
-      navigator.clipboard.writeText(text).then(() => {
-        const t = document.getElementById('toast');
-        t.classList.add('show');
-        setTimeout(() => t.classList.remove('show'), 2000);
+    document.querySelectorAll('.nav-item').forEach(link => {
+      link.addEventListener('click', e => {
+        e.preventDefault();
+        // Hapus active dari semua menu
+        document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+        // Tambah active ke menu yang diklik
+        link.classList.add('active');
+        // Sembunyikan semua halaman
+        document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+        // Tampilkan halaman sesuai menu
+        const target = link.dataset.page;
+        document.getElementById(target).classList.add('active');
       });
-    }
-
-    // Dummy ticker
-    (function () {
-      const coins = {
-        'BOSSX/USDT': 1,
-        'BTC/USDT': 62000,
-        'ETH/USDT': 4295.88
-      };
-      const track = document.getElementById('cryptoTicker');
-      const keys = Object.keys(coins);
-      function fmt(p) {
-        return p >= 1 ? p.toFixed(2) : p.toFixed(6).replace(/0+$/, '').replace(/\.$/, '') || '0';
-      }
-      track.innerHTML = keys.concat(keys).map(k =>
-        `<span class="ticker-item">
-           <span>${k}</span><span class="ticker-sep">•</span>
-           <span class="price-up">${fmt(coins[k])} USDT</span>
-         </span>`
-      ).join('');
-    })();
-
-    // Validasi form withdrawal
-    function submitWithdrawal() {
-      const wallet = document.getElementById('withdrawWallet').value.trim();
-      const bank = document.getElementById('bankName').value.trim();
-      const account = document.getElementById('accountName').value.trim();
-      const amount = document.getElementById('withdrawAmount').value.trim();
-
-      if (!wallet || !bank || !account || !amount) {
-        alert("Mohon isi semua data terlebih dahulu.");
-        return;
-      }
-      if (parseFloat(amount) < 10) {
-        alert("Minimal penarikan adalah 10 USDT.");
-        return;
-      }
-      alert(`Permintaan penarikan sebesar ${amount} USDT ke rekening ${account} (${bank}) berhasil dikirim.`);
-    }
+    });
   </script>
 </body>
 </html>
