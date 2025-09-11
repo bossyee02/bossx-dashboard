@@ -39,10 +39,10 @@
       flex: 1;
       padding: 20px;
     }
-    /* Halaman default tersembunyi */
     .page { display: none; }
     .page.active { display: block; }
-    /* ===== Deposit ===== */
+
+    /* Deposit */
     .deposit-section {
       display: flex;
       flex-direction: column;
@@ -98,7 +98,7 @@
       }
     }
 
-    /* ===== Withdrawal ===== */
+    /* Withdrawal */
     .withdraw-section {
       padding: 20px 0;
     }
@@ -121,7 +121,7 @@
       color: var(--color-accent);
     }
 
-    /* ===== Peer to Peer ===== */
+    /* Peer to Peer */
     .peer-section {
       padding: 20px 0;
     }
@@ -158,47 +158,35 @@
 </head>
 <body>
   <div class="container">
-    <!-- Sidebar -->
     <aside>
       <a href="#" class="nav-item active" data-page="deposit">💰 Deposit</a>
       <a href="#" class="nav-item" data-page="withdraw">💸 Withdrawal</a>
       <a href="#" class="nav-item" data-page="peer">🤝 Peer to Peer</a>
     </aside>
-
-    <!-- Konten Utama -->
     <main>
       <!-- Deposit -->
       <section id="deposit" class="page active deposit-section">
-        <!-- Deposit BossX -->
         <div class="deposit-card">
           <div class="qr-box">
-            <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=BOSSX_FULL_ADDRESS" 
-                 alt="QR BossX" class="qr">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=BOSSX_FULL_ADDRESS" alt="QR BossX" class="qr">
           </div>
           <div class="info">
             <h2>Deposit BossX</h2>
             <p><strong>Network:</strong> BossX Mainnet</p>
-            <p><strong>Address:</strong> 
-              <span class="wallet" id="wallet-bossx">BOSSX_FULL_ADDRESS</span>
-            </p>
+            <p><strong>Address:</strong> <span class="wallet" id="wallet-bossx">BOSSX_FULL_ADDRESS</span></p>
             <p><strong>Minimum:</strong> 10 BOSSX</p>
             <p class="note">Note: Gunakan jaringan BossX Mainnet saja</p>
             <button class="copy-btn" onclick="copyAddress('#wallet-bossx')">Copy Address</button>
           </div>
         </div>
-
-        <!-- Deposit USDT -->
         <div class="deposit-card">
           <div class="qr-box">
-            <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=USDT_FULL_ADDRESS" 
-                 alt="QR USDT" class="qr">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=USDT_FULL_ADDRESS" alt="QR USDT" class="qr">
           </div>
           <div class="info">
             <h2>Deposit USDT</h2>
             <p><strong>Network:</strong> TRC20</p>
-            <p><strong>Address:</strong> 
-              <span class="wallet" id="wallet-usdt">USDT_FULL_ADDRESS</span>
-            </p>
+            <p><strong>Address:</strong> <span class="wallet" id="wallet-usdt">USDT_FULL_ADDRESS</span></p>
             <p><strong>Minimum:</strong> 1 USDT</p>
             <p class="note">Note: Gunakan jaringan TRC20 saja</p>
             <button class="copy-btn" onclick="copyAddress('#wallet-usdt')">Copy Address</button>
@@ -230,18 +218,14 @@
       <section id="peer" class="page peer-section">
         <h2>Halaman Peer to Peer</h2>
         <p>Gunakan fitur ini untuk melakukan transaksi langsung antar pengguna BossX.</p>
-
         <form class="p2p-form" onsubmit="event.preventDefault(); submitP2P();">
           <label for="p2pRecipient">Alamat Wallet Penerima:</label>
           <input type="text" id="p2pRecipient" placeholder="Masukkan alamat wallet BossX penerima">
-
           <label for="p2pAmount">Jumlah (BOSSX):</label>
           <input type="number" id="p2pAmount" placeholder="Contoh: 50">
-
           <button type="submit" class="send-btn">Kirim</button>
-        </form>
-
-        <h3>Riwayat Transaksi P2P</h3>
+        </form
+                  <h3>Riwayat Transaksi P2P</h3>
         <table class="p2p-table">
           <thead>
             <tr>
@@ -263,24 +247,21 @@
       </section>
     </main>
   </div>
+
   <script>
-    // Navigasi antar halaman
+    // Navigasi antar halaman (pastikan hanya satu .active)
     document.querySelectorAll('.nav-item').forEach(link => {
       link.addEventListener('click', e => {
         e.preventDefault();
-        // Hapus active dari semua menu
         document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
-        // Tambah active ke menu yang diklik
         link.classList.add('active');
-        // Sembunyikan semua halaman
         document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
-        // Tampilkan halaman sesuai menu
         const target = link.dataset.page;
         document.getElementById(target).classList.add('active');
       });
     });
 
-    // Fungsi copy address
+    // Copy address per wallet
     function copyAddress(selector) {
       const el = document.querySelector(selector);
       if (!el) return;
@@ -308,7 +289,7 @@
       alert(`Permintaan penarikan sebesar ${amount} USDT ke rekening ${account} (${bank}) berhasil dikirim.`);
     }
 
-    // Fungsi Peer to Peer
+    // Kirim P2P + tambah riwayat
     function submitP2P() {
       const recipient = document.getElementById('p2pRecipient').value.trim();
       const amount = document.getElementById('p2pAmount').value.trim();
@@ -322,7 +303,6 @@
         return;
       }
 
-      // Tambahkan ke riwayat (dummy)
       const history = document.getElementById('p2pHistory');
       const row = document.createElement('tr');
       row.innerHTML = `
