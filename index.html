@@ -151,28 +151,32 @@
       <main>
         <!-- Deposit Page -->
         <section id="deposit" class="page active deposit-section">
-          <!-- Deposit USDT -->
+          <!-- Deposit BTC -->
           <div class="deposit-card">
-            <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=TXrMZQkYkzZbYwzZbZbZbZbZbZbZbZbZbZb" alt="QR USDT" class="qr">
+            <div class="qr-box">
+              <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=bc1qv0zj..." alt="QR BTC" class="qr">
+            </div>
             <div class="info">
-              <h2>Deposit USDT</h2>
-              <p><strong>Network:</strong> TRC20</p>
-              <p><strong>Address:</strong> <span class="wallet">TXrMZQkYkzZbYwzZbZbZbZbZbZbZbZbZbZb</span></p>
-              <p><strong>Minimum:</strong> 1 USDT</p>
-              <p class="note">Note: Use TRC20 network only</p>
+              <h2>Deposit BossX</h2>
+              <p><strong>Network:</strong> BossX</p>
+              <p><strong>Address:</strong> <span class="wallet">bc1qv0zj...</span></p>
+              <p><strong>Minimum:</strong> 1 BossX</p>
+              <p class="note">Note: Use BossX network only</p>
               <button class="copy-btn" onclick="copyAddress('.wallet')">Copy Address</button>
             </div>
           </div>
 
-          <!-- Deposit BTC -->
+          <!-- Deposit USDT -->
           <div class="deposit-card">
-            <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa" alt="QR BTC" class="qr">
+            <div class="qr-box">
+              <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=TXrMZQk..." alt="QR USDT" class="qr">
+            </div>
             <div class="info">
-              <h2>Deposit BTC</h2>
-              <p><strong>Network:</strong> BTC</p>
-              <p><strong>Address:</strong> <span class="wallet">1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa</span></p>
-              <p><strong>Minimum:</strong> 0.0001 BTC</p>
-              <p class="note">Note: Use BTC network only</p>
+              <h2>Deposit USDT</h2>
+              <p><strong>Network:</strong> TRC20</p>
+              <p><strong>Address:</strong> <span class="wallet">TXrMZQk...</span></p>
+              <p><strong>Minimum:</strong> 1 USDT</p>
+              <p class="note">Note: Use TRC20 network only</p>
               <button class="copy-btn" onclick="copyAddress('.wallet')">Copy Address</button>
             </div>
           </div>
@@ -210,124 +214,3 @@
       </main>
     </div>
   </div>
-  <style>
-    /* Tambahan styling untuk catatan di deposit */
-    .note {
-      font-size: 0.85rem;
-      font-style: italic;
-      opacity: 0.85;
-      margin-top: 4px;
-    }
-
-    /* Styling form withdrawal */
-    .withdraw-form label {
-      font-weight: bold;
-      margin-top: 8px;
-    }
-    .withdraw-form input, 
-    .withdraw-form select {
-      width: 100%;
-      padding: 8px;
-      border-radius: 6px;
-      border: 1px solid var(--color-accent);
-      background: rgba(255,255,255,0.1);
-      color: var(--color-accent);
-    }
-
-    /* Toast notification */
-    .toast {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: var(--color-accent);
-      color: var(--color-primary);
-      padding: 10px 14px;
-      border-radius: 6px;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity .3s;
-      z-index: 9999;
-    }
-    .toast.show { opacity: 1; }
-  </style>
-
-  <div class="toast" id="toast">Alamat berhasil disalin!</div>
-
-  <script>
-    // Toggle sidebar
-    document.getElementById('toggleSidebar').onclick = () =>
-      document.getElementById('container').classList.toggle('collapsed');
-
-    // Navigasi antar halaman
-    document.querySelectorAll('.nav-item').forEach(a => {
-      a.onclick = () => {
-        document.querySelectorAll('.nav-item').forEach(x => x.classList.remove('active'));
-        a.classList.add('active');
-        const page = a.dataset.page;
-        document.querySelectorAll('section.page').forEach(s => s.classList.remove('active'));
-        document.getElementById(page).classList.add('active');
-      };
-    });
-
-    // Jam real-time
-    function updateClock() {
-      document.getElementById('realTimeClock').textContent =
-        new Date().toLocaleTimeString('id-ID', {
-          hour: '2-digit',
-          minute: '2-digit',
-          second: '2-digit'
-        });
-    }
-    updateClock();
-    setInterval(updateClock, 1000);
-
-    // Copy address + toast
-    function copyAddress(selector) {
-      const text = document.querySelector(selector).textContent.trim();
-      navigator.clipboard.writeText(text).then(() => {
-        const t = document.getElementById('toast');
-        t.classList.add('show');
-        setTimeout(() => t.classList.remove('show'), 2000);
-      });
-    }
-
-    // Dummy ticker
-    (function () {
-      const coins = {
-        'BOSSX/USDT': 1,
-        'BTC/USDT': 62000,
-        'ETH/USDT': 4295.88
-      };
-      const track = document.getElementById('cryptoTicker');
-      const keys = Object.keys(coins);
-      function fmt(p) {
-        return p >= 1 ? p.toFixed(2) : p.toFixed(6).replace(/0+$/, '').replace(/\.$/, '') || '0';
-      }
-      track.innerHTML = keys.concat(keys).map(k =>
-        `<span class="ticker-item">
-           <span>${k}</span><span class="ticker-sep">•</span>
-           <span class="price-up">${fmt(coins[k])} USDT</span>
-         </span>`
-      ).join('');
-    })();
-
-    // Validasi form withdrawal
-    function submitWithdrawal() {
-      const wallet = document.getElementById('withdrawWallet').value.trim();
-      const bank = document.getElementById('bankName').value.trim();
-      const account = document.getElementById('accountName').value.trim();
-      const amount = document.getElementById('withdrawAmount').value.trim();
-
-      if (!wallet || !bank || !account || !amount) {
-        alert("Mohon isi semua data terlebih dahulu.");
-        return;
-      }
-      if (parseFloat(amount) < 10) {
-        alert("Minimal penarikan adalah 10 USDT.");
-        return;
-      }
-      alert(`Permintaan penarikan sebesar ${amount} USDT ke rekening ${account} (${bank}) berhasil dikirim.`);
-    }
-  </script>
-</body>
-</html>
