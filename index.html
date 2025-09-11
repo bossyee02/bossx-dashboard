@@ -262,10 +262,10 @@
               <div class="card">
                 <h2>Deposit USDT</h2>
                 <div class="qr-container">
-                  <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=0x8C2C3eC2dB0bBf3fA2eA2b8f3e3e3e3e3e3e3e3e"
+                  <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=TQ2h6Z1ZbZbZbZbZbZbZbZbZbZbZbZbZbZbZbZbZbZbZbZbZbZbZbZbZbZbZbZbZbZbZbZb"
                        alt="QR USDT"/>
                   <div class="wallet-address" id="usdtAddress">
-                    0x8C2C3eC2dB0bBf3fA2eA2b8f3e3e3e3e3e3e3e3e
+                    TQ2h6Z1ZbZbZbZbZbZbZbZbZbZbZbZbZbZbZbZbZbZbZbZbZbZbZbZb
                   </div>
                   <button class="copy-btn" onclick="copyAddress('usdtAddress')">Copy Address</button>
                 </div>
@@ -413,7 +413,6 @@
                 <td>42.00000000</td>
                 <td>✅ Selesai</td>
               </tr>
-              <!-- Tambahkan baris lain sesuai data -->
             </tbody>
           </table>
         </div>
@@ -449,7 +448,8 @@
       document.getElementById('realTimeClock').textContent =
         new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
     }
-    updateClock(); setInterval(updateClock, 1000);
+    updateClock();
+    setInterval(updateClock, 1000);
 
     // Copy address + toast
     function copyAddress(id) {
