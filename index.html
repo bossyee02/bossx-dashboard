@@ -343,7 +343,7 @@
 
         <div class="left-column">
           <div class="card">
-            <h2>Validasi Running</h2>
+            <h2>Validasi Running (Estimasi)</h2>
             <div class="saldo-value" id="mining">0.000000000 BossX</div>
             <div class="timer" id="stopCountdown">Belum berjalan</div>
             <div class="btn-container">
@@ -682,14 +682,6 @@
         container.classList.toggle("collapsed");
       });
 
-      // Simulasi log acak (hanya jalan saat mining aktif)
-      const fakeLogIntervals = [
-        { msg: "🔄 Syncing with pool...", interval: 8000 },
-        { msg: "⚠️ Low network latency: 87ms", interval: 12000 },
-        { msg: "🔥 GPU temp rising... (68°C)", interval: 15000 },
-        { msg: "✅ Share accepted! (+0.000012 BossX)", interval: 18000 }
-      ];
-
       // Fungsi log terminal dengan warna variatif
       function logToTerminal(message) {
         const now = new Date();
@@ -707,6 +699,16 @@
         const entry = `<span style="color: ${color};">[${time}] ${message}</span>\n`;
         terminalLog.innerHTML += entry;
         terminalLog.scrollTop = terminalLog.scrollHeight;
+      }
+
+      // Update kontrak secara real-time
+      function updateContractTime() {
+        if (!contractEndTime) return;
+        const diff = contractEndTime - Date.now();
+        const secondsLeft = Math.floor(diff / 1000);
+        const formatted = secondsLeft.toLocaleString('id-ID') + ' detik';
+        const contractEl = document.getElementById('contractTime');
+        if (contractEl) contractEl.textContent = formatted;
       }
 
       // Buy package
@@ -733,12 +735,15 @@
           <td>${w.tanggal} ${w.jam}</td>
           <td>${num} BossX</td>
           <td>Aktivkan Masternode</td>
-          <td><span id="${countdownId}">${contractSeconds.toLocaleString('id-ID')} detik</span></td>
+          <td><span id="contractTime">${contractSeconds.toLocaleString('id-ID')} detik</span></td>
         `;
         walletHistory.prepend(row);
 
         historyCountdowns.push({ id: countdownId, secondsLeft: contractSeconds, intervalId: null });
         buyBtn.disabled = true;
+
+        // Mulai update waktu kontrak
+        setInterval(updateContractTime, 1000);
       });
 
       // ON/OFF button
@@ -765,14 +770,14 @@
           startContractCountdown();
           startDailyCheck();
 
-          // Jalankan simulasi log acak
-          fakeLogIntervals.forEach(item => {
-            setInterval(() => {
-              if (isMiningActive) {
-                logToTerminal(item.msg);
-              }
-            }, item.interval);
-          });
+          // Mulai akumulasi mining per detik (untuk visual)
+          let miningInterval = setInterval(() => {
+            if (!isMiningActive) return clearInterval(miningInterval);
+            mining += rewardPerSecond;
+            miningLabel.textContent = mining.toFixed(9) + " BossX";
+            miningLabel.style.opacity = 0.8;
+            setTimeout(() => miningLabel.style.opacity = 1, 100);
+          }, 1000);
         }
       });
 
@@ -803,30 +808,39 @@
         }, 1000);
       }
 
-      // Auto-claim
+      // Auto-claim — HITUNG EKSAK SETIAP 60 DETIK
+      let countdown = 60;
       const claimInterval = setInterval(() => {
         if (!isMiningActive) return clearInterval(claimInterval);
-        if (mining > 0) {
-          const rewardAmount = mining; // simpan nilai sebelum reset
-          balance += mining;
+
+        // Update timer
+        countdown--;
+        countdownLabel.textContent = `Auto-claim: ${countdown}s`;
+        if (countdown <= 0) countdown = 60;
+
+        // ✅ HITUNG REWARD EKSAK PER CLAIM — TIDAK TERGANTUNG mining
+        const rewardPerClaim = rewardPerSecond * 60;
+        if (rewardPerClaim > 0) {
+          balance += rewardPerClaim;
           const w = formatNow();
           const r = document.createElement("tr");
           r.innerHTML = `
             <td>${w.hari}</td>
             <td>${w.tanggal}</td>
             <td>${w.jam}</td>
-            <td>+${rewardAmount.toFixed(9)} BossX</td>
+            <td>+${rewardPerClaim.toFixed(9)} BossX</td>
             <td>✅</td>
           `;
           historyBody.prepend(r);
+          
+          // Reset mining agar tampilan tetap konsisten
           mining = 0;
           miningLabel.textContent = "0.000000000 BossX";
           balanceLabel.textContent = balance.toFixed(9) + " BossX";
           
-          // Log real-time auto-claim
-          logToTerminal(`💰 Auto-claim: +${rewardAmount.toFixed(9)} BossX → Balance: ${balance.toFixed(9)} BossX`);
+          logToTerminal(`💰 Auto-claim: +${rewardPerClaim.toFixed(9)} BossX → Balance: ${balance.toFixed(9)} BossX`);
         }
-      }, 60000);
+      }, 1000);
 
       // Convert
       convertBtn.addEventListener("click", () => {
