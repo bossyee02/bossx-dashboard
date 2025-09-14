@@ -579,40 +579,52 @@
 
     // ===== DASHBOARD SCRIPT ASLI =====
     document.addEventListener("DOMContentLoaded", () => {
-      // Real-time clock
+      // Real-time clock — anti-error
       function updateRealTimeClock() {
-        const now = new Date();
-        const days   = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
-        const months = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
-        const hari    = days[now.getDay()];
-        const tanggal = now.getDate();
-        const bulan   = months[now.getMonth()];
-        const tahun   = now.getFullYear();
-        const jam     = String(now.getHours()).padStart(2,'0');
-        const menit   = String(now.getMinutes()).padStart(2,'0');
-        const detik   = String(now.getSeconds()).padStart(2,'0');
-        document.getElementById("realTimeClock").textContent =
-          `${hari}, ${tanggal} ${bulan} ${tahun} — ${jam}:${menit}:${detik}`;
+        try {
+          const now = new Date();
+          const days = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
+          const months = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
+          const hari = days[now.getDay()];
+          const tanggal = now.getDate();
+          const bulan = months[now.getMonth()];
+          const tahun = now.getFullYear();
+          const jam = String(now.getHours()).padStart(2, '0');
+          const menit = String(now.getMinutes()).padStart(2, '0');
+          const detik = String(now.getSeconds()).padStart(2, '0');
+          const el = document.getElementById("realTimeClock");
+          if (el) el.textContent = `${hari}, ${tanggal} ${bulan} ${tahun} — ${jam}:${menit}:${detik}`;
+        } catch (e) {
+          console.error("Error updateRealTimeClock:", e);
+        }
       }
-      setInterval(updateRealTimeClock, 1000);
-      updateRealTimeClock();
+      if (document.getElementById("realTimeClock")) {
+        setInterval(updateRealTimeClock, 1000);
+        updateRealTimeClock();
+      }
 
-      // Dark mode toggle
+      // Dark mode toggle — anti-error
       const themeToggle = document.getElementById("themeToggle");
       const root = document.documentElement;
-      const savedTheme = localStorage.getItem("theme");
-      if (savedTheme === "dark") root.setAttribute("data-theme","dark");
-      function updateToggleIcon() {
-        const isDark = root.getAttribute("data-theme")==="dark";
-        themeToggle.textContent = isDark ? "☀️" : "🌙";
-      }
-      updateToggleIcon();
-      themeToggle.addEventListener("click", () => {
-        const isDark = root.getAttribute("data-theme")==="dark";
-        root.setAttribute("data-theme", isDark ? "light" : "dark");
-        localStorage.setItem("theme", isDark ? "light" : "dark");
+
+      if (themeToggle) {
+        const savedTheme = localStorage.getItem("theme");
+        if (savedTheme === "dark") root.setAttribute("data-theme", "dark");
+
+        function updateToggleIcon() {
+          const isDark = root.getAttribute("data-theme") === "dark";
+          themeToggle.textContent = isDark ? "☀️" : "🌙";
+        }
+
         updateToggleIcon();
-      });
+
+        themeToggle.addEventListener("click", () => {
+          const isDark = root.getAttribute("data-theme") === "dark";
+          root.setAttribute("data-theme", isDark ? "light" : "dark");
+          localStorage.setItem("theme", isDark ? "light" : "dark");
+          updateToggleIcon();
+        });
+      }
 
       // Elements & vars
       const amountInput    = document.getElementById("amountInput");
@@ -678,9 +690,11 @@
       }
 
       // Toggle sidebar
-      toggleBtn.addEventListener("click", () => {
-        container.classList.toggle("collapsed");
-      });
+      if (toggleBtn && container) {
+        toggleBtn.addEventListener("click", () => {
+          container.classList.toggle("collapsed");
+        });
+      }
 
       // Fungsi log terminal dengan warna variatif
       function logToTerminal(message) {
@@ -697,8 +711,8 @@
         else if (message.includes("🛑 Stop")) color = "#ff3333";         // red
 
         const entry = `<span style="color: ${color};">[${time}] ${message}</span>\n`;
-        terminalLog.innerHTML += entry;
-        terminalLog.scrollTop = terminalLog.scrollHeight;
+        if (terminalLog) terminalLog.innerHTML += entry;
+        if (terminalLog) terminalLog.scrollTop = terminalLog.scrollHeight;
       }
 
       // Update kontrak secara real-time
@@ -712,74 +726,78 @@
       }
 
       // Buy package
-      buyBtn.addEventListener("click", () => {
-        const raw = amountInput.value.trim();
-        if (!raw) return alert("Masukkan jumlah BossX.");
-        const normalized = raw.replace(/\s+/g, '').replace(/bossx$/i, 'bossX');
-        const num = parseFloat(normalized.replace(/bossX$/i, ''));
-        if (isNaN(num) || num < 50) return alert("Minimal paket adalah 50 BossX.");
-        if (hasPackage) return alert("Paket hanya dapat diaktifkan sekali.");
+      if (buyBtn && amountInput) {
+        buyBtn.addEventListener("click", () => {
+          const raw = amountInput.value.trim();
+          if (!raw) return alert("Masukkan jumlah BossX.");
+          const normalized = raw.replace(/\s+/g, '').replace(/bossx$/i, 'bossX');
+          const num = parseFloat(normalized.replace(/bossX$/i, ''));
+          if (isNaN(num) || num < 50) return alert("Minimal paket adalah 50 BossX.");
+          if (hasPackage) return alert("Paket hanya dapat diaktifkan sekali.");
 
-        hasPackage = true;
-        rewardPerSecond = (num * monthlyYieldRate) / contractSeconds;
-        walletBossX += num;
-        walletLabel.textContent = normalized;
+          hasPackage = true;
+          rewardPerSecond = (num * monthlyYieldRate) / contractSeconds;
+          walletBossX += num;
+          walletLabel.textContent = normalized;
 
-        contractEndTime = Date.now() + contractSeconds * 1000;
+          contractEndTime = Date.now() + contractSeconds * 1000;
 
-        const countdownId = "countdown_" + Date.now();
-        const w = formatNow();
-        const row = document.createElement("tr");
-        row.innerHTML = `
-          <td>${w.hari}</td>
-          <td>${w.tanggal} ${w.jam}</td>
-          <td>${num} BossX</td>
-          <td>Aktivkan Masternode</td>
-          <td><span id="contractTime">${contractSeconds.toLocaleString('id-ID')} detik</span></td>
-        `;
-        walletHistory.prepend(row);
+          const countdownId = "countdown_" + Date.now();
+          const w = formatNow();
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${w.hari}</td>
+            <td>${w.tanggal} ${w.jam}</td>
+            <td>${num} BossX</td>
+            <td>Aktivkan Masternode</td>
+            <td><span id="contractTime">${contractSeconds.toLocaleString('id-ID')} detik</span></td>
+          `;
+          if (walletHistory) walletHistory.prepend(row);
 
-        historyCountdowns.push({ id: countdownId, secondsLeft: contractSeconds, intervalId: null });
-        buyBtn.disabled = true;
+          historyCountdowns.push({ id: countdownId, secondsLeft: contractSeconds, intervalId: null });
+          buyBtn.disabled = true;
 
-        // Mulai update waktu kontrak
-        setInterval(updateContractTime, 1000);
-      });
+          // Mulai update waktu kontrak
+          setInterval(updateContractTime, 1000);
+        });
+      }
 
       // ON/OFF button
-      onBtn.addEventListener("click", () => {
-        if (!hasPackage) return alert("Aktifkan paket terlebih dahulu.");
+      if (onBtn) {
+        onBtn.addEventListener("click", () => {
+          if (!hasPackage) return alert("Aktifkan paket terlebih dahulu.");
 
-        if (isMiningActive) {
-          // STOP
-          isMiningActive = false;
-          onBtn.disabled = false;
-          onBtn.classList.remove("active");
-          stopLabel.textContent = "Stop running validasi";
-          logToTerminal("🛑 Stop running validasi");
-        } else {
-          // START
-          isMiningActive = true;
-          onBtn.disabled = true;
-          onBtn.classList.add("active");
-          stopCountdown = getSecondsToNext6AM();
-          countdown = 60;
-          stopLabel.textContent = `Stop validasi jam 06:00 dalam: ${formatTime(stopCountdown)}`;
-          logToTerminal("🚀 Masternode ON | Hash: 1.25 KH/s | Temp: 62°C");
+          if (isMiningActive) {
+            isMiningActive = false;
+            onBtn.disabled = false;
+            onBtn.classList.remove("active");
+            stopLabel.textContent = "Stop running validasi";
+            if (terminalLog) logToTerminal("🛑 Stop running validasi");
+          } else {
+            isMiningActive = true;
+            onBtn.disabled = true;
+            onBtn.classList.add("active");
+            stopCountdown = getSecondsToNext6AM();
+            countdown = 60;
+            stopLabel.textContent = `Stop validasi jam 06:00 dalam: ${formatTime(stopCountdown)}`;
+            if (terminalLog) logToTerminal("🚀 Masternode ON | Hash: 1.25 KH/s | Temp: 62°C");
 
-          startContractCountdown();
-          startDailyCheck();
+            startContractCountdown();
+            startDailyCheck();
 
-          // Mulai akumulasi mining per detik (untuk visual)
-          let miningInterval = setInterval(() => {
-            if (!isMiningActive) return clearInterval(miningInterval);
-            mining += rewardPerSecond;
-            miningLabel.textContent = mining.toFixed(9) + " BossX";
-            miningLabel.style.opacity = 0.8;
-            setTimeout(() => miningLabel.style.opacity = 1, 100);
-          }, 1000);
-        }
-      });
+            // Mulai akumulasi mining per detik (untuk visual)
+            let miningInterval = setInterval(() => {
+              if (!isMiningActive) return clearInterval(miningInterval);
+              mining += rewardPerSecond;
+              if (miningLabel) {
+                miningLabel.textContent = mining.toFixed(9) + " BossX";
+                miningLabel.style.opacity = 0.8;
+                setTimeout(() => miningLabel.style.opacity = 1, 100);
+              }
+            }, 1000);
+          }
+        });
+      }
 
       function startContractCountdown() {
         if (contractInterval) clearInterval(contractInterval);
@@ -789,7 +807,7 @@
             clearInterval(contractInterval);
             if (dailyCheckInterval) clearInterval(dailyCheckInterval);
             stopLabel.textContent = "Kontrak Berakhir";
-            onBtn.disabled = true;
+            if (onBtn) onBtn.disabled = true;
             isMiningActive = false;
           }
         }, 1000);
@@ -801,73 +819,76 @@
           const now = new Date();
           if (now.getHours() === 6 && now.getMinutes() === 0 && now.getSeconds() === 0) {
             isMiningActive = false;
-            onBtn.disabled = false;
-            onBtn.classList.remove("active");
+            if (onBtn) {
+              onBtn.disabled = false;
+              onBtn.classList.remove("active");
+            }
             stopLabel.textContent = "Masternode OFF - Tekan ON untuk melanjutkan";
           }
         }, 1000);
       }
 
       // Auto-claim — HITUNG EKSAK SETIAP 60 DETIK
-      let countdown = 60;
-      const claimInterval = setInterval(() => {
-        if (!isMiningActive) return clearInterval(claimInterval);
+      countdown = 60;
+      if (countdownLabel && balanceLabel && miningLabel && historyBody && terminalLog) {
+        const claimInterval = setInterval(() => {
+          if (!isMiningActive) return clearInterval(claimInterval);
 
-        // Update timer
-        countdown--;
-        countdownLabel.textContent = `Auto-claim: ${countdown}s`;
-        if (countdown <= 0) countdown = 60;
+          countdown--;
+          countdownLabel.textContent = `Auto-claim: ${countdown}s`;
+          if (countdown <= 0) countdown = 60;
 
-        // ✅ HITUNG REWARD EKSAK PER CLAIM — TIDAK TERGANTUNG mining
-        const rewardPerClaim = rewardPerSecond * 60;
-        if (rewardPerClaim > 0) {
-          balance += rewardPerClaim;
+          const rewardPerClaim = rewardPerSecond * 60;
+          if (rewardPerClaim > 0) {
+            balance += rewardPerClaim;
+            const w = formatNow();
+            const r = document.createElement("tr");
+            r.innerHTML = `
+              <td>${w.hari}</td>
+              <td>${w.tanggal}</td>
+              <td>${w.jam}</td>
+              <td>+${rewardPerClaim.toFixed(9)} BossX</td>
+              <td>✅</td>
+            `;
+            historyBody.prepend(r);
+            
+            mining = 0;
+            if (miningLabel) miningLabel.textContent = "0.000000000 BossX";
+            if (balanceLabel) balanceLabel.textContent = balance.toFixed(9) + " BossX";
+            
+            logToTerminal(`💰 Auto-claim: +${rewardPerClaim.toFixed(9)} BossX → Balance: ${balance.toFixed(9)} BossX`);
+          }
+        }, 1000);
+      }
+
+      // Convert
+      if (convertBtn && balanceLabel) {
+        convertBtn.addEventListener("click", () => {
+          if (balance < 1) return alert("Minimal convert adalah 1 BossX");
+          const usdt = balance * bossXtoUSDT;
+          usdtBalance += usdt;
+          updateUSDTDisplay();
           const w = formatNow();
           const r = document.createElement("tr");
           r.innerHTML = `
             <td>${w.hari}</td>
-            <td>${w.tanggal}</td>
-            <td>${w.jam}</td>
-            <td>+${rewardPerClaim.toFixed(9)} BossX</td>
-            <td>✅</td>
+            <td>${w.tanggal} ${w.jam}</td>
+            <td>${balance.toFixed(9)}</td>
+            <td>${usdt.toFixed(2)}</td>
           `;
-          historyBody.prepend(r);
-          
-          // Reset mining agar tampilan tetap konsisten
-          mining = 0;
-          miningLabel.textContent = "0.000000000 BossX";
-          balanceLabel.textContent = balance.toFixed(9) + " BossX";
-          
-          logToTerminal(`💰 Auto-claim: +${rewardPerClaim.toFixed(9)} BossX → Balance: ${balance.toFixed(9)} BossX`);
-        }
-      }, 1000);
-
-      // Convert
-      convertBtn.addEventListener("click", () => {
-        if (balance < 1) return alert("Minimal convert adalah 1 BossX");
-        const usdt = balance * bossXtoUSDT;
-        usdtBalance += usdt;
-        updateUSDTDisplay();
-        const w = formatNow();
-        const r = document.createElement("tr");
-        r.innerHTML = `
-          <td>${w.hari}</td>
-          <td>${w.tanggal} ${w.jam}</td>
-          <td>${balance.toFixed(9)}</td>
-          <td>${usdt.toFixed(2)}</td>
-        `;
-        convertHistory.prepend(r);
-        balance = 0;
-        balanceLabel.textContent = "0.000000000 BossX";
-      });
+          if (convertHistory) convertHistory.prepend(r);
+          balance = 0;
+          balanceLabel.textContent = "0.000000000 BossX";
+        });
+      }
 
       // Init display
       function initDisplay() {
-        stopLabel.textContent = "Belum berjalan";
-        countdownLabel.textContent = "Auto-claim: 60s";
-        walletLabel.textContent = walletBossX + " BossX";
+        if (stopLabel) stopLabel.textContent = "Belum berjalan";
+        if (countdownLabel) countdownLabel.textContent = "Auto-claim: 60s";
+        if (walletLabel) walletLabel.textContent = walletBossX + " BossX";
         updateUSDTDisplay();
-        logToTerminal("💻 Log Engine Reward siap. Klik ON untuk memulai...");
+        if (terminalLog) logToTerminal("💻 Log Engine Reward siap. Klik ON untuk memulai...");
       }
       initDisplay();
     });
