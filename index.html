@@ -505,7 +505,7 @@
             <input
               type="text"
               id="amountInput"
-              placeholder=" minimal 50 BossX"
+              placeholder=" minimal 10 BossX"
             />
             <div class="btn-container">
               <button class="btn" id="buyBtn">Aktivkan Masternode</button>
@@ -517,7 +517,7 @@
             <div class="saldo-value" id="mining">0.000000000 BossX</div>
             <div class="timer" id="stopCountdown">Belum berjalan</div>
             <div class="btn-container">
-              <button class="power-btn" id="onBtn">
+              <button class="power-btn" id="onBtn" disabled>
                 <svg viewBox="0 0 24 24">
                   <path d="M12 2v10M5.6 5.6a8 8 0 1 0 11.3 0"/>
                 </svg>
@@ -582,7 +582,7 @@
                   <th>Hari</th>
                   <th>Waktu</th>
                   <th>Jumlah</th>
-                  <th>Jenis</th>
+                  <th>Status</th>
                   <th>Masa Akhir Kontrak</th>
                 </tr>
               </thead>
@@ -826,16 +826,13 @@
       let usdtBalance      = 0;
       let countdown        = 60;
       let stopCountdown    = 0;
-
-      let contractEndTime    = null;
-      let contractInterval   = null;
+      let contractEndTime  = null;
+      let contractInterval = null;
       let dailyCheckInterval = null;
 
-      let historyCountdowns = [];
-
-      const monthlyYieldRate = 0.10;
-      const contractSeconds  = 31 * 24 * 60 * 60;
-      const bossXtoUSDT      = 1;
+      const MONTHLY_YIELD_RATE = 0.10; // 10% per month
+      const TOTAL_CONTRACT_SECONDS = 31536000; // 365 days in seconds
+      const BOSSX_TO_USDT = 1;
 
       function formatNow() {
         const d = new Date();
@@ -846,18 +843,14 @@
           jam: d.toLocaleTimeString("id-ID")
         };
       }
-      function getSecondsToNext6AM() {
-        const now = new Date(), target = new Date(now);
-        target.setHours(6,0,0,0);
-        if (now >= target) target.setDate(target.getDate()+1);
-        return Math.floor((target - now)/1000);
-      }
+
       function formatTime(sec) {
         const h = String(Math.floor(sec/3600)).padStart(2,'0'),
               m = String(Math.floor((sec%3600)/60)).padStart(2,'0'),
               s = String(sec%60).padStart(2,'0');
         return `${h}:${m}:${s}`;
       }
+
       function updateUSDTDisplay() {
         usdtLabel.textContent = usdtBalance.toFixed(2) + " USDT";
       }
@@ -882,6 +875,7 @@
         else if (message.includes("🔥")) color = "#ff4500";              // orange-red
         else if (message.includes("🔄")) color = "#9d4edd";              // purple
         else if (message.includes("🛑 Stop")) color = "#ff3333";         // red
+        else if (message.includes("🛑 Kontrak Berakhir")) color = "#ff0000";
 
         const entry = `<span style="color: ${color};">[${time}] ${message}</span>\n`;
         if (terminalLog) terminalLog.innerHTML += entry;
@@ -896,6 +890,16 @@
         const formatted = secondsLeft.toLocaleString('id-ID') + ' detik';
         const contractEl = document.getElementById('contractTime');
         if (contractEl) contractEl.textContent = formatted;
+        
+        // Jika kontrak habis
+        if (secondsLeft <= 0) {
+          clearInterval(contractInterval);
+          if (dailyCheckInterval) clearInterval(dailyCheckInterval);
+          stopLabel.textContent = "Kontrak Berakhir";
+          onBtn.disabled = true;
+          isMiningActive = false;
+          logToTerminal("🛑 Kontrak Berakhir");
+        }
       }
 
       // Buy package
@@ -905,33 +909,30 @@
           if (!raw) return alert("Masukkan jumlah BossX.");
           const normalized = raw.replace(/\s+/g, '').replace(/bossx$/i, 'bossX');
           const num = parseFloat(normalized.replace(/bossX$/i, ''));
-          if (isNaN(num) || num < 50) return alert("Minimal paket adalah 50 BossX.");
-          if (hasPackage) return alert("Paket hanya dapat diaktifkan sekali.");
+          if (isNaN(num) || num < 10) return alert("Minimal aktivasi adalah 10 BossX.");
+
+          if (hasPackage) return alert("Paket sudah aktif. Hanya bisa satu paket.");
 
           hasPackage = true;
-          rewardPerSecond = (num * monthlyYieldRate) / contractSeconds;
-          walletBossX += num;
-          walletLabel.textContent = normalized;
+          walletBossX = num;
+          walletLabel.textContent = num + " BossX";
 
-          contractEndTime = Date.now() + contractSeconds * 1000;
-
-          const countdownId = "countdown_" + Date.now();
+          // Catat di History Aktivasi — BELUM RUNNING
           const w = formatNow();
           const row = document.createElement("tr");
           row.innerHTML = `
             <td>${w.hari}</td>
             <td>${w.tanggal} ${w.jam}</td>
             <td>${num} BossX</td>
-            <td>Aktivkan Masternode</td>
-            <td><span id="contractTime">${contractSeconds.toLocaleString('id-ID')} detik</span></td>
+            <td>Aktivasi - Belum Running</td>
+            <td>—</td>
           `;
-          if (walletHistory) walletHistory.prepend(row);
+          walletHistory.prepend(row);
 
-          historyCountdowns.push({ id: countdownId, secondsLeft: contractSeconds, intervalId: null });
-          buyBtn.disabled = true;
-
-          // Mulai update waktu kontrak
-          setInterval(updateContractTime, 1000);
+          // Aktifkan tombol ON
+          onBtn.disabled = false;
+          stopLabel.textContent = "Tekan ON untuk memulai validasi";
+          logToTerminal(`📦 Paket ${num} BossX berhasil diaktifkan.`);
         });
       }
 
@@ -941,111 +942,101 @@
           if (!hasPackage) return alert("Aktifkan paket terlebih dahulu.");
 
           if (isMiningActive) {
+            // STOP
             isMiningActive = false;
             onBtn.disabled = false;
             onBtn.classList.remove("active");
             stopLabel.textContent = "Stop running validasi";
-            if (terminalLog) logToTerminal("🛑 Stop running validasi");
+            logToTerminal("🛑 Stop running validasi");
           } else {
+            // START
             isMiningActive = true;
             onBtn.disabled = true;
             onBtn.classList.add("active");
-            stopCountdown = getSecondsToNext6AM();
+            
+            // Mulai kontrak mundur dari 31.536.000 detik
+            contractEndTime = Date.now() + TOTAL_CONTRACT_SECONDS * 1000;
+            stopCountdown = TOTAL_CONTRACT_SECONDS;
             countdown = 60;
-            stopLabel.textContent = `Stop validasi jam 06:00 dalam: ${formatTime(stopCountdown)}`;
-            if (terminalLog) logToTerminal("🚀 Masternode ON | Hash: 1.25 KH/s | Temp: 62°C");
+            stopLabel.textContent = `Kontrak berakhir dalam: ${formatTime(stopCountdown)}`;
 
-            startContractCountdown();
-            startDailyCheck();
+            // Hitung reward per detik: (jumlah_paket × 10%) / 31.536.000
+            rewardPerSecond = (walletBossX * MONTHLY_YIELD_RATE) / TOTAL_CONTRACT_SECONDS;
 
-            // Mulai akumulasi mining per detik (untuk visual)
+            // Update History Aktivasi — sekarang RUNNING
+            const w = formatNow();
+            const rows = walletHistory.querySelectorAll('tr');
+            if (rows.length > 0) {
+              rows[0].cells[3].textContent = "Running";
+              rows[0].cells[4].innerHTML = `<span id="contractTime">${TOTAL_CONTRACT_SECONDS.toLocaleString('id-ID')} detik</span>`;
+            }
+
+            // Mulai timer kontrak
+            contractInterval = setInterval(updateContractTime, 1000);
+            logToTerminal("🚀 Masternode ON | Hash: 1.25 KH/s | Temp: 62°C");
+
+            // Mulai mining per detik
             let miningInterval = setInterval(() => {
               if (!isMiningActive) return clearInterval(miningInterval);
               mining += rewardPerSecond;
-              if (miningLabel) {
-                miningLabel.textContent = mining.toFixed(9) + " BossX";
-                miningLabel.style.opacity = 0.8;
-                setTimeout(() => miningLabel.style.opacity = 1, 100);
+              miningLabel.textContent = mining.toFixed(9) + " BossX";
+              miningLabel.style.opacity = 0.8;
+              setTimeout(() => miningLabel.style.opacity = 1, 100);
+            }, 1000);
+
+            // Auto-claim tiap 60 detik
+            const claimInterval = setInterval(() => {
+              if (!isMiningActive) return clearInterval(claimInterval);
+
+              countdown--;
+              countdownLabel.textContent = `Auto-claim: ${countdown}s`;
+              if (countdown <= 0) countdown = 60;
+
+              if (mining > 0) {
+                const rewardAmount = mining;
+                balance += rewardAmount;
+                const w = formatNow();
+                const r = document.createElement("tr");
+                r.innerHTML = `
+                  <td>${w.hari}</td>
+                  <td>${w.tanggal}</td>
+                  <td>${w.jam}</td>
+                  <td>+${rewardAmount.toFixed(9)} BossX</td>
+                  <td>✅</td>
+                `;
+                historyBody.prepend(r);
+                
+                mining = 0;
+                miningLabel.textContent = "0.000000000 BossX";
+                balanceLabel.textContent = balance.toFixed(9) + " BossX";
+                balanceLabel.classList.add("flash");
+                setTimeout(() => balanceLabel.classList.remove("flash"), 500);
+                
+                logToTerminal(`💰 Auto-claim: +${rewardAmount.toFixed(9)} BossX → Balance: ${balance.toFixed(9)} BossX`);
+                playDing();
+              }
+            }, 1000);
+
+            // Check daily stop at 06:00
+            dailyCheckInterval = setInterval(() => {
+              const now = new Date();
+              if (now.getHours() === 6 && now.getMinutes() === 0 && now.getSeconds() === 0 && isMiningActive) {
+                isMiningActive = false;
+                onBtn.disabled = false;
+                onBtn.classList.remove("active");
+                stopLabel.textContent = "Stop running validasi";
+                logToTerminal("🛑 Stop running validasi (06:00)");
               }
             }, 1000);
           }
         });
       }
 
-      function startContractCountdown() {
-        if (contractInterval) clearInterval(contractInterval);
-        contractInterval = setInterval(() => {
-          const diff = contractEndTime - Date.now();
-          if (diff <= 0) {
-            clearInterval(contractInterval);
-            if (dailyCheckInterval) clearInterval(dailyCheckInterval);
-            stopLabel.textContent = "Kontrak Berakhir";
-            if (onBtn) onBtn.disabled = true;
-            isMiningActive = false;
-          }
-        }, 1000);
-      }
-
-      function startDailyCheck() {
-        if (dailyCheckInterval) clearInterval(dailyCheckInterval);
-        dailyCheckInterval = setInterval(() => {
-          const now = new Date();
-          if (now.getHours() === 6 && now.getMinutes() === 0 && now.getSeconds() === 0) {
-            isMiningActive = false;
-            if (onBtn) {
-              onBtn.disabled = false;
-              onBtn.classList.remove("active");
-            }
-            stopLabel.textContent = "Masternode OFF - Tekan ON untuk melanjutkan";
-          }
-        }, 1000);
-      }
-
-      // Auto-claim — HITUNG EKSAK SETIAP 60 DETIK
-      countdown = 60;
-      if (countdownLabel && balanceLabel && miningLabel && historyBody && terminalLog) {
-        const claimInterval = setInterval(() => {
-          if (!isMiningActive) return clearInterval(claimInterval);
-
-          countdown--;
-          countdownLabel.textContent = `Auto-claim: ${countdown}s`;
-          if (countdown <= 0) countdown = 60;
-
-          const rewardPerClaim = rewardPerSecond * 60;
-          if (rewardPerClaim > 0) {
-            balance += rewardPerClaim;
-            const w = formatNow();
-            const r = document.createElement("tr");
-            r.innerHTML = `
-              <td>${w.hari}</td>
-              <td>${w.tanggal}</td>
-              <td>${w.jam}</td>
-              <td>+${rewardPerClaim.toFixed(9)} BossX</td>
-              <td>✅</td>
-            `;
-            historyBody.prepend(r);
-            
-            mining = 0;
-            if (miningLabel) miningLabel.textContent = "0.000000000 BossX";
-            if (balanceLabel) {
-              balanceLabel.textContent = balance.toFixed(9) + " BossX";
-              balanceLabel.classList.add("flash");
-              setTimeout(() => balanceLabel.classList.remove("flash"), 500);
-            }
-            
-            logToTerminal(`💰 Auto-claim: +${rewardPerClaim.toFixed(9)} BossX → Balance: ${balance.toFixed(9)} BossX`);
-            
-            // 👇 BUNYI "DING" SAAT AUTO-CLAIM
-            playDing();
-          }
-        }, 1000);
-      }
-
       // Convert
       if (convertBtn && balanceLabel) {
         convertBtn.addEventListener("click", () => {
           if (balance < 1) return alert("Minimal convert adalah 1 BossX");
-          const usdt = balance * bossXtoUSDT;
+          const usdt = balance * BOSSX_TO_USDT;
           usdtBalance += usdt;
           updateUSDTDisplay();
           const w = formatNow();
@@ -1056,7 +1047,7 @@
             <td>${balance.toFixed(9)}</td>
             <td>${usdt.toFixed(2)}</td>
           `;
-          if (convertHistory) convertHistory.prepend(r);
+          convertHistory.prepend(r);
           balance = 0;
           balanceLabel.textContent = "0.000000000 BossX";
         });
@@ -1064,11 +1055,11 @@
 
       // Init display
       function initDisplay() {
-        if (stopLabel) stopLabel.textContent = "Belum berjalan";
-        if (countdownLabel) countdownLabel.textContent = "Auto-claim: 60s";
-        if (walletLabel) walletLabel.textContent = walletBossX + " BossX";
+        stopLabel.textContent = "Belum berjalan";
+        countdownLabel.textContent = "Auto-claim: 60s";
+        walletLabel.textContent = walletBossX + " BossX";
         updateUSDTDisplay();
-        if (terminalLog) logToTerminal("💻 Log Engine Reward siap. Klik ON untuk memulai...");
+        logToTerminal("💻 Log Engine Reward siap. Aktivasi paket & klik ON untuk memulai...");
       }
       initDisplay();
     });
