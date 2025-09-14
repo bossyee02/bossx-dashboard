@@ -81,7 +81,7 @@
       color: var(--text-color);
       display: flex;
       min-height: 100vh;
-      transition: background 0.8s cubic-bezier(0.4, 0, 0.2, 1); /* Animasi dark mode */
+      transition: background 0.8s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .container {
@@ -160,20 +160,34 @@
       background: rgba(0,0,0,0.3);
       padding: var(--gap) calc(var(--gap)*2);
       border-bottom: 2px solid var(--color-accent);
-      display: flex; align-items: center; justify-content: space-between;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
     }
     .real-time-clock {
       font-size: 1rem; font-weight: bold; margin-right: auto;
       white-space: nowrap;
     }
-    .user-info { display: flex; align-items: center; gap: 12px; }
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      position: absolute;
+      top: 16px;
+      right: 20px;
+      z-index: 10;
+    }
     .user-info img {
-      width: 64px; height: 64px; border-radius: 50%;
-      border: 2px solid var(--color-accent); object-fit: cover;
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      border: 2px solid var(--color-accent);
+      object-fit: cover;
+      box-shadow: 0 0 8px rgba(255, 215, 0, 0.4);
     }
     .user-info .info-text { display: flex; flex-direction: column; text-align: right; }
-    .user-info h2 { font-size: 1.2rem; }
-    .user-info p { font-size: 0.9rem; opacity: 0.8; }
+    .user-info h2 { font-size: 1.1rem; margin: 0; }
+    .user-info p { font-size: 0.8rem; opacity: 0.8; margin: 0; }
 
     main {
       flex: 1; padding: var(--gap);
@@ -200,7 +214,7 @@
     }
     .card:hover {
       transform: translateY(-5px);
-      box-shadow: 0 12px 24px rgba(106, 13, 173, 0.4), 
+      box-shadow: 0 12px 24px rgba(106, 13, 173, 0.4),
                   0 0 20px rgba(255, 215, 0, 0.1);
     }
     .card h2 {
@@ -321,10 +335,29 @@
       font-weight: bold;
     }
 
-    /* ===== LOG ENGINE REWARD ===== */
-    .log-engine {
-      margin: var(--gap) 0;
+    /* ===== LOG & HISTORY VALIDASI — HORIZONTAL SPLIT ===== */
+    .log-history-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--gap);
+      margin-bottom: var(--gap);
     }
+
+    .log-engine, .history-validasi {
+      background: var(--card-bg);
+      padding: var(--gap);
+      border-radius: var(--radius);
+      border: 1px solid var(--card-border);
+    }
+
+    .log-engine h2, .history-validasi h2 {
+      margin-bottom: 12px;
+      font-size: 1.2rem;
+      color: var(--color-accent);
+      border-bottom: 1px solid rgba(255,215,0,0.2);
+      padding-bottom: 8px;
+    }
+
     .terminal-log {
       background: #000;
       color: #0f0;
@@ -335,7 +368,7 @@
       overflow-y: auto;
       white-space: pre-wrap;
       border: 1px solid #555;
-      box-shadow: 
+      box-shadow:
         0 0 10px rgba(0, 255, 0, 0.3),
         inset 0 0 15px rgba(0, 255, 0, 0.1);
       animation: terminalGlow 3s infinite alternate;
@@ -357,7 +390,7 @@
       }
     }
 
-    /* ===== HISTORY CARDS VERTICAL ===== */
+    /* ===== HISTORY VERTICAL ===== */
     .history-section {
       display: flex;
       flex-direction: column;
@@ -375,8 +408,9 @@
       aside.sidebar, header { display: none; }
       .container { grid-template-columns: 1fr; }
       main { padding: var(--gap); }
-      .card-row { grid-template-columns: 1fr; }
-      .log-engine, .history-section > .card { margin: 0; }
+      .card-row, .log-history-row { grid-template-columns: 1fr; }
+      .user-info { position: static; margin-top: 16px; }
+      .log-engine, .history-validasi, .history-section > .card { margin: 0; }
     }
   </style>
 </head>
@@ -499,13 +533,35 @@
           </div>
         </div>
 
-        <!-- ===== LOG ENGINE REWARD ===== -->
-        <div class="card log-engine">
-          <h2>Log Engine Reward</h2>
-          <div id="terminal-log" class="terminal-log"></div>
+        <!-- ===== LOG ENGINE + HISTORY VALIDASI — HORIZONTAL ===== -->
+        <div class="log-history-row">
+          <div class="log-engine">
+            <h2>Log Engine Reward</h2>
+            <div id="terminal-log" class="terminal-log"></div>
+          </div>
+
+          <div class="history-validasi">
+            <h2>History Validasi</h2>
+            <div class="filter-bar">
+              <span class="icon">🔍</span>
+              <input type="search" id="filterValidasi" placeholder="Cari…"/>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Hari</th>
+                  <th>Tanggal</th>
+                  <th>Jam</th>
+                  <th>BossX</th>
+                  <th>Auto-Claim</th>
+                </tr>
+              </thead>
+              <tbody id="history"></tbody>
+            </table>
+          </div>
         </div>
 
-        <!-- ===== HISTORY CARDS VERTICAL ===== -->
+        <!-- ===== HISTORY VERTICAL ===== -->
         <div class="history-section">
           <div class="card">
             <h2>History Aktivasi</h2>
@@ -513,7 +569,7 @@
               <span class="icon">🔍</span>
               <input type="search" id="filterAktivasi" placeholder="Cari…"/>
             </div>
-            <table>  
+            <table>
               <thead>
                 <tr>
                   <th>Hari</th>
@@ -533,7 +589,7 @@
               <span class="icon">🔍</span>
               <input type="search" id="filterConvert" placeholder="Cari…"/>
             </div>
-            <table>  
+            <table>
               <thead>
                 <tr>
                   <th>Hari</th>
@@ -545,32 +601,17 @@
               <tbody id="convertHistory"></tbody>
             </table>
           </div>
-
-          <div class="card">
-            <h2>History Validasi</h2>
-            <div class="filter-bar">
-              <span class="icon">🔍</span>
-              <input type="search" id="filterValidasi" placeholder="Cari…"/>
-            </div>
-            <table>  
-              <thead>
-                <tr>
-                  <th>Hari</th>
-                  <th>Tanggal</th>
-                  <th>Jam</th>
-                  <th>BossX</th>
-                  <th>Auto-Claim</th>
-                </tr>
-              </thead>
-              <tbody id="history"></tbody>
-            </table>
-          </div>
         </div>
       </main>
 
       <div class="footer">©2025 Dashboard BossX • Terbuka untuk umum 🌐</div>
     </div>
   </div>
+
+  <!-- AUDIO ELEMENT FOR "DING" SOUND -->
+  <audio id="dingSound" preload="auto">
+    <source src="data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YU9vT18=" type="audio/wav">
+  </audio>
 
   <script>
     // ===== RUNNING TEXT SCRIPT DUMMY REAL-TIME =====
@@ -740,6 +781,15 @@
           localStorage.setItem("theme", isDark ? "light" : "dark");
           updateToggleIcon();
         });
+      }
+
+      // Audio element
+      const dingSound = document.getElementById("dingSound");
+
+      // Fungsi bunyi "ding"
+      function playDing() {
+        dingSound.currentTime = 0;
+        dingSound.play().catch(e => console.log("Audio play failed (user interaction required)"));
       }
 
       // Elements & vars
@@ -977,6 +1027,9 @@
             }
             
             logToTerminal(`💰 Auto-claim: +${rewardPerClaim.toFixed(9)} BossX → Balance: ${balance.toFixed(9)} BossX`);
+            
+            // 👇 BUNYI "DING" SAAT AUTO-CLAIM
+            playDing();
           }
         }, 1000);
       }
