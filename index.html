@@ -8,8 +8,8 @@
   <style>
     /* ===== VARIABEL GLOBAL ===== */
     :root {
-      --gap: 16px;
-      --radius: 12px;
+      --gap: 20px;
+      --radius: 16px;
       --color-primary: #6a0dad;
       --color-accent: #FFD700;
       --sidebar-width: 250px;
@@ -17,7 +17,7 @@
       --bg-from: #6a0dad;
       --bg-to: #ff69b4;
       --text-color: var(--color-accent);
-      --card-bg: rgba(0,0,0,0.3);
+      --card-bg: rgba(0,0,0,0.35);
       --card-border: var(--color-accent);
       --table-border: var(--color-accent);
     }
@@ -38,7 +38,7 @@
       background: #0f1115;
       border-top: 1px solid rgba(245, 197, 66, 0.25);
       border-bottom: 1px solid rgba(245, 197, 66, 0.25);
-      padding: 8px 0;
+      padding: 10px 0;
       width: 100%;
       z-index: 1000;
       cursor: pointer;
@@ -52,7 +52,7 @@
     .ticker-item {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
       margin-right: 32px;
       color: #eaeaea;
       font-size: 14px;
@@ -105,7 +105,7 @@
     .logo-container { display: flex; align-items: center; }
     .sidebar-logo { height: 80px; transition: 0.3s; }
     .sidebar-logo-text {
-      margin-left: 8px; font-size: 1.2rem; font-weight: bold;
+      margin-left: 8px; font-size: 1.3rem; font-weight: bold;
       color: var(--color-accent); transition: 0.3s;
     }
     .container.collapsed .sidebar-logo { height: 60px; }
@@ -119,16 +119,16 @@
     }
     .nav-item {
       display: flex; align-items: center;
-      padding: 12px var(--gap);
+      padding: 14px var(--gap);
       color: var(--color-accent); text-decoration: none;
       transition: background 0.2s;
     }
     .nav-item:hover { background: rgba(255,215,0,0.1); }
     .nav-item.active { background: rgba(255,215,0,0.2); }
     .nav-item .icon {
-      width: 24px; text-align: center; font-size: 1.2rem;
+      width: 24px; text-align: center; font-size: 1.3rem;
     }
-    .nav-item .label { margin-left: 12px; white-space: nowrap; }
+    .nav-item .label { margin-left: 14px; white-space: nowrap; }
 
     /* Follow us */
     .sidebar-follow {
@@ -139,7 +139,7 @@
       font-size: 0.9rem; color: var(--text-color);
     }
     .sidebar-follow .social-link {
-      margin: 0 6px; display: inline-block;
+      margin: 0 8px; display: inline-block;
     }
     .sidebar-follow .social-icon {
       width: 24px; height: 24px;
@@ -161,109 +161,170 @@
       font-size: 1rem; font-weight: bold; margin-right: auto;
       white-space: nowrap;
     }
-    .user-info { display: flex; align-items: center; gap: 12px; }
+    .user-info { display: flex; align-items: center; gap: 16px; }
     .user-info img {
       width: 64px; height: 64px; border-radius: 50%;
       border: 2px solid var(--color-accent); object-fit: cover;
     }
     .user-info .info-text { display: flex; flex-direction: column; text-align: right; }
-    .user-info h2 { font-size: 1.2rem; }
-    .user-info p { font-size: 0.9rem; opacity: 0.8; }
+    .user-info h2 { font-size: 1.3rem; margin: 0; }
+    .user-info p { font-size: 0.9rem; opacity: 0.8; margin: 0; }
 
     main {
       flex: 1; padding: var(--gap);
-      max-width: 1200px; margin: auto;
-      display: flex; gap: var(--gap); flex-wrap: wrap;
+      max-width: 1400px; margin: auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: var(--gap);
     }
-    .left-column, .right-column {
-      display: flex; flex-direction: column; gap: var(--gap);
-    }
-    .left-column { flex: 1; min-width: 280px; }
-    .right-column { flex: 2; min-width: 320px; }
 
     .card {
       background: var(--card-bg);
-      padding: var(--gap);
+      padding: calc(var(--gap) * 1.2);
       border-radius: var(--radius);
       border: 1px solid var(--card-border);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
-    .card h2 { margin-bottom: 8px; font-size: 1.2rem; }
+    .card h2 {
+      margin-bottom: 16px;
+      font-size: 1.4rem;
+      color: var(--color-accent);
+      border-bottom: 1px solid rgba(255,215,0,0.2);
+      padding-bottom: 8px;
+    }
     .saldo-value {
-      font-size: 1.4rem; font-weight: bold; margin-bottom: 8px;
+      font-size: 1.8rem;
+      font-weight: bold;
+      margin: 12px 0;
+      color: #fff;
+      text-shadow: 0 0 8px rgba(255,215,0,0.3);
     }
-    .timer { margin-bottom: 12px; }
-    .btn-container { display: flex; gap: 8px; flex-wrap: wrap; }
+    .timer {
+      margin: 12px 0 16px;
+      font-size: 1.1rem;
+      color: #FFD700;
+    }
+    .btn-container {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
     .btn {
-      padding: 8px 16px; background: var(--color-accent);
+      padding: 10px 20px;
+      background: var(--color-accent);
       color: var(--color-primary);
-      border: none; border-radius: 8px; cursor: pointer;
-      transition: background 0.3s;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s;
+      font-size: 0.95rem;
     }
-    .btn:hover { background: #ffec8b; }
-    .btn:disabled { background: #333; color: #888; cursor: not-allowed; }
+    .btn:hover {
+      background: #ffec8b;
+      transform: translateY(-2px);
+    }
+    .btn:disabled {
+      background: #333;
+      color: #888;
+      cursor: not-allowed;
+    }
 
     .power-btn {
-      width: 48px; height: 48px;
-      border: 2px solid #888; border-radius: 50%;
-      background: #222; display: flex; align-items: center; justify-content: center;
-      cursor: pointer; transition: 0.3s;
+      width: 52px; height: 52px;
+      border: 2px solid #888;
+      border-radius: 50%;
+      background: #222;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: 0.3s;
     }
     .power-btn.active {
-      background: #2ecc71; border-color: #27ae60;
+      background: #2ecc71;
+      border-color: #27ae60;
     }
     .power-btn svg {
-      width: 24px; height: 24px; stroke: #888; fill: none;
+      width: 28px; height: 28px;
+      stroke: #888;
+      fill: none;
     }
     .power-btn.active svg { stroke: #fff; }
 
     input[type="text"], input[type="search"], input[type="number"] {
-      padding: 6px; border: 1px solid var(--table-border);
-      border-radius: 6px; background: rgba(255,255,255,0.1);
-      color: var(--text-color); margin-bottom: 8px;
+      padding: 10px;
+      border: 1px solid var(--table-border);
+      border-radius: 8px;
+      background: rgba(255,255,255,0.1);
+      color: var(--text-color);
+      margin-bottom: 12px;
       width: 100%;
+      font-size: 0.95rem;
     }
 
     .filter-bar {
-      display: flex; align-items: center; margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      margin-bottom: 12px;
+      gap: 8px;
     }
-    .filter-bar .icon { margin-right: 6px; }
+    .filter-bar .icon {
+      color: var(--color-accent);
+    }
 
     table {
-      width: 100%; border-collapse: collapse; margin-top: 8px;
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+      font-size: 0.9rem;
     }
     th, td {
       border: 1px solid var(--table-border);
-      padding: 6px; text-align: center; font-size: 0.9rem;
+      padding: 10px;
+      text-align: center;
+      color: var(--text-color);
     }
-    th { background: var(--color-accent); color: var(--color-primary); }
+    th {
+      background: var(--color-accent);
+      color: var(--color-primary);
+      font-weight: bold;
+    }
 
     /* ===== LOG ENGINE REWARD ===== */
     .terminal-log {
       background: #000;
       color: #0f0;
       font-family: 'Courier New', monospace;
-      padding: 12px;
+      padding: 16px;
       border-radius: var(--radius);
-      height: 200px;
+      height: 220px;
       overflow-y: auto;
       white-space: pre-wrap;
       border: 1px solid #555;
-      box-shadow: 0 0 10px rgba(106, 13, 173, 0.4), inset 0 0 10px rgba(255, 215, 0, 0.1);
-      margin-top: 8px;
+      box-shadow: 0 0 15px rgba(106, 13, 173, 0.3);
+      margin-top: 12px;
+      font-size: 0.9rem;
+      line-height: 1.5;
     }
 
     .footer {
-      text-align: center; padding: var(--gap);
+      text-align: center;
+      padding: var(--gap);
       background: rgba(0,0,0,0.2);
       border-top: 1px solid var(--color-accent);
+      font-size: 0.9rem;
+      opacity: 0.8;
     }
 
     @media (max-width: 768px) {
       aside.sidebar, header { display: none; }
       .container { grid-template-columns: 1fr; }
-      main { display: block; padding: var(--gap); }
-      .left-column, .right-column { flex: 1 1 100%; }
+      main { padding: var(--gap); }
       .card { margin-bottom: var(--gap); }
+      .saldo-value { font-size: 1.6rem; }
+      .card h2 { font-size: 1.3rem; }
     }
   </style>
 </head>
@@ -341,114 +402,110 @@
           <div class="ticker-track" id="cryptoTicker">Loading prices...</div>
         </div>
 
-        <div class="left-column">
-          <div class="card">
-            <h2>Validasi Running (Estimasi)</h2>
-            <div class="saldo-value" id="mining">0.000000000 BossX</div>
-            <div class="timer" id="stopCountdown">Belum berjalan</div>
-            <div class="btn-container">
-              <button class="power-btn" id="onBtn">
-                <svg viewBox="0 0 24 24">
-                  <path d="M12 2v10M5.6 5.6a8 8 0 1 0 11.3 0"/>
-                </svg>
-              </button>
-            </div>
-          </div>
-
-          <div class="card">
-            <h2>Reward Validasi</h2>
-            <div class="saldo-value" id="balance">0.000000000 BossX</div>
-            <div class="timer" id="countdown">Auto-claim: 60s</div>
-            <div class="btn-container">
-              <button class="btn" id="convertBtn">Convert to USDT</button>
-            </div>
-          </div>
-
-          <div class="card">
-            <h2>Node Amount</h2>
-            <div class="saldo-value">
-              <span id="walletBossX">0 BossX</span>
-            </div>
-            <input
-              type="text"
-              id="amountInput"
-              placeholder=" minimal 50 BossX"
-            />
-            <div class="btn-container">
-              <button class="btn" id="buyBtn">Aktivkan Masternode</button>
-            </div>
-          </div>
-
-          <div class="card">
-            <h2>Balance USDT</h2>
-            <div class="saldo-value" id="usdtBalanceCard">0.00 USDT</div>
+        <div class="card">
+          <h2>Validasi Running (Estimasi)</h2>
+          <div class="saldo-value" id="mining">0.000000000 BossX</div>
+          <div class="timer" id="stopCountdown">Belum berjalan</div>
+          <div class="btn-container">
+            <button class="power-btn" id="onBtn">
+              <svg viewBox="0 0 24 24">
+                <path d="M12 2v10M5.6 5.6a8 8 0 1 0 11.3 0"/>
+              </svg>
+            </button>
           </div>
         </div>
 
-        <div class="right-column">
-          <div class="card">
-            <h2>History Aktivasi</h2>
-            <div class="filter-bar">
-              <span class="icon">🔍</span>
-              <input type="search" id="filterAktivasi" placeholder="Cari…"/>
-            </div>
-            <table>  
-              <thead>
-                <tr>
-                  <th>Hari</th>
-                  <th>Waktu</th>
-                  <th>Jumlah</th>
-                  <th>Jenis</th>
-                  <th>Masa Akhir Kontrak</th>
-                </tr>
-              </thead>
-              <tbody id="walletHistory"></tbody>
-            </table>
+        <div class="card">
+          <h2>Reward Validasi</h2>
+          <div class="saldo-value" id="balance">0.000000000 BossX</div>
+          <div class="timer" id="countdown">Auto-claim: 60s</div>
+          <div class="btn-container">
+            <button class="btn" id="convertBtn">Convert to USDT</button>
           </div>
+        </div>
 
-          <div class="card">
-            <h2>History Convert</h2>
-            <div class="filter-bar">
-              <span class="icon">🔍</span>
-              <input type="search" id="filterConvert" placeholder="Cari…"/>
-            </div>
-            <table>  
-              <thead>
-                <tr>
-                  <th>Hari</th>
-                  <th>Waktu</th>
-                  <th>BossX</th>
-                  <th>USDT</th>
-                </tr>
-              </thead>
-              <tbody id="convertHistory"></tbody>
-            </table>
+        <div class="card">
+          <h2>Node Amount</h2>
+          <div class="saldo-value">
+            <span id="walletBossX">0 BossX</span>
           </div>
+          <input
+            type="text"
+            id="amountInput"
+            placeholder=" minimal 50 BossX"
+          />
+          <div class="btn-container">
+            <button class="btn" id="buyBtn">Aktivkan Masternode</button>
+          </div>
+        </div>
 
-          <div class="card">
-            <h2>History Validasi</h2>
-            <div class="filter-bar">
-              <span class="icon">🔍</span>
-              <input type="search" id="filterValidasi" placeholder="Cari…"/>
-            </div>
-            <table>  
-              <thead>
-                <tr>
-                  <th>Hari</th>
-                  <th>Tanggal</th>
-                  <th>Jam</th>
-                  <th>BossX</th>
-                  <th>Auto-Claim</th>
-                </tr>
-              </thead>
-              <tbody id="history"></tbody>
-            </table>
-          </div>
+        <div class="card">
+          <h2>Balance USDT</h2>
+          <div class="saldo-value" id="usdtBalanceCard">0.00 USDT</div>
+        </div>
 
-          <div class="card">
-            <h2>Log Engine Reward</h2>
-            <div id="terminal-log" class="terminal-log"></div>
+        <div class="card">
+          <h2>History Aktivasi</h2>
+          <div class="filter-bar">
+            <span class="icon">🔍</span>
+            <input type="search" id="filterAktivasi" placeholder="Cari…"/>
           </div>
+          <table>  
+            <thead>
+              <tr>
+                <th>Hari</th>
+                <th>Waktu</th>
+                <th>Jumlah</th>
+                <th>Jenis</th>
+                <th>Masa Akhir Kontrak</th>
+              </tr>
+            </thead>
+            <tbody id="walletHistory"></tbody>
+          </table>
+        </div>
+
+        <div class="card">
+          <h2>History Convert</h2>
+          <div class="filter-bar">
+            <span class="icon">🔍</span>
+            <input type="search" id="filterConvert" placeholder="Cari…"/>
+          </div>
+          <table>  
+            <thead>
+              <tr>
+                <th>Hari</th>
+                <th>Waktu</th>
+                <th>BossX</th>
+                <th>USDT</th>
+              </tr>
+            </thead>
+            <tbody id="convertHistory"></tbody>
+          </table>
+        </div>
+
+        <div class="card">
+          <h2>History Validasi</h2>
+          <div class="filter-bar">
+            <span class="icon">🔍</span>
+            <input type="search" id="filterValidasi" placeholder="Cari…"/>
+          </div>
+          <table>  
+            <thead>
+              <tr>
+                <th>Hari</th>
+                <th>Tanggal</th>
+                <th>Jam</th>
+                <th>BossX</th>
+                <th>Auto-Claim</th>
+              </tr>
+            </thead>
+            <tbody id="history"></tbody>
+          </table>
+        </div>
+
+        <div class="card">
+          <h2>Log Engine Reward</h2>
+          <div id="terminal-log" class="terminal-log"></div>
         </div>
       </main>
 
