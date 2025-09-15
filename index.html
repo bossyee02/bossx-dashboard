@@ -530,7 +530,7 @@
             <div class="saldo-value" id="balance">0.000000000 BossX</div>
             <div class="timer" id="countdown">Auto-claim: 60s</div>
             <div class="btn-container">
-              <button class="btn" id="convertBtn">Convert to USDT</button>
+              <button class="btn" id="convertBtn" disabled>Convert to USDT</button>
             </div>
           </div>
 
@@ -540,7 +540,7 @@
           </div>
         </div>
 
-        <!-- ===== LOG ENGINE + HISTORY VALIDASI — HORIZONTAL ===== -->
+        <!-- ===== LOG ENGINE + HISTORY VALIDASI — HORIZONTAL SPLIT ===== -->
         <div class="log-history-row">
           <div class="log-engine">
             <h2>Log Engine Reward</h2>
@@ -830,8 +830,8 @@
       let contractInterval = null;
       let dailyCheckInterval = null;
 
-      const MONTHLY_YIELD_RATE = 0.10; // 10% per month
-      const TOTAL_CONTRACT_SECONDS = 31536000; // 365 days in seconds
+      const MONTHLY_YIELD_RATE = 0.10; // 10% per bulan
+      const TOTAL_CONTRACT_SECONDS = 31536000; // 365 hari = 31.536.000 detik
       const BOSSX_TO_USDT = 1;
 
       function formatNow() {
@@ -960,11 +960,11 @@
             countdown = 60;
             stopLabel.textContent = `Kontrak berakhir dalam: ${formatTime(stopCountdown)}`;
 
-            // Hitung reward per detik: (jumlah_paket × 10%) / 31.536.000
-            rewardPerSecond = (walletBossX * MONTHLY_YIELD_RATE) / TOTAL_CONTRACT_SECONDS;
+            // Hitung reward per detik: (jumlah_paket × 10% per bulan) ÷ detik per bulan
+            const SECONDS_PER_MONTH = 30 * 24 * 60 * 60; // 2.592.000 detik
+            rewardPerSecond = (walletBossX * MONTHLY_YIELD_RATE) / SECONDS_PER_MONTH;
 
             // Update History Aktivasi — sekarang RUNNING
-            const w = formatNow();
             const rows = walletHistory.querySelectorAll('tr');
             if (rows.length > 0) {
               rows[0].cells[3].textContent = "Running";
@@ -975,7 +975,7 @@
             contractInterval = setInterval(updateContractTime, 1000);
             logToTerminal("🚀 Masternode ON | Hash: 1.25 KH/s | Temp: 62°C");
 
-            // Mulai mining per detik
+            // Mulai mining per detik — nilai masuk ke Validasi Running
             let miningInterval = setInterval(() => {
               if (!isMiningActive) return clearInterval(miningInterval);
               mining += rewardPerSecond;
@@ -984,36 +984,45 @@
               setTimeout(() => miningLabel.style.opacity = 1, 100);
             }, 1000);
 
-            // Auto-claim tiap 60 detik
+            // Auto-claim tiap 60 DETIK (BUKAN PER DETIK!)
             const claimInterval = setInterval(() => {
               if (!isMiningActive) return clearInterval(claimInterval);
 
               countdown--;
               countdownLabel.textContent = `Auto-claim: ${countdown}s`;
-              if (countdown <= 0) countdown = 60;
+              if (countdown <= 0) {
+                countdown = 60; // Reset timer
 
-              if (mining > 0) {
-                const rewardAmount = mining;
-                balance += rewardAmount;
-                const w = formatNow();
-                const r = document.createElement("tr");
-                r.innerHTML = `
-                  <td>${w.hari}</td>
-                  <td>${w.tanggal}</td>
-                  <td>${w.jam}</td>
-                  <td>+${rewardAmount.toFixed(9)} BossX</td>
-                  <td>✅</td>
-                `;
-                historyBody.prepend(r);
-                
-                mining = 0;
-                miningLabel.textContent = "0.000000000 BossX";
-                balanceLabel.textContent = balance.toFixed(9) + " BossX";
-                balanceLabel.classList.add("flash");
-                setTimeout(() => balanceLabel.classList.remove("flash"), 500);
-                
-                logToTerminal(`💰 Auto-claim: +${rewardAmount.toFixed(9)} BossX → Balance: ${balance.toFixed(9)} BossX`);
-                playDing();
+                // ONLY CLAIM IF MINING > 0
+                if (mining > 0) {
+                  const rewardAmount = mining;
+                  balance += rewardAmount;
+                  const w = formatNow();
+                  const r = document.createElement("tr");
+                  r.innerHTML = `
+                    <td>${w.hari}</td>
+                    <td>${w.tanggal}</td>
+                    <td>${w.jam}</td>
+                    <td>+${rewardAmount.toFixed(9)} BossX</td>
+                    <td>✅</td>
+                  `;
+                  historyBody.prepend(r);
+                  
+                  // Kosongkan Validasi Running
+                  mining = 0;
+                  miningLabel.textContent = "0.000000000 BossX";
+                  
+                  // Update Reward Validasi
+                  balanceLabel.textContent = balance.toFixed(9) + " BossX";
+                  balanceLabel.classList.add("flash");
+                  setTimeout(() => balanceLabel.classList.remove("flash"), 500);
+                  
+                  // Enable Convert if balance >= 1
+                  if (balance >= 1) convertBtn.disabled = false;
+                  
+                  logToTerminal(`💰 Auto-claim: +${rewardAmount.toFixed(9)} BossX → Reward Validasi: ${balance.toFixed(9)} BossX`);
+                  playDing();
+                }
               }
             }, 1000);
 
@@ -1032,7 +1041,7 @@
         });
       }
 
-      // Convert
+      // Convert to USDT — only if balance >= 1
       if (convertBtn && balanceLabel) {
         convertBtn.addEventListener("click", () => {
           if (balance < 1) return alert("Minimal convert adalah 1 BossX");
@@ -1050,6 +1059,7 @@
           convertHistory.prepend(r);
           balance = 0;
           balanceLabel.textContent = "0.000000000 BossX";
+          convertBtn.disabled = true;
         });
       }
 
