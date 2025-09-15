@@ -265,27 +265,51 @@
             transform: scale(1.05);
         }
 
-        .power-btn {
-            background: #333;
-            color: #fff;
-            width: 40px;
-            height: 40px;
+        /* === ENGINE BUTTON === */
+        .engine-btn {
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
+            cursor: not-allowed;
             margin-top: 10px;
             transition: all 0.3s ease;
-            font-size: 18px;
+            font-size: 24px;
+            font-weight: bold;
+            border: 3px solid #555;
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+            background: #333;
+            color: #fff;
+            opacity: 0.6;
         }
 
-        .power-btn:hover {
-            background: #555;
+        .engine-btn.active {
+            cursor: pointer;
+            opacity: 1;
+        }
+
+        .engine-btn.off {
+            background: #d93025;
+            border-color: #ff4c4c;
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.7);
+            color: #fff;
+        }
+
+        .engine-btn.on {
+            background: #34a853;
+            border-color: #4ade80;
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.7);
+            color: #fff;
+        }
+
+        .engine-btn:hover {
+            transform: scale(1.1);
         }
 
         /* === LOG CARD === */
-        .log-card, .history-card {
+        .log-card, .history-card, .activation-card {
             background: #1a002e;
             border: 2px solid #FFD700;
             border-radius: 12px;
@@ -293,7 +317,7 @@
             margin-bottom: 20px;
         }
 
-        .log-card h3, .history-card h3 {
+        .log-card h3, .history-card h3, .activation-card h3 {
             color: #FFD700;
             margin-bottom: 15px;
             font-size: 18px;
@@ -301,17 +325,18 @@
 
         .log-terminal {
             background: #121212;
-            color: #e0e0ff;
+            color: #0f0;
             font-family: 'Courier New', monospace;
             padding: 15px;
             border-radius: 8px;
-            max-height: 400px; /* ✅ INI YANG DIUBAH — DARI 200px JADI 400px */
+            max-height: 400px;
             overflow-y: auto;
             border: 1px solid #FFD700;
             margin-top: 10px;
             font-size: 14px;
             line-height: 1.5;
             white-space: pre-wrap;
+            scroll-behavior: smooth;
         }
 
         /* === HISTORY CARD === */
@@ -383,7 +408,7 @@
             .card-grid {
                 grid-template-columns: 1fr;
             }
-            .log-card, .history-card {
+            .log-card, .history-card, .activation-card {
                 width: 100%;
             }
             .table {
@@ -431,7 +456,7 @@
         <!-- RUNNING TEXT -->
         <div class="running-text">
             <div class="content">
-                🎉 Selamat datang di komunitas BossX — tempatnya profit konsisten & masternode terpercaya! 💰 Harga BOSSX/USDT: $0.8421 ▲ 3.2% (Live) | 🎉 Selamat datang di komunitas BossX — tempatnya profit konsisten & masternode terpercaya! 💰 Harga BOSSX/USDT: $0.8421 ▲ 3.2% (Live)
+                🎉 Selamat datang di komunitas BossX — tempatnya profit konsisten & masternode terpercaya! 💰 Harga BOSSX/USDT: $1.00 ▲ 0.0% (Live) | 🎉 Selamat datang di komunitas BossX — tempatnya profit konsisten & masternode terpercaya! 💰 Harga BOSSX/USDT: $1.00 ▲ 0.0% (Live)
             </div>
         </div>
 
@@ -439,13 +464,12 @@
         <div class="dashboard-content">
             <!-- 4 CARD HORIZONTAL -->
             <div class="card-grid">
-                <!-- Node Amount -->
+                <!-- Aktivasi Node -->
                 <div class="card">
-                    <h3>Node Amount</h3>
+                    <h3>Aktivasi Node</h3>
                     <p id="node-amount">0.0000000000 BossX</p>
-                    <small>minimal 10 BossX</small>
                     <div style="margin-top: 10px;">
-                        <input type="number" id="bossx-input" placeholder="Masukkan jumlah BossX" min="10" step="0.0000000001" style="width: 100%; padding: 8px; border: 1px solid #FFD700; border-radius: 6px; background: #1a002e; color: #fff; font-size: 14px;">
+                        <input type="number" id="bossx-input" placeholder="minimal 10 BossX" min="10" step="0.0000000001" style="width: 100%; padding: 8px; border: 1px solid #FFD700; border-radius: 6px; background: #1a002e; color: #fff; font-size: 14px;">
                     </div>
                     <button class="btn" id="activate-btn" disabled>Aktivkan Validasi</button>
                 </div>
@@ -455,25 +479,25 @@
                     <h3>Validasi Running (Estimasi)</h3>
                     <p id="validasi-running">0.0000000000 BossX</p>
                     <small id="validasi-running-status">Belum berjalan</small>
-                    <div class="power-btn">⏻</div>
+                    <div class="engine-btn" id="power-btn" title="Aktivasi dulu di Aktivasi Node">⚫</div>
                 </div>
 
                 <!-- Reward Validasi -->
                 <div class="card">
                     <h3>Reward Validasi</h3>
                     <p id="reward-validasi">0.0000000000 BossX</p>
-                    <small>Auto-claim: 60s</small>
-                    <button class="btn">Convert to USDT</button>
+                    <small id="reward-countdown">Auto-claim in: --</small>
+                    <button class="btn" id="convert-btn" disabled>Convert to USDT</button>
                 </div>
 
                 <!-- Balance USDT -->
                 <div class="card">
                     <h3>Balance USDT</h3>
-                    <p>0.00 USDT</p>
+                    <p id="balance-usdt">0.00 USDT</p>
                 </div>
             </div>
 
-            <!-- 2 CARD DI BAWAH -->
+            <!-- 3 CARD DI BAWAH -->
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                 <!-- Log Engine Reward -->
                 <div class="log-card">
@@ -493,7 +517,7 @@
                         </svg>
                         <input type="text" placeholder="Cari...">
                     </div>
-                    <table class="table">
+                    <table class="table" id="history-table">
                         <thead>
                             <tr>
                                 <th>Hari</th>
@@ -504,30 +528,33 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>Sabtu</td>
-                                <td>14 Sep 2025</td>
-                                <td>12:30</td>
-                                <td>0.0000000001 BossX</td>
-                                <td>✅</td>
-                            </tr>
-                            <tr>
-                                <td>Jumat</td>
-                                <td>13 Sep 2025</td>
-                                <td>11:45</td>
-                                <td>0.0000000002 BossX</td>
-                                <td>✅</td>
-                            </tr>
-                            <tr>
-                                <td>Kamis</td>
-                                <td>12 Sep 2025</td>
-                                <td>10:20</td>
-                                <td>0.0000000003 BossX</td>
-                                <td>✅</td>
-                            </tr>
+                            <!-- Data akan diisi otomatis -->
                         </tbody>
                     </table>
                 </div>
+            </div>
+
+            <!-- History Aktivasi -->
+            <div class="activation-card">
+                <h3>History Aktivasi</h3>
+                <table class="table" id="activation-table">
+                    <thead>
+                        <tr>
+                            <th>Hari</th>
+                            <th>Tanggal</th>
+                            <th>Bulan</th>
+                            <th>Tahun</th>
+                            <th>Jam</th>
+                            <th>Menit</th>
+                            <th>Detik</th>
+                            <th>Jumlah</th>
+                            <th>Masa Akhir Kontrak</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Data akan diisi otomatis -->
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -573,10 +600,62 @@
                 mainContent.classList.toggle('sidebar-collapsed');
             });
 
-            // Validasi input node amount
+            // State
+            let isNodeActivated = false;
+            let isMining = false;
+            let logInterval;
+            let rewardInterval;
+            let countdownInterval;
+            let autoclaimInterval;
+            let totalReward = 0; // Validasi Running
+            let rewardBalance = 0; // Reward Validasi
+            let usdtBalance = 0; // Balance USDT
+            let isAutoScrollEnabled = true;
+
+            const config = {
+                pool: "slushpool.com",
+                currency: "BossX",
+                difficulty: 12000,
+                rewardPerShare: 0.00347,
+                minHashrate: 45,
+                maxHashrate: 48,
+                minTemp: 60,
+                maxTemp: 85,
+                fanSpeed: 75,
+                sharesPerMinute: 1.5,
+                nextPayout: 0.0165,
+                bossxToUsdt: 1.00
+            };
+
+            // Fungsi untuk menambahkan log
+            function addLog(message, level = "INFO") {
+                const logOutput = document.getElementById('log-output');
+                const now = new Date();
+                const timestamp = `[${now.toISOString().slice(0, 19).replace('T', ' ')}]`;
+                const fullLog = `${timestamp} [${level}] ${message}`;
+                logOutput.innerHTML += `<br>${fullLog}`;
+
+                if (isAutoScrollEnabled) {
+                    logOutput.scrollTo({
+                        top: logOutput.scrollHeight,
+                        behavior: 'smooth'
+                    });
+                }
+            }
+
+            // Deteksi scroll manual user
+            document.getElementById('log-output').addEventListener('scroll', function() {
+                const logOutput = this;
+                const isAtBottom = logOutput.scrollHeight - logOutput.scrollTop <= logOutput.clientHeight + 10;
+                isAutoScrollEnabled = isAtBottom;
+            });
+
+            // Validasi input balance
             const bossxInput = document.getElementById('bossx-input');
             const activateBtn = document.getElementById('activate-btn');
             const nodeAmountText = document.getElementById('node-amount');
+            const powerBtn = document.getElementById('power-btn');
+            const convertBtn = document.getElementById('convert-btn');
 
             bossxInput.addEventListener('input', function() {
                 let value = parseFloat(this.value) || 0;
@@ -592,70 +671,75 @@
                 }
             });
 
+            // Aktivasi masternode
             activateBtn.addEventListener('click', function() {
                 const value = parseFloat(bossxInput.value);
                 if (value >= 10) {
-                    alert(`Validasi berhasil diaktivasi dengan ${value.toFixed(10)} BossX!`);
-                    onNodeActivated(value);
-                    bossxInput.value = '';
+                    isNodeActivated = true;
                     activateBtn.disabled = true;
-                    nodeAmountText.textContent = '0.0000000000 BossX';
+                    bossxInput.disabled = true;
+                    powerBtn.classList.add('active');
+                    powerBtn.classList.add('off');
+                    powerBtn.title = "";
+                    powerBtn.textContent = "⚫";
+
+                    addLog(`Pembelian node BFGMiner dengan sejumlah ${value.toFixed(10)} BossX - Status: Aktif`);
+                    nodeAmountText.textContent = `${value.toFixed(10)} BossX`;
+
+                    addActivationRow(value);
                 }
             });
 
-            // === LOG ENGINE + VALIDASI RUNNING SYSTEM ===
-            let isMining = false;
-            let logInterval;
-            let rewardInterval;
-            let countdownInterval;
-            let totalReward = 0;
-            let isAutoScrollEnabled = true;
+            // User hanya bisa NYALAKAN, tidak bisa MATIKAN manual
+            powerBtn.addEventListener('click', function() {
+                if (!isNodeActivated) return;
+                if (isMining) return; // ❌ Jangan izinkan klik jika sudah nyala
 
-            const config = {
-                pool: "slushpool.com",
-                currency: "BossX",
-                difficulty: 12000,
-                rewardPerShare: 0.00347,
-                minHashrate: 45,
-                maxHashrate: 48,
-                minTemp: 60,
-                maxTemp: 85,
-                fanSpeed: 75,
-                sharesPerMinute: 1.5,
-                nextPayout: 0.0165
-            };
+                startValidation();
+                powerBtn.classList.remove('off');
+                powerBtn.classList.add('on');
+                powerBtn.textContent = "⚪";
+            });
 
-            // Fungsi untuk menambahkan log
-            function addLog(message, level = "INFO") {
-                const logOutput = document.getElementById('log-output');
-                const now = new Date();
-                const timestamp = `[${now.toISOString().slice(0, 19).replace('T', ' ')}]`;
-                const fullLog = `${timestamp} [${level}] ${message}`;
-                logOutput.innerHTML += `<br>${fullLog}`;
-
-                const lineCount = logOutput.innerHTML.split('<br>').length;
-                if (lineCount >= 25) {
-                    isAutoScrollEnabled = false;
-                }
-                if (isAutoScrollEnabled) {
-                    logOutput.scrollTop = logOutput.scrollHeight;
-                }
-            }
-
-            // Fungsi mulai validasi
+            // Mulai validasi
             function startValidation() {
                 if (isMining) return;
 
                 addLog("Validasi RUNNING starting ON...");
 
-                // Mulai tambah reward tiap detik
                 rewardInterval = setInterval(() => {
-                    totalReward += 0.0000000001;
-                    document.getElementById('validasi-running').textContent = totalReward.toFixed(10) + " BossX";
-                    document.getElementById('reward-validasi').textContent = totalReward.toFixed(10) + " BossX";
+                    if (isMining) {
+                        totalReward += 0.0000000001;
+                        document.getElementById('validasi-running').textContent = totalReward.toFixed(10) + " BossX";
+                    }
                 }, 1000);
 
-                // Mulai log mining
+                let autoclaimTimer = 60;
+                document.getElementById('reward-countdown').textContent = `Auto-claim in: ${autoclaimTimer}s`;
+
+                autoclaimInterval = setInterval(() => {
+                    if (!isMining) {
+                        clearInterval(autoclaimInterval);
+                        return;
+                    }
+
+                    autoclaimTimer--;
+                    document.getElementById('reward-countdown').textContent = `Auto-claim in: ${autoclaimTimer}s`;
+
+                    if (autoclaimTimer <= 0) {
+                        autoclaimTimer = 60;
+                        rewardBalance += totalReward;
+                        totalReward = 0;
+                        document.getElementById('validasi-running').textContent = "0.0000000000 BossX";
+                        document.getElementById('reward-validasi').textContent = rewardBalance.toFixed(10) + " BossX";
+                        if (rewardBalance >= 1) {
+                            convertBtn.disabled = false;
+                        }
+                        addHistoryRow(rewardBalance);
+                        addLog("Auto-claim executed — reward diklaim!", "SUCCESS");
+                    }
+                }, 1000);
+
                 logInterval = setInterval(() => {
                     const messages = [
                         () => `GPU#0: ${parseFloat((Math.random() * 3 + 45).toFixed(1))} MH/s | Temp: ${Math.floor(Math.random() * 20) + 65}°C | Fan: ${Math.floor(Math.random() * 20) + 75}%`,
@@ -668,14 +752,69 @@
                     addLog(randomMessage);
                 }, 2000);
 
-                // Hitung mundur ke jam 06:00
                 startCountdown();
-
                 isMining = true;
-                document.querySelector('.power-btn').textContent = "⏹"; // Ganti icon jadi STOP
             }
 
-            // Fungsi hitung mundur ke jam 06:00
+            // Tambahkan baris ke history validasi
+            function addHistoryRow(amount) {
+                const now = new Date();
+                const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+                const dayName = days[now.getDay()];
+                const date = `${now.getDate()} ${['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'][now.getMonth()]} ${now.getFullYear()}`;
+                const time = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${dayName}</td>
+                    <td>${date}</td>
+                    <td>${time}</td>
+                    <td>${amount.toFixed(10)} BossX</td>
+                    <td>✅</td>
+                `;
+
+                document.getElementById('history-table').prepend(row);
+            }
+
+            // Tambahkan baris ke history aktivasi
+            function addActivationRow(amount) {
+                const now = new Date();
+                const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+                const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+                const endDate = new Date(now);
+                endDate.setDate(endDate.getDate() + 30);
+                const endDateString = `${endDate.getDate()} ${months[endDate.getMonth()]} ${endDate.getFullYear()}`;
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${days[now.getDay()]}</td>
+                    <td>${now.getDate()}</td>
+                    <td>${months[now.getMonth()]}</td>
+                    <td>${now.getFullYear()}</td>
+                    <td>${String(now.getHours()).padStart(2, '0')}</td>
+                    <td>${String(now.getMinutes()).padStart(2, '0')}</td>
+                    <td>${String(now.getSeconds()).padStart(2, '0')}</td>
+                    <td>${amount.toFixed(10)} BossX</td>
+                    <td>${endDateString}</td>
+                `;
+
+                document.getElementById('activation-table').prepend(row);
+            }
+
+            // Convert to USDT
+            convertBtn.addEventListener('click', function() {
+                if (rewardBalance >= 1) {
+                    const usdtAmount = rewardBalance * config.bossxToUsdt;
+                    usdtBalance += usdtAmount;
+                    rewardBalance = 0;
+                    document.getElementById('reward-validasi').textContent = "0.0000000000 BossX";
+                    document.getElementById('balance-usdt').textContent = usdtBalance.toFixed(2) + " USDT";
+                    convertBtn.disabled = true;
+                    addLog(`Convert berhasil: ${rewardBalance.toFixed(10)} BossX → $${usdtAmount.toFixed(2)} USDT`, "SUCCESS");
+                }
+            });
+
+            // ✅ REVISI UTAMA: JAM 06:00 → HENTIKAN & TUNGGU USER NYALAKAN ULANG
             function startCountdown() {
                 clearInterval(countdownInterval);
 
@@ -685,7 +824,7 @@
                     target.setHours(6, 0, 0, 0);
 
                     if (now > target) {
-                        target.setDate(target.getDate() + 1); // Besok jam 06:00
+                        target.setDate(target.getDate() + 1);
                     }
 
                     const diff = target - now;
@@ -696,49 +835,30 @@
                     const countdownText = `Stop validasi jam 06:00 (${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')})`;
                     document.getElementById('validasi-running-status').textContent = countdownText;
 
-                    // Jika sudah jam 06:00
                     if (now.getHours() === 6 && now.getMinutes() === 0 && now.getSeconds() === 0) {
-                        stopValidation("Maintenance harian dimulai");
+                        stopValidation("Validasi dihentikan otomatis jam 06:00. Segera klik ON untuk melanjutkan dan hindari kehilangan reward!");
+                        powerBtn.classList.remove('on');
+                        powerBtn.classList.add('off');
+                        powerBtn.textContent = "⚫";
+                        isMining = false; // Biarkan user yang nyalakan ulang
                     }
                 }, 1000);
             }
 
-            // Fungsi hentikan validasi
+            // Hentikan validasi — tapi biarkan user yang nyalakan ulang
             function stopValidation(reason = "Sistem dimatikan") {
                 clearInterval(rewardInterval);
                 clearInterval(logInterval);
+                clearInterval(autoclaimInterval);
                 clearInterval(countdownInterval);
 
-                addLog(`${reason} — Validasi dihentikan.`, "ALERT");
+                addLog(`${reason}`, "ALERT");
 
                 isMining = false;
                 totalReward = 0;
                 document.getElementById('validasi-running').textContent = "0.0000000000 BossX";
-                document.getElementById('reward-validasi').textContent = "0.0000000000 BossX";
-                document.getElementById('validasi-running-status').textContent = "Belum berjalan";
-                document.querySelector('.power-btn').textContent = "⏻"; // Kembali ke icon ON
+                document.getElementById('reward-countdown').textContent = "Auto-claim in: --";
             }
-
-            // Event listener tombol ⏻
-            document.querySelector('.power-btn').addEventListener('click', function() {
-                if (isMining) {
-                    stopValidation("User menghentikan validasi");
-                } else {
-                    startValidation();
-                }
-            });
-
-            // Saat user aktivasi masternode
-            function onNodeActivated(amount) {
-                addLog(`Pembelian node BFGMiner dengan sejumlah ${amount.toFixed(10)} BossX - Status: Aktif`);
-            }
-
-            // Scroll behavior
-            document.getElementById('log-output').addEventListener('scroll', function() {
-                const logOutput = this;
-                const isAtBottom = logOutput.scrollHeight - logOutput.scrollTop <= logOutput.clientHeight + 5;
-                isAutoScrollEnabled = isAtBottom;
-            });
         });
     </script>
 </body>
