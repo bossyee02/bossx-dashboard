@@ -4,6 +4,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Dashboard BossX</title>
+  <!-- ESCAPED SCRIPT TAG FOR GITHUB -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     :root {
@@ -639,11 +640,7 @@
     </div>
   </div>
 
-  <!-- AUDIO FOR DING SOUND -->
-  <audio id="dingSound" preload="auto">
-    <source src="data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YU9vT18=" type="audio/wav">
-  </audio>
-
+  <!-- JAVASCRIPT — TETAP DI BAWAH, TANPA ESCAPE KARENA DIBACA OLEH BROWSER -->
   <script>
     // ===== RUNNING TEXT TICKER =====
     (function() {
@@ -815,7 +812,9 @@
     }
 
     // ===== AUDIO =====
-    const dingSound = document.getElementById("dingSound");
+    const dingSound = document.createElement('audio');
+    dingSound.innerHTML = '<source src="audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YU9vT18=" type="audio/wav">';
+    document.body.appendChild(dingSound);
     function playDing() { dingSound.currentTime = 0; dingSound.play().catch(e => {}); }
 
     // ===== DASHBOARD LOGIC =====
