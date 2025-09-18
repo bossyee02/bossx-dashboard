@@ -3,863 +3,1331 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BossX Dashboard</title>
-    <link rel="icon" href="https://i.ibb.co/qYBkPDH3/Picsart-25-04-01-16-25-47-054.png" type="image/png">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>BossX - Crypto Exchange Platform | Validator Masternode System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
+        
         body {
-            font-family: 'Poppins', sans-serif;
-            display: flex;
-            background: #0f0f1a;
-            color: #e0e0ff;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+            background: #000000;
+            color: #ffffff;
             overflow-x: hidden;
-            min-height: 100vh;
         }
 
-        /* === SIDEBAR === */
+        .gradient-bg {
+            background: linear-gradient(to bottom, #1a1a1a, #000000);
+        }
+
+        .gradient-border {
+            border: 1px solid rgba(245, 158, 11, 0.2);
+        }
+
+        .gradient-card {
+            background: linear-gradient(to right, rgba(245, 158, 11, 0.1), rgba(234, 179, 8, 0.1));
+        }
+
+        .hover-scale {
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .hover-scale:hover {
+            transform: scale(1.02);
+        }
+
+        .animate-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: .5;
+            }
+        }
+
         .sidebar {
-            width: 280px;
-            height: 100vh;
-            background: linear-gradient(180deg, #1a1a2e, #16213e);
-            padding: 30px 20px;
-            box-shadow: 5px 0 25px rgba(0, 0, 0, 0.5);
-            position: fixed;
-            left: 0;
-            top: 0;
-            z-index: 100;
-            backdrop-filter: blur(10px);
-            border-right: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.3s ease;
+            transition: width 0.3s ease-in-out;
+            width: 14rem;
+            min-width: 14rem;
         }
 
         .sidebar.collapsed {
-            width: 80px;
-            padding: 30px 10px;
+            width: 4rem;
+            min-width: 4rem;
         }
 
-        .logo-container {
-            display: flex;
-            align-items: center;
-            margin-bottom: 50px;
-            padding: 10px;
+        .menu-item {
+            transition: all 0.2s ease-in-out;
         }
 
-        .logo {
-            width: 60px;
-            height: 60px;
-            border-radius: 12px;
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+        .menu-item:hover {
+            background-color: rgba(31, 41, 55, 0.5);
+            transform: translateX(4px);
         }
 
-        .brand {
-            margin-left: 15px;
-            font-size: 32px;
-            font-weight: 700;
-            background: linear-gradient(to right, #ffcc00, #ff9900);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: 1px;
-            transition: opacity 0.3s ease;
+        .menu-item.active {
+            background: linear-gradient(to right, rgba(245, 158, 11, 0.2), rgba(234, 179, 8, 0.2));
+            color: #f59e0b;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
 
-        .sidebar.collapsed .brand {
-            opacity: 0;
-            width: 0;
-            margin-left: 0;
-            overflow: hidden;
-        }
-
-        .menu ul {
-            list-style: none;
-        }
-
-        .menu li {
-            margin: 15px 0;
-        }
-
-        .menu a {
-            display: flex;
-            align-items: center;
-            padding: 16px 24px;
-            text-decoration: none;
-            color: #b0b0d0;
-            font-weight: 500;
-            font-size: 16px;
-            border-radius: 12px;
-            transition: all 0.3s ease;
-        }
-
-        .menu a:hover {
-            color: #ffffff;
-            background: rgba(255, 255, 255, 0.08);
-            transform: translateX(5px);
-        }
-
-        .menu a.active {
-            color: #ffffff;
-            background: rgba(255, 204, 0, 0.15);
-            border-left: 4px solid #ffcc00;
-        }
-
-        /* === MAIN CONTENT === */
-        .main-content {
-            margin-left: 280px;
-            width: calc(100% - 280px);
-            min-height: 100vh;
-            background: linear-gradient(135deg, #0f0f1a, #1a1a2e);
-            display: flex;
-            flex-direction: column;
-            transition: all 0.3s ease;
-        }
-
-        .main-content.sidebar-collapsed {
-            margin-left: 80px;
-            width: calc(100% - 80px);
-        }
-
-        /* === HEADER BAR === */
-        .header-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 40px;
-            background: rgba(15, 15, 26, 0.7);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .toggle-btn {
-            background: none;
-            border: none;
-            color: #ffcc00;
-            font-size: 24px;
-            cursor: pointer;
-            margin-right: 15px;
-            display: none;
-        }
-
-        .datetime {
-            text-align: center;
-        }
-
-        .datetime #current-date,
-        .datetime #current-time {
-            font-size: 18px;
-            font-weight: 600;
-            color: #ffffff;
-            letter-spacing: 0.5px;
-        }
-
-        .profile-container {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .profile-pic {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid #ffcc00;
-        }
-
-        .profile-info .username,
-        .profile-info .validator-id {
-            font-size: 14px;
-        }
-
-        /* === RUNNING TEXT === */
-        .running-text {
-            background: rgba(255, 204, 0, 0.05);
-            padding: 12px 0;
-            overflow: hidden;
-            white-space: nowrap;
-            position: relative;
-            border-bottom: 1px solid rgba(255, 204, 0, 0.2);
-            border-top: 1px solid rgba(255, 204, 0, 0.1);
-        }
-
-        .running-text .content {
-            display: inline-block;
-            color: #FFD700;
-            font-weight: 600;
-            font-size: 16px;
-            animation: scrollText 40s linear infinite;
-            text-shadow: 0 0 4px rgba(255, 215, 0, 0.5);
-        }
-
-        @keyframes scrollText {
-            0% { transform: translateX(100%); }
-            100% { transform: translateX(-100%); }
-        }
-
-        /* === CARD GRID LAYOUT === */
-        .dashboard-content {
-            padding: 40px;
-            flex: 1;
-        }
-
-        .card-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .card {
-            background: #1a002e;
-            border: 2px solid #FFD700;
-            border-radius: 12px;
-            padding: 20px;
-            color: #fff;
-            transition: all 0.3s ease;
-        }
-
-        .card h3 {
-            font-size: 16px;
-            color: #FFD700;
-            margin-bottom: 10px;
-            border-bottom: 1px solid #FFD700;
-            padding-bottom: 5px;
-        }
-
-        .card p {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 10px;
-            word-break: break-all;
-        }
-
-        .card small {
-            font-size: 14px;
-            color: #ccc;
-        }
-
-        .btn {
-            background: #666;
-            color: #fff;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-size: 14px;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: all 0.3s ease;
-            width: 100%;
-        }
-
-        .btn:enabled {
-            background: #FFD700;
-            color: #000;
-        }
-
-        .btn:hover:enabled {
-            background: #FFC107;
-            transform: scale(1.05);
-        }
-
-        /* === ENGINE BUTTON === */
-        .engine-btn {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
+        .crypto-icon {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 0.75rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: not-allowed;
-            margin-top: 10px;
-            transition: all 0.3s ease;
-            font-size: 24px;
             font-weight: bold;
-            border: 3px solid #555;
-            box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
-            background: #333;
-            color: #fff;
-            opacity: 0.6;
+            font-size: 0.75rem;
+            color: #000;
+            overflow: hidden;
         }
 
-        .engine-btn.active {
-            cursor: pointer;
+        .crypto-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 0.75rem;
+        }
+
+        .profile-picture {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .profile-picture img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .stat-card {
+            background: #1a1a1a;
+            border: 1px solid #374151;
+            border-radius: 0.75rem;
+            padding: 1.25rem;
+            transition: border-color 0.2s ease-in-out;
+            position: relative;
+            overflow: hidden;
+            min-height: 200px;
+        }
+
+        .stat-card:hover {
+            border-color: rgba(245, 158, 11, 0.5);
+        }
+
+        /* Running Border Effect */
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 0.75rem;
+            padding: 2px;
+            background: linear-gradient(90deg, transparent, #10b981, transparent);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask-composite: exclude;
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: source-out;
+            animation: runningBorder 4s linear infinite;
+            opacity: 0;
+            pointer-events: none; /* Fix: Allow clicks to pass through */
+        }
+
+        .stat-card:hover::before {
             opacity: 1;
         }
 
-        .engine-btn.off {
-            background: #d93025;
-            border-color: #ff4c4c;
-            box-shadow: 0 0 15px rgba(255, 0, 0, 0.7);
-            color: #fff;
+        /* Corner Dots */
+        .corner-dot {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: radial-gradient(circle, #22c55e, #10b981);
+            border-radius: 50%;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            box-shadow: 0 0 6px #10b981;
+            pointer-events: none; /* Fix: Allow clicks to pass through */
         }
 
-        .engine-btn.on {
-            background: #34a853;
-            border-color: #4ade80;
-            box-shadow: 0 0 15px rgba(0, 255, 0, 0.7);
-            color: #fff;
+        .stat-card:hover .corner-dot {
+            opacity: 1;
+            animation: dotPulse 2s ease-in-out infinite;
         }
 
-        .engine-btn:hover {
-            transform: scale(1.1);
+        .corner-dot.top-left {
+            top: -3px;
+            left: -3px;
         }
 
-        /* === LOG CARD === */
-        .log-card, .history-card, .activation-card {
-            background: #1a002e;
-            border: 2px solid #FFD700;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
+        .corner-dot.top-right {
+            top: -3px;
+            right: -3px;
         }
 
-        .log-card h3, .history-card h3, .activation-card h3 {
-            color: #FFD700;
-            margin-bottom: 15px;
-            font-size: 18px;
+        .corner-dot.bottom-right {
+            bottom: -3px;
+            right: -3px;
         }
 
-        .log-terminal {
-            background: #121212;
-            color: #0f0;
-            font-family: 'Courier New', monospace;
-            padding: 15px;
-            border-radius: 8px;
-            max-height: 400px;
-            overflow-y: auto;
-            border: 1px solid #FFD700;
-            margin-top: 10px;
-            font-size: 14px;
-            line-height: 1.5;
-            white-space: pre-wrap;
-            scroll-behavior: smooth;
+        .corner-dot.bottom-left {
+            bottom: -3px;
+            left: -3px;
         }
 
-        /* === HISTORY CARD === */
-        .search-bar {
-            display: flex;
-            margin-bottom: 15px;
+        @keyframes dotPulse {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 0 6px #10b981;
+            }
+            50% {
+                transform: scale(1.2);
+                box-shadow: 0 0 12px #22c55e;
+            }
         }
 
-        .search-bar input {
-            flex: 1;
-            padding: 8px;
-            border: 1px solid #FFD700;
-            border-radius: 6px;
-            background: #1a002e;
-            color: #fff;
-            font-size: 14px;
+        /* Border Lines */
+        .border-line {
+            position: absolute;
+            background: linear-gradient(90deg, transparent, #10b981, #22c55e, #10b981, transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none; /* Fix: Allow clicks to pass through */
         }
 
-        .search-bar svg {
-            margin-right: 8px;
-            color: #FFD700;
+        .stat-card:hover .border-line {
+            opacity: 1;
         }
 
-        .table {
+        /* Top Border */
+        .border-top {
+            top: 0;
+            left: 0;
             width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-            font-size: 14px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #10b981, #22c55e, #10b981, transparent);
+            animation: borderTop 3s linear infinite;
+            transform-origin: left;
         }
 
-        .table th {
-            background: #FFD700;
-            color: #000;
-            padding: 10px;
-            text-align: left;
+        /* Right Border */
+        .border-right {
+            top: 0;
+            right: 0;
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(180deg, transparent, #10b981, #22c55e, #10b981, transparent);
+            animation: borderRight 3s linear infinite 0.7s;
+            transform-origin: top;
         }
 
-        .table td {
-            padding: 10px;
-            border-bottom: 1px solid #333;
+        /* Bottom Border */
+        .border-bottom {
+            bottom: 0;
+            right: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(270deg, transparent, #10b981, #22c55e, #10b981, transparent);
+            animation: borderBottom 3s linear infinite 1.4s;
+            transform-origin: right;
         }
 
-        /* RESPONSIVE */
+        /* Left Border */
+        .border-left {
+            bottom: 0;
+            left: 0;
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(0deg, transparent, #10b981, #22c55e, #10b981, transparent);
+            animation: borderLeft 3s linear infinite 2.1s;
+            transform-origin: bottom;
+        }
+
+        /* Border Animations */
+        @keyframes borderTop {
+            0% {
+                transform: scaleX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            25% {
+                transform: scaleX(1);
+                opacity: 1;
+            }
+            30% {
+                opacity: 0;
+            }
+            100% {
+                transform: scaleX(1);
+                opacity: 0;
+            }
+        }
+
+        @keyframes borderRight {
+            0% {
+                transform: scaleY(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            25% {
+                transform: scaleY(1);
+                opacity: 1;
+            }
+            30% {
+                opacity: 0;
+            }
+            100% {
+                transform: scaleY(1);
+                opacity: 0;
+            }
+        }
+
+        @keyframes borderBottom {
+            0% {
+                transform: scaleX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            25% {
+                transform: scaleX(1);
+                opacity: 1;
+            }
+            30% {
+                opacity: 0;
+            }
+            100% {
+                transform: scaleX(1);
+                opacity: 0;
+            }
+        }
+
+        @keyframes borderLeft {
+            0% {
+                transform: scaleY(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            25% {
+                transform: scaleY(1);
+                opacity: 1;
+            }
+            30% {
+                opacity: 0;
+            }
+            100% {
+                transform: scaleY(1);
+                opacity: 0;
+            }
+        }
+
+        .portfolio-item {
+            background: rgba(31, 41, 55, 0.5);
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            transition: background-color 0.2s ease-in-out;
+        }
+
+        .portfolio-item:hover {
+            background-color: #374151;
+        }
+
+        /* Running Text Animation */
+        #running-text {
+            animation: scroll-left 60s linear infinite;
+        }
+
+        @keyframes scroll-left {
+            0% {
+                transform: translateX(100%);
+            }
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+
+        #running-text:hover {
+            animation-play-state: paused;
+        }
+
+        /* Power Button Styles */
+        .power-button {
+            position: relative;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 3px solid #374151;
+            background: linear-gradient(145deg, #1f2937, #111827);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 
+                0 8px 15px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        .power-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 
+                0 12px 25px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        .power-button.on {
+            border-color: #10b981;
+            background: linear-gradient(145deg, #059669, #047857);
+            box-shadow: 
+                0 8px 15px rgba(16, 185, 129, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2),
+                0 0 20px rgba(16, 185, 129, 0.5);
+            cursor: not-allowed; /* Fix: Disable cursor when running */
+        }
+
+        .power-button.on:hover {
+            transform: none; /* Fix: No hover effect when running */
+            box-shadow: 
+                0 8px 15px rgba(16, 185, 129, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2),
+                0 0 20px rgba(16, 185, 129, 0.5);
+        }
+
+        .power-button.off {
+            border-color: #dc2626;
+            background: linear-gradient(145deg, #b91c1c, #991b1b);
+            box-shadow: 
+                0 8px 15px rgba(220, 38, 38, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1),
+                0 0 20px rgba(220, 38, 38, 0.5);
+        }
+
+        .power-button.off:hover {
+            box-shadow: 
+                0 12px 25px rgba(220, 38, 38, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1),
+                0 0 25px rgba(220, 38, 38, 0.6);
+        }
+
+        .power-icon {
+            font-size: 24px;
+            color: #ffffff;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 1440px) {
+            .sidebar {
+                width: 12rem;
+                min-width: 12rem;
+            }
+            
+            .stat-card {
+                padding: 1rem;
+            }
+        }
+
         @media (max-width: 1200px) {
-            .card-grid {
+            .sidebar {
+                width: 10rem;
+                min-width: 10rem;
+            }
+            
+            .profile-picture {
+                width: 1.5rem;
+                height: 1.5rem;
+            }
+        }
+
+        /* Main container responsive */
+        .main-container {
+            max-width: 100vw;
+            overflow-x: hidden;
+        }
+
+        .header-container {
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+
+        .content-container {
+            max-width: 100%;
+            padding: 1rem;
+        }
+
+        /* Grid responsive improvements */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+            width: 100%;
+        }
+
+        @media (min-width: 1024px) {
+            .stats-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        @media (max-width: 1023px) {
+            .stats-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
         }
 
-        @media (max-width: 768px) {
-            .sidebar {
-                width: 80px;
-                padding: 30px 10px;
-            }
-            .sidebar .brand {
-                display: none;
-            }
-            .main-content {
-                margin-left: 80px;
-                width: calc(100% - 80px);
-            }
-            .toggle-btn {
-                display: block;
-            }
-            .running-text .content {
-                font-size: 14px;
-                animation-duration: 35s;
-            }
-            .card-grid {
+        @media (max-width: 640px) {
+            .stats-grid {
                 grid-template-columns: 1fr;
             }
-            .log-card, .history-card, .activation-card {
-                width: 100%;
+        }
+
+        /* Input field styles */
+        .node-input {
+            width: 100%;
+            padding: 0.5rem;
+            background: rgba(31, 41, 55, 0.8);
+            border: 1px solid #374151;
+            border-radius: 0.5rem;
+            color: #ffffff;
+            font-size: 0.875rem;
+            transition: border-color 0.2s ease;
+            position: relative; /* Fix: Ensure input is above decorative elements */
+            z-index: 10; /* Fix: Higher z-index than decorative elements */
+        }
+
+        .node-input:focus {
+            outline: none;
+            border-color: #f59e0b;
+            box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2);
+            background: rgba(31, 41, 55, 0.9);
+        }
+
+        .node-input::placeholder {
+            color: #9ca3af;
+        }
+
+        .node-input:disabled {
+            background: rgba(31, 41, 55, 0.3);
+            border-color: #4b5563;
+            color: #6b7280;
+            cursor: not-allowed;
+        }
+
+        /* Button styles */
+        .node-button {
+            width: 100%;
+            padding: 0.75rem;
+            background: linear-gradient(145deg, #f59e0b, #d97706);
+            border: none;
+            border-radius: 0.5rem;
+            color: #ffffff;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 8px rgba(245, 158, 11, 0.3);
+            position: relative; /* Fix: Ensure button is above decorative elements */
+            z-index: 10; /* Fix: Higher z-index than decorative elements */
+        }
+
+        .node-button:hover:not(:disabled) {
+            background: linear-gradient(145deg, #d97706, #b45309);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(245, 158, 11, 0.4);
+        }
+
+        .node-button:active {
+            transform: translateY(0);
+        }
+
+        .node-button:disabled {
+            background: linear-gradient(145deg, #6b7280, #4b5563);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Convert button specific styles */
+        .convert-button {
+            background: linear-gradient(145deg, #3b82f6, #2563eb) !important;
+            box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3) !important;
+        }
+
+        .convert-button:hover:not(:disabled) {
+            background: linear-gradient(145deg, #2563eb, #1d4ed8) !important;
+            box-shadow: 0 6px 12px rgba(59, 130, 246, 0.4) !important;
+            transform: translateY(-2px);
+        }
+
+        /* Countdown timer */
+        .countdown-timer {
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #10b981;
+            text-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+        }
+
+        /* Auto claim timer specific */
+        .auto-claim-timer {
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            font-weight: bold;
+            color: #3b82f6;
+            text-shadow: 0 0 8px rgba(59, 130, 246, 0.5);
+        }
+
+        /* Success message */
+        .success-message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(145deg, #10b981, #059669);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+            z-index: 1000;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
             }
-            .table {
-                font-size: 12px;
+            to {
+                transform: translateX(0);
+                opacity: 1;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Sidebar -->
-    <div class="sidebar" id="sidebar">
-        <div class="logo-container">
-            <img src="https://i.ibb.co/qYBkPDH3/Picsart-25-04-01-16-25-47-054.png" alt="BossX Logo" class="logo">
-            <h1 class="brand">BossX</h1>
-        </div>
-
-        <nav class="menu">
-            <ul>
-                <li><a href="#" class="active" data-title="Dashboard">📊 Dashboard</a></li>
-                <li><a href="#" data-title="Masternode">💎 Masternode</a></li>
-                <li><a href="#" data-title="Deposit">📥 Deposit</a></li>
-                <li><a href="#" data-title="Withdrawal">📤 Withdrawal</a></li>
-            </ul>
-        </nav>
-    </div>
-
-    <!-- Main Content -->
-    <div class="main-content" id="main-content">
-        <!-- Header Bar -->
-        <div class="header-bar">
-            <button class="toggle-btn" id="toggle-sidebar">☰</button>
-            <div class="datetime">
-                <div id="current-date">Loading...</div>
-                <div id="current-time">--:--:--</div>
-            </div>
-            <div class="profile-container">
-                <img src="https://i.ibb.co/gbVsGLy0/FB-IMG-1617237754232.jpg" alt="User Profile" class="profile-pic">
-                <div class="profile-info">
-                    <div class="username">Fery Muliawan</div>
-                    <div class="validator-id">Validator ID: 8055x</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- RUNNING TEXT -->
-        <div class="running-text">
-            <div class="content">
-                🎉 Selamat datang di komunitas BossX — tempatnya profit konsisten & masternode terpercaya! 💰 Harga BOSSX/USDT: $1.00 ▲ 0.0% (Live) | 🎉 Selamat datang di komunitas BossX — tempatnya profit konsisten & masternode terpercaya! 💰 Harga BOSSX/USDT: $1.00 ▲ 0.0% (Live)
-            </div>
-        </div>
-
-        <!-- DASHBOARD CONTENT -->
-        <div class="dashboard-content">
-            <!-- 4 CARD HORIZONTAL -->
-            <div class="card-grid">
-                <!-- Aktivasi Node -->
-                <div class="card">
-                    <h3>Aktivasi Node</h3>
-                    <p id="node-amount">0.0000000000 BossX</p>
-                    <div style="margin-top: 10px;">
-                        <input type="number" id="bossx-input" placeholder="minimal 10 BossX" min="10" step="0.0000000001" style="width: 100%; padding: 8px; border: 1px solid #FFD700; border-radius: 6px; background: #1a002e; color: #fff; font-size: 14px;">
+    <div class="min-h-screen bg-black text-white flex main-container">
+        <!-- Sidebar -->
+        <div id="sidebar" class="sidebar h-screen gradient-bg gradient-border">
+            <!-- Header with Logo -->
+            <div class="p-3 border-b border-amber-500/20">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-2">
+                        <div class="crypto-icon">
+                            <img src="https://i.ibb.co/qYBkPDH3/Picsart-25-04-01-16-25-47-054.png" alt="BossX Logo" onerror="this.style.display='none'; this.parentNode.innerHTML='<div style=\'background: linear-gradient(145deg, #f59e0b, #d97706); color: white; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.75rem;\'>BX</div>'" />
+                        </div>
+                        <div id="logo-text">
+                            <h1 class="text-lg font-bold text-amber-400">BossX</h1>
+                            <p class="text-xs text-gray-400">Crypto Exchange</p>
+                        </div>
                     </div>
-                    <button class="btn" id="activate-btn" disabled>Aktivkan Validasi</button>
-                </div>
-
-                <!-- Validasi Running -->
-                <div class="card">
-                    <h3>Validasi Running (Estimasi)</h3>
-                    <p id="validasi-running">0.0000000000 BossX</p>
-                    <small id="validasi-running-status">Belum berjalan</small>
-                    <div class="engine-btn" id="power-btn" title="Aktivasi dulu di Aktivasi Node">⚫</div>
-                </div>
-
-                <!-- Reward Validasi -->
-                <div class="card">
-                    <h3>Reward Validasi</h3>
-                    <p id="reward-validasi">0.0000000000 BossX</p>
-                    <small id="reward-countdown">Auto-claim in: --</small>
-                    <button class="btn" id="convert-btn" disabled>Convert to USDT</button>
-                </div>
-
-                <!-- Balance USDT -->
-                <div class="card">
-                    <h3>Balance USDT</h3>
-                    <p id="balance-usdt">0.00 USDT</p>
+                    <button id="toggle-sidebar" class="text-gray-400 hover:text-amber-400 hover:bg-amber-500/10 p-1 rounded">
+                        <i data-lucide="chevron-left"></i>
+                    </button>
                 </div>
             </div>
 
-            <!-- 3 CARD DI BAWAH -->
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                <!-- Log Engine Reward -->
-                <div class="log-card">
-                    <h3>Log Engine Reward</h3>
-                    <div class="log-terminal" id="log-output">
-                        <!-- Log akan muncul di sini -->
+            <!-- Navigation Menu -->
+            <nav class="mt-4 px-2">
+                <a href="#" class="menu-item active flex items-center px-2 py-2 mb-2 rounded-xl" data-page="dashboard">
+                    <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+                    <span class="ml-2 font-medium menu-text text-sm">Dashboard</span>
+                </a>
+                <a href="#" class="menu-item flex items-center px-2 py-2 mb-2 rounded-xl text-gray-400" data-page="deposit">
+                    <i data-lucide="arrow-down-circle" class="w-4 h-4"></i>
+                    <span class="ml-2 font-medium menu-text text-sm">Deposit</span>
+                </a>
+                <a href="#" class="menu-item flex items-center px-2 py-2 mb-2 rounded-xl text-gray-400" data-page="withdrawal">
+                    <i data-lucide="arrow-up-circle" class="w-4 h-4"></i>
+                    <span class="ml-2 font-medium menu-text text-sm">Withdrawal</span>
+                </a>
+                <a href="#" class="menu-item flex items-center px-2 py-2 mb-2 rounded-xl text-gray-400" data-page="p2p">
+                    <i data-lucide="users" class="w-4 h-4"></i>
+                    <span class="ml-2 font-medium menu-text text-sm">Peer to Peer</span>
+                </a>
+                <a href="#" class="menu-item flex items-center px-2 py-2 mb-2 rounded-xl text-gray-400" data-page="faq">
+                    <i data-lucide="help-circle" class="w-4 h-4"></i>
+                    <span class="ml-2 font-medium menu-text text-sm">FAQ</span>
+                </a>
+                <a href="#" class="menu-item flex items-center px-2 py-2 mb-2 rounded-xl text-gray-400" data-page="settings">
+                    <i data-lucide="settings" class="w-4 h-4"></i>
+                    <span class="ml-2 font-medium menu-text text-sm">Setting</span>
+                </a>
+                <a href="#" class="menu-item flex items-center px-2 py-2 mb-2 rounded-xl text-gray-400" data-page="logout">
+                    <i data-lucide="log-out" class="w-4 h-4"></i>
+                    <span class="ml-2 font-medium menu-text text-sm">Logout</span>
+                </a>
+            </nav>
+
+            <!-- Footer -->
+            <div id="sidebar-footer" class="absolute bottom-4 left-2 right-2">
+                <div class="gradient-card p-3 rounded-xl gradient-border">
+                    <div class="text-center">
+                        <div class="w-6 h-6 bg-amber-400 rounded-full mx-auto mb-1 flex items-center justify-center">
+                            <span class="text-xs font-bold text-black">BX</span>
+                        </div>
+                        <p class="text-xs text-gray-400">Premium Member</p>
+                        <p class="text-sm font-semibold text-amber-400">VIP Access</p>
                     </div>
                 </div>
+            </div>
+        </div>
 
-                <!-- History Validasi -->
-                <div class="history-card">
-                    <h3>History Validasi</h3>
-                    <div class="search-bar">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                            <path d="M15.5 14a.5.5 0 0 0 0-1H14.8l-.8-8a.5.5 0 0 0-.5-.45H9.2a.5.5 0 0 0-.5.45l-.8 8H7.5a.5.5 0 0 0 0 1h1.2l.8 8a.5.5 0 0 0 .5.45h2.8a.5.5 0 0 0 .5-.45l.8-8H15.5z"/>
-                            <path d="M14 6.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0zm-3.5 1a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/>
-                        </svg>
-                        <input type="text" placeholder="Cari...">
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col min-w-0">
+            <!-- Header -->
+            <header class="bg-gradient-to-r from-gray-900 via-black to-gray-900 border-b border-amber-500/20 px-4 py-3 header-container">
+                <div class="flex items-center justify-between">
+                    <!-- Real-time Clock -->
+                    <div class="flex flex-col">
+                        <div id="time" class="text-amber-400 text-lg font-bold">
+                            00:00:00
+                        </div>
+                        <div id="date" class="text-gray-400 text-sm">
+                            Loading...
+                        </div>
                     </div>
-                    <table class="table" id="history-table">
-                        <thead>
-                            <tr>
-                                <th>Hari</th>
-                                <th>Tanggal</th>
-                                <th>Jam</th>
-                                <th>BossX</th>
-                                <th>Auto-Claim</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- Data akan diisi otomatis -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
 
-            <!-- History Aktivasi -->
-            <div class="activation-card">
-                <h3>History Aktivasi</h3>
-                <table class="table" id="activation-table">
-                    <thead>
-                        <tr>
-                            <th>Hari</th>
-                            <th>Tanggal</th>
-                            <th>Bulan</th>
-                            <th>Tahun</th>
-                            <th>Jam</th>
-                            <th>Menit</th>
-                            <th>Detik</th>
-                            <th>Jumlah</th>
-                            <th>Masa Akhir Kontrak</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Data akan diisi otomatis -->
-                    </tbody>
-                </table>
-            </div>
+                    <!-- Search Bar -->
+                    <div class="flex-1 max-w-sm mx-4">
+                        <div class="relative">
+                            <i data-lucide="search" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4"></i>
+                            <input
+                                type="text"
+                                placeholder="Cari cryptocurrency, transaksi..."
+                                class="w-full pl-10 pr-4 py-2 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500/20"
+                            />
+                        </div>
+                    </div>
+
+                    <!-- Right Side Actions -->
+                    <div class="flex items-center space-x-3">
+                        <!-- Market Status -->
+                        <div class="flex items-center space-x-2 px-2 py-1 bg-green-500/10 rounded-lg border border-green-500/20">
+                            <i data-lucide="globe" class="w-4 h-4 text-green-400"></i>
+                            <span class="text-green-400 text-sm font-medium">Market Open</span>
+                        </div>
+
+                        <!-- Notifications -->
+                        <button class="relative text-gray-400 hover:text-amber-400 hover:bg-amber-500/10 p-2 rounded">
+                            <i data-lucide="bell" class="w-4 h-4"></i>
+                            <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                                3
+                            </span>
+                        </button>
+
+                        <!-- User Profile -->
+                        <div class="flex items-center space-x-2 px-2 py-1 bg-gray-800/50 rounded-lg border border-gray-700 hover:border-amber-500/50 transition-colors cursor-pointer">
+                            <div class="profile-picture">
+                                <img src="https://i.ibb.co/gbVsGLy0/FB-IMG-1617237754232.jpg" alt="Fery Muliawan" onerror="this.style.display='none'; this.parentNode.innerHTML='<div style=\'background: linear-gradient(145deg, #3b82f6, #2563eb); color: white; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.75rem; border-radius: 50%;\'>FM</div>'" />
+                            </div>
+                            <div class="text-sm">
+                                <p class="text-white font-medium">Fery Muliawan</p>
+                                <p class="text-amber-400 text-xs">Validator: 8055x</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Main Dashboard Content -->
+            <main class="flex-1 overflow-auto">
+                <div id="content" class="content-container space-y-4">
+                    <!-- Running Text / Ticker -->
+                    <div class="bg-gray-900 border border-amber-500/20 rounded-xl p-3 overflow-hidden">
+                        <div class="relative">
+                            <div id="running-text" class="whitespace-nowrap text-amber-400 font-medium text-sm">
+                                🔥 BTC +5.2% $35,000 • ETH +3.8% $1,875 • BNB -1.2% $206 • ADA +7.1% $0.52 • SOL +12.5% $98 • DOT +2.3% $6.75 • MATIC +8.9% $0.89 • LINK +4.2% $14.30 • UNI +6.7% $7.25 • AVAX +9.1% $28.40 • Market Cap: $1.2T • 24h Vol: $45.6B 🚀 | BossX Validator Masternode System Active
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 4 Stats Cards Horizontal -->
+                    <div class="stats-grid">
+                        <!-- Card 1: Aktivasi Node -->
+                        <div class="stat-card hover-scale">
+                            <!-- Corner Dots -->
+                            <div class="corner-dot top-left"></div>
+                            <div class="corner-dot top-right"></div>
+                            <div class="corner-dot bottom-right"></div>
+                            <div class="corner-dot bottom-left"></div>
+                            
+                            <!-- Border Lines -->
+                            <div class="border-line border-top"></div>
+                            <div class="border-line border-right"></div>
+                            <div class="border-line border-bottom"></div>
+                            <div class="border-line border-left"></div>
+                            
+                            <div class="flex items-center justify-between mb-3">
+                                <p class="text-sm text-gray-400">Aktivasi Node</p>
+                                <i data-lucide="cpu" class="w-4 h-4 text-amber-400"></i>
+                            </div>
+                            <div class="text-lg font-bold text-white mb-3">
+                                <span id="bossx-balance">100,000000000 BossX</span>
+                            </div>
+                            
+                            <div class="space-y-3">
+                                <input 
+                                    id="activation-input"
+                                    type="number" 
+                                    placeholder="Minimal 10 BossX" 
+                                    class="node-input"
+                                    min="10"
+                                    step="0.000000001"
+                                />
+                                <button id="activation-button" class="node-button" onclick="activateNode()">
+                                    Aktivasi Node
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Card 2: Validasi Running -->
+                        <div class="stat-card hover-scale">
+                            <!-- Corner Dots -->
+                            <div class="corner-dot top-left"></div>
+                            <div class="corner-dot top-right"></div>
+                            <div class="corner-dot bottom-right"></div>
+                            <div class="corner-dot bottom-left"></div>
+                            
+                            <!-- Border Lines -->
+                            <div class="border-line border-top"></div>
+                            <div class="border-line border-right"></div>
+                            <div class="border-line border-bottom"></div>
+                            <div class="border-line border-left"></div>
+                            
+                            <div class="flex items-center justify-between mb-3">
+                                <p class="text-sm text-gray-400">Validasi Running</p>
+                                <i data-lucide="zap" class="w-4 h-4 text-green-400"></i>
+                            </div>
+                            <div class="text-lg font-bold text-white mb-3">
+                                <span id="validation-balance">0,000000000 BossX</span>
+                            </div>
+                            
+                            <div class="text-center space-y-3">
+                                <p id="validation-status" class="text-sm text-gray-400">Belum berjalan</p>
+                                <div id="countdown-display" class="countdown-timer" style="display: none;">
+                                    Countdown: <span id="countdown-time">00:00:00</span>
+                                </div>
+                                <div class="flex justify-center">
+                                    <button id="power-btn" class="power-button off" onclick="togglePower()">
+                                        <i id="power-icon" data-lucide="power" class="power-icon"></i>
+                                    </button>
+                                </div>
+                                <p id="power-status" class="text-xs text-gray-500" style="display: none;">
+                                    Masternode sedang running - Auto stop jam 06:00
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Card 3: Reward Validasi -->
+                        <div class="stat-card hover-scale">
+                            <!-- Corner Dots -->
+                            <div class="corner-dot top-left"></div>
+                            <div class="corner-dot top-right"></div>
+                            <div class="corner-dot bottom-right"></div>
+                            <div class="corner-dot bottom-left"></div>
+                            
+                            <!-- Border Lines -->
+                            <div class="border-line border-top"></div>
+                            <div class="border-line border-right"></div>
+                            <div class="border-line border-bottom"></div>
+                            <div class="border-line border-left"></div>
+                            
+                            <div class="flex items-center justify-between mb-3">
+                                <p class="text-sm text-gray-400">Reward Validasi</p>
+                                <i data-lucide="gift" class="w-4 h-4 text-blue-400"></i>
+                            </div>
+                            <div class="text-lg font-bold text-white mb-3">
+                                <span id="reward-balance">0,000000000 BossX</span>
+                            </div>
+                            
+                            <div class="space-y-3">
+                                <p class="text-xs text-blue-400">
+                                    Auto claim in: <span id="auto-claim-timer" class="auto-claim-timer">--</span>s
+                                </p>
+                                <button class="node-button convert-button" onclick="convertToUSDT()">
+                                    Convert To USDT
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Card 4: Balance USDT -->
+                        <div class="stat-card hover-scale">
+                            <!-- Corner Dots -->
+                            <div class="corner-dot top-left"></div>
+                            <div class="corner-dot top-right"></div>
+                            <div class="corner-dot bottom-right"></div>
+                            <div class="corner-dot bottom-left"></div>
+                            
+                            <!-- Border Lines -->
+                            <div class="border-line border-top"></div>
+                            <div class="border-line border-right"></div>
+                            <div class="border-line border-bottom"></div>
+                            <div class="border-line border-left"></div>
+                            
+                            <div class="flex items-center justify-between mb-2">
+                                <p class="text-sm text-gray-400">Balance USDT</p>
+                                <i data-lucide="dollar-sign" class="w-4 h-4 text-green-400"></i>
+                            </div>
+                            <div class="text-2xl font-bold text-white">
+                                <span id="usdt-balance">0,00 USDT</span>
+                            </div>
+                            <p class="text-xs text-green-400 mt-1">Available balance</p>
+                        </div>
+                    </div>
+
+                    <!-- System Status Information -->
+                    <div class="bg-gray-900 border border-blue-500/20 rounded-xl p-4 mt-6">
+                        <div class="flex items-center mb-3">
+                            <i data-lucide="info" class="w-5 h-5 text-blue-400 mr-2"></i>
+                            <h3 class="text-lg font-semibold text-blue-400">Informasi Sistem BossX Validator</h3>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-300">
+                            <div>
+                                <p><strong>• Node Status:</strong> <span id="node-status">Belum Aktif</span></p>
+                                <p><strong>• Auto Stop:</strong> Setiap hari jam 06:00</p>
+                                <p><strong>• Auto Claim:</strong> Hanya saat validasi running</p>
+                            </div>
+                            <div>
+                                <p><strong>• Minimal Aktivasi:</strong> 10 BossX</p>
+                                <p><strong>• Minimal Convert:</strong> 1 BossX</p>
+                                <p><strong>• Rate Convert:</strong> 1 BossX = 1 USDT</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
         </div>
     </div>
 
     <script>
-        // === REALTIME CLOCK ===
-        function updateDateTime() {
-            const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
-            const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-            const now = new Date();
-            const dayName = days[now.getDay()];
-            const date = now.getDate();
-            const monthName = months[now.getMonth()];
-            const year = now.getFullYear();
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const seconds = String(now.getSeconds()).padStart(2, '0');
+        // Initialize Lucide icons
+        lucide.createIcons();
 
-            document.getElementById('current-date').textContent = `${dayName}, ${date} ${monthName} ${year}`;
-            document.getElementById('current-time').textContent = `${hours}:${minutes}:${seconds}`;
+        // Global variables
+        let isNodeActive = false;
+        let isValidationRunning = false;
+        let countdownInterval;
+        let autoClaimInterval = null;
+        let autoClaimSeconds = 60;
+        let validationInterval;
+        let currentValidationReward = 0;
+        let totalRewardBalance = 0;
+        let usdtBalance = 0;
+        let bossxBalance = 100; // Starting balance for demo
+        let validationCounter = 1;
+
+        // Real-time clock
+        function updateClock() {
+            const now = new Date();
+            const timeOptions = { 
+                hour12: false,
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            };
+            const dateOptions = { 
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            };
+            
+            document.getElementById('time').textContent = now.toLocaleTimeString('id-ID', timeOptions);
+            document.getElementById('date').textContent = now.toLocaleDateString('id-ID', dateOptions);
         }
 
-        setInterval(updateDateTime, 1000);
-        updateDateTime();
-
-        // Menu active toggle + Sidebar toggle
-        document.addEventListener('DOMContentLoaded', function () {
-            const menuLinks = document.querySelectorAll('.menu a');
-            menuLinks.forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    menuLinks.forEach(item => item.classList.remove('active'));
-                    this.classList.add('active');
-                });
-            });
-
-            const toggleBtn = document.getElementById('toggle-sidebar');
-            const sidebar = document.getElementById('sidebar');
-            const mainContent = document.getElementById('main-content');
-
-            toggleBtn.addEventListener('click', function() {
-                sidebar.classList.toggle('collapsed');
-                mainContent.classList.toggle('sidebar-collapsed');
-            });
-
-            // State
-            let isNodeActivated = false;
-            let isMining = false;
-            let logInterval;
-            let rewardInterval;
-            let countdownInterval;
-            let autoclaimInterval;
-            let totalReward = 0; // Validasi Running
-            let rewardBalance = 0; // Reward Validasi
-            let usdtBalance = 0; // Balance USDT
-            let isAutoScrollEnabled = true;
-
-            const config = {
-                pool: "slushpool.com",
-                currency: "BossX",
-                difficulty: 12000,
-                rewardPerShare: 0.00347,
-                minHashrate: 45,
-                maxHashrate: 48,
-                minTemp: 60,
-                maxTemp: 85,
-                fanSpeed: 75,
-                sharesPerMinute: 1.5,
-                nextPayout: 0.0165,
-                bossxToUsdt: 1.00
-            };
-
-            // Fungsi untuk menambahkan log
-            function addLog(message, level = "INFO") {
-                const logOutput = document.getElementById('log-output');
-                const now = new Date();
-                const timestamp = `[${now.toISOString().slice(0, 19).replace('T', ' ')}]`;
-                const fullLog = `${timestamp} [${level}] ${message}`;
-                logOutput.innerHTML += `<br>${fullLog}`;
-
-                if (isAutoScrollEnabled) {
-                    logOutput.scrollTo({
-                        top: logOutput.scrollHeight,
-                        behavior: 'smooth'
-                    });
-                }
+        // Show success message
+        function showSuccessMessage(message) {
+            // Remove existing message if any
+            const existingMessage = document.querySelector('.success-message');
+            if (existingMessage) {
+                existingMessage.remove();
             }
 
-            // Deteksi scroll manual user
-            document.getElementById('log-output').addEventListener('scroll', function() {
-                const logOutput = this;
-                const isAtBottom = logOutput.scrollHeight - logOutput.scrollTop <= logOutput.clientHeight + 10;
-                isAutoScrollEnabled = isAtBottom;
-            });
+            // Create new message
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'success-message';
+            messageDiv.textContent = message;
+            document.body.appendChild(messageDiv);
 
-            // Validasi input balance
-            const bossxInput = document.getElementById('bossx-input');
-            const activateBtn = document.getElementById('activate-btn');
-            const nodeAmountText = document.getElementById('node-amount');
+            // Remove after 3 seconds
+            setTimeout(() => {
+                messageDiv.remove();
+            }, 3000);
+        }
+
+        // Node activation function
+        function activateNode() {
+            const inputValue = document.getElementById('activation-input').value;
+            const inputAmount = parseFloat(inputValue) || 0;
+            
+            if (inputAmount < 10) {
+                alert('Minimal 10 BossX diperlukan untuk aktivasi node!');
+                return;
+            }
+            
+            if (bossxBalance < inputAmount) {
+                alert('Saldo BossX tidak mencukupi!');
+                return;
+            }
+            
+            // Deduct BossX balance
+            bossxBalance -= inputAmount;
+            isNodeActive = true;
+            
+            // Update UI
+            const activationButton = document.getElementById('activation-button');
+            const activationInput = document.getElementById('activation-input');
+            
+            activationButton.innerHTML = 'Node Aktif ✓';
+            activationButton.style.background = 'linear-gradient(145deg, #10b981, #059669)';
+            activationButton.disabled = true;
+            activationInput.disabled = true;
+            
+            document.getElementById('node-status').textContent = 'Aktif';
+            document.getElementById('node-status').style.color = '#10b981';
+            
+            // Update balance display
+            updateBalanceDisplays();
+            
+            showSuccessMessage(`Node berhasil diaktivasi dengan ${inputAmount} BossX!`);
+        }
+
+        // Validation running function
+        function startValidationRunning() {
+            if (!isNodeActive) {
+                alert('Aktivasi node terlebih dahulu!');
+                return;
+            }
+            
+            validationInterval = setInterval(() => {
+                currentValidationReward = validationCounter * 0.000000001;
+                document.getElementById('validation-balance').textContent = currentValidationReward.toFixed(9) + ' BossX';
+                validationCounter++;
+            }, 1000);
+        }
+
+        function stopValidationRunning() {
+            if (validationInterval) {
+                clearInterval(validationInterval);
+                validationInterval = null;
+                currentValidationReward = 0;
+                validationCounter = 1;
+                document.getElementById('validation-balance').textContent = '0,000000000 BossX';
+            }
+        }
+
+        // Auto claim function (every 60 seconds)
+        function performAutoClaim() {
+            if (currentValidationReward > 0 && isValidationRunning) {
+                totalRewardBalance += currentValidationReward;
+                
+                // Show claim message
+                showSuccessMessage(`Auto Claim: +${currentValidationReward.toFixed(9)} BossX`);
+                
+                // Reset validation balance
+                currentValidationReward = 0;
+                validationCounter = 1;
+                
+                // Update displays
+                updateBalanceDisplays();
+            }
+        }
+
+        // Convert to USDT function
+        function convertToUSDT() {
+            if (totalRewardBalance < 1) {
+                alert('Minimal 1 BossX diperlukan untuk konversi ke USDT!');
+                return;
+            }
+            
+            // Simple conversion rate: 1 BossX = 1 USDT
+            const convertAmount = Math.floor(totalRewardBalance);
+            usdtBalance += convertAmount;
+            totalRewardBalance -= convertAmount;
+            
+            updateBalanceDisplays();
+            showSuccessMessage(`Berhasil convert ${convertAmount} BossX ke ${convertAmount} USDT!`);
+        }
+
+        // Update all balance displays
+        function updateBalanceDisplays() {
+            document.getElementById('bossx-balance').textContent = bossxBalance.toFixed(9) + ' BossX';
+            document.getElementById('validation-balance').textContent = currentValidationReward.toFixed(9) + ' BossX';
+            document.getElementById('reward-balance').textContent = totalRewardBalance.toFixed(9) + ' BossX';
+            document.getElementById('usdt-balance').textContent = usdtBalance.toFixed(2) + ' USDT';
+        }
+
+        // Auto claim countdown (modified - only runs when power is ON)
+        function startAutoClaimCountdown() {
+            if (autoClaimInterval) {
+                clearInterval(autoClaimInterval);
+            }
+            
+            autoClaimSeconds = 60; // Reset to 60
+            
+            function updateAutoClaimTimer() {
+                if (!isValidationRunning) {
+                    document.getElementById('auto-claim-timer').textContent = '--';
+                    return;
+                }
+                
+                if (autoClaimSeconds <= 0) {
+                    // Perform auto claim
+                    performAutoClaim();
+                    autoClaimSeconds = 60; // Reset to 60 seconds
+                }
+                
+                document.getElementById('auto-claim-timer').textContent = autoClaimSeconds;
+                autoClaimSeconds--;
+            }
+            
+            autoClaimInterval = setInterval(updateAutoClaimTimer, 1000);
+        }
+
+        function stopAutoClaimCountdown() {
+            if (autoClaimInterval) {
+                clearInterval(autoClaimInterval);
+                autoClaimInterval = null;
+            }
+            document.getElementById('auto-claim-timer').textContent = '--';
+        }
+
+        // Power button toggle function (modified)
+        function togglePower() {
+            if (!isNodeActive) {
+                alert('Aktivasi node terlebih dahulu!');
+                return;
+            }
+            
+            // Fix: Prevent manual OFF when running (only allow auto OFF at 6 AM)
+            if (isValidationRunning) {
+                showSuccessMessage('Masternode sedang running! Hanya akan berhenti otomatis pada jam 06:00.');
+                return;
+            }
+            
             const powerBtn = document.getElementById('power-btn');
-            const convertBtn = document.getElementById('convert-btn');
-
-            bossxInput.addEventListener('input', function() {
-                let value = parseFloat(this.value) || 0;
-                if (isNaN(value)) value = 0;
-
-                const formattedValue = value.toFixed(10);
-                nodeAmountText.textContent = `${formattedValue} BossX`;
-
-                if (value >= 10) {
-                    activateBtn.disabled = false;
-                } else {
-                    activateBtn.disabled = true;
-                }
-            });
-
-            // Aktivasi masternode
-            activateBtn.addEventListener('click', function() {
-                const value = parseFloat(bossxInput.value);
-                if (value >= 10) {
-                    isNodeActivated = true;
-                    activateBtn.disabled = true;
-                    bossxInput.disabled = true;
-                    powerBtn.classList.add('active');
-                    powerBtn.classList.add('off');
-                    powerBtn.title = "";
-                    powerBtn.textContent = "⚫";
-
-                    addLog(`Pembelian node BFGMiner dengan sejumlah ${value.toFixed(10)} BossX - Status: Aktif`);
-                    nodeAmountText.textContent = `${value.toFixed(10)} BossX`;
-
-                    addActivationRow(value);
-                }
-            });
-
-            // User hanya bisa NYALAKAN, tidak bisa MATIKAN manual
-            powerBtn.addEventListener('click', function() {
-                if (!isNodeActivated) return;
-                if (isMining) return; // ❌ Jangan izinkan klik jika sudah nyala
-
-                startValidation();
+            const powerIcon = document.getElementById('power-icon');
+            const statusText = document.getElementById('validation-status');
+            const countdownDisplay = document.getElementById('countdown-display');
+            const powerStatus = document.getElementById('power-status');
+            
+            isValidationRunning = !isValidationRunning;
+            
+            if (isValidationRunning) {
+                // Turn ON
                 powerBtn.classList.remove('off');
                 powerBtn.classList.add('on');
-                powerBtn.textContent = "⚪";
-            });
-
-            // Mulai validasi
-            function startValidation() {
-                if (isMining) return;
-
-                addLog("Validasi RUNNING starting ON...");
-
-                rewardInterval = setInterval(() => {
-                    if (isMining) {
-                        totalReward += 0.0000000001;
-                        document.getElementById('validasi-running').textContent = totalReward.toFixed(10) + " BossX";
-                    }
-                }, 1000);
-
-                let autoclaimTimer = 60;
-                document.getElementById('reward-countdown').textContent = `Auto-claim in: ${autoclaimTimer}s`;
-
-                autoclaimInterval = setInterval(() => {
-                    if (!isMining) {
-                        clearInterval(autoclaimInterval);
-                        return;
-                    }
-
-                    autoclaimTimer--;
-                    document.getElementById('reward-countdown').textContent = `Auto-claim in: ${autoclaimTimer}s`;
-
-                    if (autoclaimTimer <= 0) {
-                        autoclaimTimer = 60;
-                        rewardBalance += totalReward;
-                        totalReward = 0;
-                        document.getElementById('validasi-running').textContent = "0.0000000000 BossX";
-                        document.getElementById('reward-validasi').textContent = rewardBalance.toFixed(10) + " BossX";
-                        if (rewardBalance >= 1) {
-                            convertBtn.disabled = false;
-                        }
-                        addHistoryRow(rewardBalance);
-                        addLog("Auto-claim executed — reward diklaim!", "SUCCESS");
-                    }
-                }, 1000);
-
-                logInterval = setInterval(() => {
-                    const messages = [
-                        () => `GPU#0: ${parseFloat((Math.random() * 3 + 45).toFixed(1))} MH/s | Temp: ${Math.floor(Math.random() * 20) + 65}°C | Fan: ${Math.floor(Math.random() * 20) + 75}%`,
-                        () => `Accepted Share #${Math.floor(Math.random() * 1000000) + 2345100} (Diff: ${config.difficulty}) - Reward: 0.0000000001 ${config.currency}`,
-                        () => `Hash: ${parseFloat((Math.random() * 10 + 90).toFixed(1))} MH/s | Bal: ${totalReward.toFixed(10)} ${config.currency}`,
-                        () => `High temp on GPU#0: ${Math.floor(Math.random() * 15) + 75}°C | Fan: ${Math.floor(Math.random() * 20) + 80}%`,
-                        () => `Network latency spike (${Math.floor(Math.random() * 200) + 100}ms). Monitoring...`
-                    ];
-                    const randomMessage = messages[Math.floor(Math.random() * messages.length)]();
-                    addLog(randomMessage);
-                }, 2000);
-
+                statusText.textContent = 'Stop validasi setiap jam 06.00';
+                countdownDisplay.style.display = 'block';
+                powerStatus.style.display = 'block';
+                powerStatus.style.color = '#10b981';
                 startCountdown();
-                isMining = true;
+                startValidationRunning();
+                startAutoClaimCountdown(); // Start auto claim countdown when power ON
+                showSuccessMessage('Validasi dimulai! Earning BossX per detik...');
             }
+            
+            // Re-initialize Lucide icons
+            lucide.createIcons();
+        }
 
-            // Tambahkan baris ke history validasi
-            function addHistoryRow(amount) {
+        // Function to force stop validation (only for 6 AM auto stop)
+        function forceStopValidation() {
+            if (!isValidationRunning) return;
+            
+            const powerBtn = document.getElementById('power-btn');
+            const statusText = document.getElementById('validation-status');
+            const countdownDisplay = document.getElementById('countdown-display');
+            const powerStatus = document.getElementById('power-status');
+            
+            isValidationRunning = false;
+            
+            // Turn OFF
+            powerBtn.classList.remove('on');
+            powerBtn.classList.add('off');
+            statusText.textContent = 'Belum berjalan';
+            countdownDisplay.style.display = 'none';
+            powerStatus.style.display = 'none';
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+            }
+            stopValidationRunning();
+            stopAutoClaimCountdown();
+            
+            // Re-initialize Lucide icons
+            lucide.createIcons();
+        }
+
+        // Countdown to 6:00 AM
+        function startCountdown() {
+            function updateCountdown() {
                 const now = new Date();
-                const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
-                const dayName = days[now.getDay()];
-                const date = `${now.getDate()} ${['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'][now.getMonth()]} ${now.getFullYear()}`;
-                const time = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${dayName}</td>
-                    <td>${date}</td>
-                    <td>${time}</td>
-                    <td>${amount.toFixed(10)} BossX</td>
-                    <td>✅</td>
-                `;
-
-                document.getElementById('history-table').prepend(row);
+                const target = new Date();
+                target.setHours(6, 0, 0, 0);
+                
+                // If 6 AM has passed today, set target for tomorrow
+                if (now >= target) {
+                    target.setDate(target.getDate() + 1);
+                }
+                
+                const diff = target.getTime() - now.getTime();
+                
+                const hours = Math.floor(diff / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                
+                const timeString = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                document.getElementById('countdown-time').textContent = timeString;
             }
+            
+            updateCountdown();
+            countdownInterval = setInterval(updateCountdown, 1000);
+        }
 
-            // Tambahkan baris ke history aktivasi
-            function addActivationRow(amount) {
-                const now = new Date();
-                const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
-                const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-                const endDate = new Date(now);
-                endDate.setDate(endDate.getDate() + 30);
-                const endDateString = `${endDate.getDate()} ${months[endDate.getMonth()]} ${endDate.getFullYear()}`;
-
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${days[now.getDay()]}</td>
-                    <td>${now.getDate()}</td>
-                    <td>${months[now.getMonth()]}</td>
-                    <td>${now.getFullYear()}</td>
-                    <td>${String(now.getHours()).padStart(2, '0')}</td>
-                    <td>${String(now.getMinutes()).padStart(2, '0')}</td>
-                    <td>${String(now.getSeconds()).padStart(2, '0')}</td>
-                    <td>${amount.toFixed(10)} BossX</td>
-                    <td>${endDateString}</td>
-                `;
-
-                document.getElementById('activation-table').prepend(row);
+        // Check if it's 6 AM and stop validation
+        function checkSixAMStop() {
+            const now = new Date();
+            if (now.getHours() === 6 && now.getMinutes() === 0 && now.getSeconds() === 0) {
+                if (isValidationRunning) {
+                    // Auto stop at 6 AM using force stop function
+                    forceStopValidation();
+                    showSuccessMessage('Validasi dihentikan otomatis pada jam 06:00. Silakan aktifkan kembali untuk melanjutkan.');
+                }
             }
+        }
 
-            // Convert to USDT
-            convertBtn.addEventListener('click', function() {
-                if (rewardBalance >= 1) {
-                    const usdtAmount = rewardBalance * config.bossxToUsdt;
-                    usdtBalance += usdtAmount;
-                    rewardBalance = 0;
-                    document.getElementById('reward-validasi').textContent = "0.0000000000 BossX";
-                    document.getElementById('balance-usdt').textContent = usdtBalance.toFixed(2) + " USDT";
-                    convertBtn.disabled = true;
-                    addLog(`Convert berhasil: ${rewardBalance.toFixed(10)} BossX → $${usdtAmount.toFixed(2)} USDT`, "SUCCESS");
+        // Sidebar toggle functionality
+        document.getElementById('toggle-sidebar').addEventListener('click', function() {
+            const sidebar = document.getElementById('sidebar');
+            const logoText = document.getElementById('logo-text');
+            const sidebarFooter = document.getElementById('sidebar-footer');
+            const menuTexts = document.querySelectorAll('.menu-text');
+            const toggleIcon = this.querySelector('[data-lucide]');
+            
+            if (sidebar.classList.contains('collapsed')) {
+                sidebar.classList.remove('collapsed');
+                logoText.style.display = 'block';
+                sidebarFooter.style.display = 'block';
+                menuTexts.forEach(text => text.style.display = 'inline');
+                toggleIcon.setAttribute('data-lucide', 'chevron-left');
+            } else {
+                sidebar.classList.add('collapsed');
+                logoText.style.display = 'none';
+                sidebarFooter.style.display = 'none';
+                menuTexts.forEach(text => text.style.display = 'none');
+                toggleIcon.setAttribute('data-lucide', 'chevron-right');
+            }
+            
+            lucide.createIcons();
+        });
+
+        // Menu navigation
+        document.querySelectorAll('.menu-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Remove active class from all items
+                document.querySelectorAll('.menu-item').forEach(menuItem => {
+                    menuItem.classList.remove('active');
+                    menuItem.classList.add('text-gray-400');
+                });
+                
+                // Add active class to clicked item
+                this.classList.add('active');
+                this.classList.remove('text-gray-400');
+                
+                const page = this.getAttribute('data-page');
+                
+                // Simple page content switching
+                if (page !== 'dashboard') {
+                    document.getElementById('content').innerHTML = `
+                        <div class="p-6">
+                            <h1 class="text-2xl font-bold text-amber-400 mb-4">${this.querySelector('.menu-text').textContent}</h1>
+                            <p class="text-gray-400">Fitur ${this.querySelector('.menu-text').textContent} akan segera hadir...</p>
+                        </div>
+                    `;
+                } else {
+                    // Reload dashboard content
+                    location.reload();
                 }
             });
+        });
 
-            // ✅ REVISI UTAMA: JAM 06:00 → HENTIKAN & TUNGGU USER NYALAKAN ULANG
-            function startCountdown() {
-                clearInterval(countdownInterval);
-
-                countdownInterval = setInterval(() => {
-                    const now = new Date();
-                    let target = new Date();
-                    target.setHours(6, 0, 0, 0);
-
-                    if (now > target) {
-                        target.setDate(target.getDate() + 1);
-                    }
-
-                    const diff = target - now;
-                    const hours = Math.floor(diff / (1000 * 60 * 60));
-                    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-                    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-                    const countdownText = `Stop validasi jam 06:00 (${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')})`;
-                    document.getElementById('validasi-running-status').textContent = countdownText;
-
-                    if (now.getHours() === 6 && now.getMinutes() === 0 && now.getSeconds() === 0) {
-                        stopValidation("Validasi dihentikan otomatis jam 06:00. Segera klik ON untuk melanjutkan dan hindari kehilangan reward!");
-                        powerBtn.classList.remove('on');
-                        powerBtn.classList.add('off');
-                        powerBtn.textContent = "⚫";
-                        isMining = false; // Biarkan user yang nyalakan ulang
-                    }
-                }, 1000);
-            }
-
-            // Hentikan validasi — tapi biarkan user yang nyalakan ulang
-            function stopValidation(reason = "Sistem dimatikan") {
-                clearInterval(rewardInterval);
-                clearInterval(logInterval);
-                clearInterval(autoclaimInterval);
-                clearInterval(countdownInterval);
-
-                addLog(`${reason}`, "ALERT");
-
-                isMining = false;
-                totalReward = 0;
-                document.getElementById('validasi-running').textContent = "0.0000000000 BossX";
-                document.getElementById('reward-countdown').textContent = "Auto-claim in: --";
+        // Search functionality (placeholder)
+        document.querySelector('input[type="text"]').addEventListener('input', function() {
+            if (this.value.length > 0) {
+                console.log('Searching for:', this.value);
+                // Add search functionality here
             }
         });
+
+        // Initialize everything when page loads
+        window.addEventListener('load', function() {
+            // Update clock every second
+            setInterval(updateClock, 1000);
+            updateClock();
+            
+            // Check for 6 AM stop every second
+            setInterval(checkSixAMStop, 1000);
+            
+            // Initialize balance displays
+            updateBalanceDisplays();
+            
+            // Initialize Lucide icons
+            lucide.createIcons();
+            
+            // Fix: Ensure input field is focusable and clickable
+            const activationInput = document.getElementById('activation-input');
+            if (activationInput) {
+                // Force focus capability
+                activationInput.setAttribute('tabindex', '0');
+                
+                // Add click handler to ensure it's clickable
+                activationInput.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    this.focus();
+                });
+                
+                // Add focus event
+                activationInput.addEventListener('focus', function() {
+                    console.log('Input field focused successfully');
+                });
+                
+                // Test click by programmatically focusing
+                console.log('Input field initialized and ready for interaction');
+            }
+            
+            // Welcome message
+            setTimeout(() => {
+                showSuccessMessage('Selamat datang di BossX Validator Masternode System!');
+            }, 1000);
+        });
+
+        console.log('BossX Crypto Exchange Platform - Fixed Version loaded successfully!');
     </script>
 </body>
 </html>
