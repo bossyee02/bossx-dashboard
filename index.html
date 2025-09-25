@@ -711,6 +711,14 @@
             filter: blur(2px);
             animation: glowingBorder 8s linear infinite;
         }
+
+        /* Log Colors */
+        .log-entry {
+            color: #10b981; /* Hijau untuk log umum */
+        }
+        .log-entry.auto-claim {
+            color: #f59e0b; /* Emas untuk auto-claim */
+        }
     </style>
 </head>
 <body>
@@ -868,7 +876,7 @@
                                     <i data-lucide="cpu" class="w-4 h-4 text-amber-400"></i>
                                 </div>
                                 <div class="text-lg font-bold text-white mb-3">
-                                    <span id="bossx-balance">100,000000000 BossX</span>
+                                    <span id="bossx-balance">1000 BossX</span>
                                 </div>
                                 <div class="space-y-3">
                                     <input 
@@ -963,10 +971,20 @@
                                     <i data-lucide="dollar-sign" class="w-4 h-4 text-green-400"></i>
                                 </div>
                                 <div class="text-2xl font-bold text-white">
-                                    <span id="usdt-balance">50,00 USDT</span>
+                                    <span id="usdt-balance">1000 USDT</span>
                                 </div>
                                 <p class="text-xs text-green-400 mt-1">Available balance</p>
                             </div>
+                        </div>
+                        <!-- Log Engine Masternode -->
+                        <div id="log-engine" class="bg-gray-900 border border-amber-500/20 rounded-xl p-4 mt-6">
+                            <div class="flex justify-between items-center mb-3">
+                                <h3 class="text-lg font-semibold text-amber-400">Log Engine Masternode</h3>
+                                <button id="clear-log" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm transition-colors">
+                                    Clear Log
+                                </button>
+                            </div>
+                            <div id="log-output" class="bg-black p-4 rounded-lg overflow-y-auto h-64 text-sm font-mono whitespace-pre-wrap space-y-1"></div> <!-- Ganti pre ke div untuk style per entry -->
                         </div>
                         <!-- System Status Information -->
                         <div class="bg-gray-900 border border-blue-500/20 rounded-xl p-4 mt-6">
@@ -979,6 +997,7 @@
                                     <p><strong>• Node Status:</strong> <span id="node-status">Belum Aktif</span></p>
                                     <p><strong>• Auto Stop:</strong> Setiap hari jam 06:00</p>
                                     <p><strong>• Auto Claim:</strong> Hanya saat validasi running</p>
+                                    <p><strong>• Masa Berlaku Validasi:</strong> <span id="masa-berlaku">40.000.000 detik</span></p>
                                 </div>
                                 <div>
                                     <p><strong>• Minimal Aktivasi:</strong> 10 BossX</p>
@@ -1442,14 +1461,15 @@
         let isNodeActive = false;
         let isValidationRunning = false;
         let countdownInterval;
-        let autoClaimInterval = null;
-        let autoClaimSeconds = 60;
         let validationInterval;
         let currentValidationReward = 0; // Akumulasi sementara (Validasi Running)
         let totalRewardBalance = 0; // Akumulasi permanen (Reward Validasi)
-        let usdtBalance = 50; // Demo balance untuk withdrawal
-        let bossxBalance = 100; // Starting balance for demo
+        let usdtBalance = 1000; // Demo balance untuk withdrawal
+        let bossxBalance = 1000; // Starting balance for demo
         let stakedAmount = 0; // Jumlah BossX yang di-stake
+        let shareCounter = 0; // Counter for auto-claim shares
+        let logInterval; // Interval for periodic logs
+        let lastClaimTime = 0; // Timestamp terakhir claim (dalam detik)
         // Deposit & Withdrawal variables
         const walletAddresses = {
             USDT: {
@@ -1598,9 +1618,99 @@
                 setTimeout(() => initializeChatRoom(), 100);
             }
         }
+        // Function to get formatted timestamp
+        function getTimestamp() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = (now.getMonth() + 1).toString().padStart(2, '0');
+            const day = now.getDate().toString().padStart(2, '0');
+            const hour = now.getHours().toString().padStart(2, '0');
+            const minute = now.getMinutes().toString().padStart(2, '0');
+            const second = now.getSeconds().toString().padStart(2, '0');
+            return `[${year}-${month}-${day} ${hour}:${minute}:${second}]`;
+        }
         // =============================
         // DASHBOARD FUNCTIONS (REVISED)
         // =============================
+        // Array template log (dari data Anda, plus variasi random)
+        const logTemplates = [
+            '[WARNING] High temp on GPU#0: 79°C | Fan: 90%',
+            '[INFO] GPU#0: 48.4 MH/s | Temp: 78°C | Fan: 89%',
+            '[STATUS] time auto claim: 00:00:60 | Shares/min: 1 menit | Next payout',
+            '[ALERT] Network latency spike (112ms). Monitoring...',
+            '[INFO] Job ID changed: 0a1b2c3d4e5f6789... (Pool: BossXpool)',
+            'Power consumption: 3416W',
+            'Authorized worker: miner_002.worker1',
+            '[INFO] GPU#0: 48.4 MH/s | Temp: 78°C | Fan: 89%',
+            'Cooling system active'
+        ];
+
+        // Function appendLog dengan warna dan variasi
+        function appendLog(message) {
+            const logOutput = document.getElementById('log-output');
+            
+            // Tambah variasi random
+            if (message.includes('GPU#0')) {
+                const randomTemp = Math.floor(Math.random() * 15) + 65; // 65-79°C
+                const randomHash = (Math.random() * 3 + 47).toFixed(1); // 47-50 MH/s
+                const randomFan = Math.floor(Math.random() * 10) + 80; // 80-89%
+                message = message.replace(/48\.4/, randomHash).replace(/78|79/, randomTemp).replace(/89|90/, randomFan);
+            } else if (message.includes('latency spike')) {
+                const randomLatency = Math.floor(Math.random() * 50) + 100; // 100-150ms
+                message = message.replace(/112/, randomLatency);
+            } else if (message.includes('Power consumption')) {
+                const randomPower = Math.floor(Math.random() * 200) + 3200; // 3200-3400W
+                message = message.replace(/3416/, randomPower);
+            }
+            
+            // Tambah timestamp real-time
+            const fullMessage = `${getTimestamp()} ${message}`;
+            
+            // Buat element p baru dengan class warna
+            const logEntry = document.createElement('p');
+            logEntry.classList.add('log-entry');
+            if (message.includes('auto claim') || message.includes('Accepted Share')) {
+                logEntry.classList.add('auto-claim'); // Warna emas
+            }
+            logEntry.textContent = fullMessage;
+            
+            // Tambah ke output
+            logOutput.appendChild(logEntry);
+            
+            // Batasi 50 entry terakhir (hapus yang lama jika >50)
+            while (logOutput.children.length > 50) {
+                logOutput.removeChild(logOutput.firstChild);
+            }
+            
+            // Auto scroll
+            logOutput.scrollTop = logOutput.scrollHeight;
+        }
+
+        let masaBerlaku = 40000000; // Masa berlaku awal 40.000.000 detik
+        let masaInterval;
+
+        function updateMasaBerlaku() {
+            document.getElementById('masa-berlaku').textContent = masaBerlaku.toLocaleString('id-ID') + ' detik';
+            if (masaBerlaku <= 0) {
+                clearInterval(masaInterval);
+                document.getElementById('masa-berlaku').textContent = '0 detik (Kontrak Berakhir)';
+                forceStopValidation(); // Stop validasi jika masa berlaku habis
+                appendLog('[STATUS] Masa berlaku validasi berakhir (0 detik)');
+                showErrorMessage('Kontrak validasi berakhir! Aktivasi ulang diperlukan.');
+            }
+        }
+
+        function startMasaCountdown() {
+            if (masaInterval) clearInterval(masaInterval);
+            masaInterval = setInterval(() => {
+                if (isValidationRunning && masaBerlaku > 0) {
+                    masaBerlaku--;
+                    updateMasaBerlaku();
+                }
+            }, 1000);
+            updateMasaBerlaku(); // Update segera
+        }
+
         function activateNode() {
             const inputValue = document.getElementById('activation-input').value;
             const inputAmount = parseFloat(inputValue) || 0;
@@ -1628,6 +1738,8 @@
             // Reset reward counters
             currentValidationReward = 0;
             totalRewardBalance = 0;
+            // Add log entry for activation
+            appendLog('[STATUS] User aktivasi Node ' + inputAmount + ' BossX Status Aktiv');
             // Update tampilan
             updateBalanceDisplays();
             showSuccessMessage(`Node aktif! Stake: ${inputAmount} BossX. Silakan tekan Power ON untuk mulai validasi.`);
@@ -1639,12 +1751,47 @@
             }
             // Hitung reward per detik berdasarkan stake
             const rewardPerSecond = stakedAmount * 0.000000038580246913580247;
-            // Mulai akumulasi per detik
+
+            // Set lastClaimTime pertama kali saat start (dalam detik)
+            lastClaimTime = Date.now() / 1000;
+
+            // Interval untuk update UI dan cek claim (setiap detik, tapi hitung exact)
             validationInterval = setInterval(() => {
                 if (!isValidationRunning) return;
-                currentValidationReward += rewardPerSecond;
+
+                const currentTime = Date.now() / 1000; // Waktu sekarang dalam detik
+                const timeDelta = currentTime - lastClaimTime; // Delta sejak claim terakhir
+
+                // Hitung reward sementara berdasarkan delta exact
+                currentValidationReward = rewardPerSecond * timeDelta;
                 document.getElementById('validation-balance').textContent = currentValidationReward.toFixed(9) + ' BossX';
+
+                // Update countdown timer mundur
+                const remaining = 60 - Math.floor(timeDelta % 60);
+                document.getElementById('auto-claim-timer').textContent = remaining;
+
+                // Cek auto-claim jika delta >= 60 detik
+                if (timeDelta >= 60) {
+                    performAutoClaim(); // Claim sekarang
+                }
             }, 1000);
+
+            // Add log entries awal (dengan selisih detik acak)
+            setTimeout(() => appendLog('[STATUS] Connected successfully to masternode Validasi Running'), Math.random() * 2000 + 1000); // 1-3 detik
+            setTimeout(() => appendLog('[INFO] Connecting to master pool BossXPool.com:4444...'), Math.random() * 2000 + 3000); // 3-5 detik
+            setTimeout(() => appendLog('[STATUS] Network sync: 100%'), Math.random() * 2000 + 5000); // 5-7 detik
+            setTimeout(() => appendLog('[INFO] GPU#0: 48.3 MH/s | Temp: 68°C | Fan: 82%'), Math.random() * 2000 + 7000); // 7-9 detik
+            
+            // Periodic log dengan selisih detik random (1-5 detik per log baru)
+            function addRandomLog() {
+                if (!isValidationRunning) return;
+                const randomIndex = Math.floor(Math.random() * logTemplates.length);
+                appendLog(logTemplates[randomIndex]);
+                // Jadwal ulang dengan delay random 1-5 detik
+                logInterval = setTimeout(addRandomLog, Math.floor(Math.random() * 4000) + 1000);
+            }
+            addRandomLog(); // Mulai loop
+            
             showSuccessMessage('Validasi dimulai! Reward mengalir per detik.');
         }
         function stopValidationRunning() {
@@ -1652,13 +1799,27 @@
                 clearInterval(validationInterval);
                 validationInterval = null;
             }
+            if (logInterval) {
+                clearTimeout(logInterval);
+                logInterval = null;
+            }
+            // Reset timer UI saat stop
+            document.getElementById('auto-claim-timer').textContent = '--';
         }
         function performAutoClaim() {
             if (!isValidationRunning || currentValidationReward <= 0) return;
-            // Pindahkan reward sementara ke reward permanen
-            totalRewardBalance += currentValidationReward;
+            // Hitung fixed reward untuk tepat 60 detik (abaikan delta ekstra jika ada delay)
+            const rewardPerSecond = stakedAmount * 0.000000038580246913580247;
+            const fixedReward = rewardPerSecond * 60; // Selalu fixed ini
+            
+            totalRewardBalance += fixedReward;
+            shareCounter++;
             // Tampilkan notifikasi
-            showSuccessMessage(`Auto Claim: +${currentValidationReward.toFixed(9)} BossX`);
+            showSuccessMessage(`Auto Claim: +${fixedReward.toFixed(9)} BossX`);
+            // Add log entry for auto-claim
+            appendLog('[SUCCESS] Auto claim Accepted Share #' + shareCounter.toString().padStart(2, '0') + ' (Diff: 12000) - Reward: ' + fixedReward.toFixed(9) + ' BossX');
+            // Update lastClaimTime ke sekarang (hilangkan variasi)
+            lastClaimTime = Date.now() / 1000;
             // Reset akumulasi sementara
             currentValidationReward = 0;
             // Update tampilan
@@ -1681,34 +1842,6 @@
             document.getElementById('reward-balance').textContent = totalRewardBalance.toFixed(9) + ' BossX';
             document.getElementById('usdt-balance').textContent = usdtBalance.toFixed(2) + ' USDT';
         }
-        function startAutoClaimCountdown() {
-            if (autoClaimInterval) {
-                clearInterval(autoClaimInterval);
-            }
-            autoClaimSeconds = 60;
-            function updateAutoClaimTimer() {
-                if (!isValidationRunning) {
-                    document.getElementById('auto-claim-timer').textContent = '--';
-                    return;
-                }
-                document.getElementById('auto-claim-timer').textContent = autoClaimSeconds;
-                if (autoClaimSeconds <= 0) {
-                    performAutoClaim();
-                    autoClaimSeconds = 60; // Reset timer
-                } else {
-                    autoClaimSeconds--;
-                }
-            }
-            autoClaimInterval = setInterval(updateAutoClaimTimer, 1000);
-            updateAutoClaimTimer(); // Panggil segera agar timer langsung muncul
-        }
-        function stopAutoClaimCountdown() {
-            if (autoClaimInterval) {
-                clearInterval(autoClaimInterval);
-                autoClaimInterval = null;
-            }
-            document.getElementById('auto-claim-timer').textContent = '--';
-        }
         function togglePower() {
             if (!isNodeActive) {
                 showErrorMessage('Aktivasi node terlebih dahulu!');
@@ -1728,8 +1861,11 @@
                 powerStatus.style.display = 'block';
                 powerStatus.style.color = '#10b981';
                 startCountdown();
-                startValidationRunning(); // Mulai akumulasi reward
-                startAutoClaimCountdown(); // Mulai hitung mundur auto-claim
+                startValidationRunning(); // Mulai akumulasi reward dan countdown
+                startMasaCountdown(); // Mulai countdown masa berlaku
+                // Add log entries for power on
+                appendLog('[INFO] Power On aktiv');
+                appendLog('[STATUS] Connected successfully to masternode Validasi Running');
                 showSuccessMessage('Validasi dimulai! Auto-claim aktif setiap 60 detik.');
             } else {
                 // Turn OFF (manual, meski seharusnya tidak bisa)
@@ -1742,12 +1878,13 @@
                     clearInterval(countdownInterval);
                 }
                 stopValidationRunning();
-                stopAutoClaimCountdown();
+                if (masaInterval) clearInterval(masaInterval);
+                appendLog('[INFO] Validasi dihentikan manual');
                 showSuccessMessage('Validasi dihentikan manual.');
             }
             lucide.createIcons();
         }
-        function forceStopValidation() {
+        function forceStopValidation(reason = 'otomatis pada jam 06:00') {
             if (!isValidationRunning) return;
             isValidationRunning = false;
             const powerBtn = document.getElementById('power-btn');
@@ -1763,8 +1900,9 @@
                 clearInterval(countdownInterval);
             }
             stopValidationRunning();
-            stopAutoClaimCountdown();
-            showSuccessMessage('Validasi dihentikan otomatis pada jam 06:00. Silakan aktifkan kembali untuk melanjutkan.');
+            if (masaInterval) clearInterval(masaInterval);
+            appendLog(`[STATUS] Validasi dihentikan ${reason}`);
+            showSuccessMessage(`Validasi dihentikan ${reason}. Silakan aktifkan kembali untuk melanjutkan.`);
             lucide.createIcons();
         }
         function startCountdown() {
@@ -1789,7 +1927,7 @@
             const now = new Date();
             if (now.getHours() === 6 && now.getMinutes() === 0 && now.getSeconds() === 0) {
                 if (isValidationRunning) {
-                    forceStopValidation();
+                    forceStopValidation('otomatis pada jam 06:00');
                 }
             }
         }
@@ -2342,18 +2480,25 @@
             });
             // Withdrawal functionality
             document.addEventListener('click', function(e) {
-                if (e.target && e.target.id === 'max-withdrawal') {
+                if (!e.target) return;
+                if (e.target.id === 'max-withdrawal') {
                     setMaxWithdrawal();
                 }
-                if (e.target && e.target.id === 'refresh-withdrawal-history') {
+                if (e.target.id === 'refresh-withdrawal-history') {
                     showSuccessMessage('History withdrawal berhasil diperbarui!');
                     updateWithdrawalHistory();
                 }
             });
             document.addEventListener('input', function(e) {
-                if (e.target && e.target.id === 'withdrawal-amount') {
+                if (!e.target) return;
+                if (e.target.id === 'withdrawal-amount') {
                     updateWithdrawalSummary();
                 }
+            });
+            // Clear log
+            document.getElementById('clear-log').addEventListener('click', function() {
+                document.getElementById('log-output').innerHTML = '';
+                showSuccessMessage('Log berhasil di-clear!');
             });
         });
         // Initialize
